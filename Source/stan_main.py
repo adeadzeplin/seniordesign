@@ -1,2 +1,2 @@
-print("SPB")
+print("fuck stan")
 #poggers
