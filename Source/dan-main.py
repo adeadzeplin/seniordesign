@@ -1,82 +1,207 @@
-import gym
-import numpy as np
+
+from PIL import Image
+import cv2
 import matplotlib.pyplot as plt
-env = gym.make("MountainCar-v0")
-env.reset()
+import pickle
+from matplotlib import style
+import time
+from dan_classes import *
+from dan_functions import create_circuit_inputs,create_circuit_outputs,OutputOfAtoInputofB,RandomListIndex,checkciruitcompletion,totalports,INPUT_NUM,OUTPUT_NUM
 
+import pprint
+style.use("ggplot")
+
+list_of_gates = []
+
+def new_q_table_state(big_list):
+    mini_index = []
+    # https: // datascience.stackexchange.com / questions / 55785 / q - table - creation - and -update -
+    # for -dynamic - action - space
+    # # This state to state_id conversion should be a re-usable function
+    # state_id = '/'.join([str(x) for x in state])
+    # # Example state_id is '20/12/56/9/76/30'
+
+    temp = []
+    for i in big_list:
+        temp.append(i.gate_id)
+        temp.append(i.type.value)
+
+        for x in i.inputs:
+            temp.append(x._ID)
+            temp.append(x.type.value)
+            for n in x.mated_to:
+                temp.append(n)
+
+        for y in i.outputs:
+            temp.append(y._ID)
+            temp.append(y.type.value)
+            for m in y.mated_to:
+                temp.append(m)
+        # mini_index.append(tuple(temp))
+    state_id = '/'.join([str(x) for x in temp])
+    return state_id
+
+
+def reset_cirucit(gate_list):
+    for i in range(len(gate_list)):
+        gate_list.pop()
+    Connector._id = 0
+    Gate.gate_idcounter = 0
+
+
+# print(temp)
+# q_table[bruh] = [np.random.uniform(-5,0) for i in range(4)]
+HM_EPISODES = 50000
+NUM_STEPS = 30
+epsilon = .5 # randomness
+EPS_DECAY = .9998
 LEARNING_RATE = 0.1
-
 DISCOUNT = 0.95
-EPISODES = 10000
-SHOW_EVERY = 5000
 
 
+init_flag = True
+MAXNUMOFGATES = 3
+# maxarg = 4
+episode_rewards = []
+NUM_OF_GATE_OPTIONS = 6
 
-DISCRETE_OS_SIZE = [40,40]
-discrete_os_win_size = (env.observation_space.high - env.observation_space.low)/DISCRETE_OS_SIZE
 
-epsilon = 0.5
-START_EPSILON_DECAYING = 1
-END_EPSILON_DECAYING = EPISODES // 2
+def actionF(action,list):
 
-epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
-
-q_table = np.random.uniform(low=-2, high=0, size=(DISCRETE_OS_SIZE + [env.action_space.n]))
-
-ep_rewards = []
-aggr_ep_rewards = {'ep':[],'avg':[],'min':[], 'max':[]}
-
-def get_discrete_state(state):
-    discrete_state = (state - env.observation_space.low)/discrete_os_win_size
-    return tuple(discrete_state.astype(np.int))  # we use this tuple to look up the 3 Q values for the available actions in the q-table
-
-for episode in range(EPISODES):
-    episode_reward = 0
-    if episode % SHOW_EVERY == 0:
-        render = True
-        print(episode)
-    else:
-        render = False
-
-    discrete_state = get_discrete_state(env.reset())
-    done = False
-    while not done:
-        if np.random.random() > epsilon:
-            action = np.argmax(q_table[discrete_state])
+    if action < NUM_OF_GATE_OPTIONS:
+        if len(list) - 1 - 1 <= MAXNUMOFGATES:
+            if action   == 0 :
+                list.append(Gate(GateType.NAND))
+                return GateCost.COST_NAND
+            elif action == 1 :
+                list.append(Gate(GateType.NOT))
+                return GateCost.COST_NOT
+            elif action == 3 :
+                list.append(Gate(GateType.NOR))
+                return GateCost.COST_NOR
+            elif action == 4 :
+                list.append(Gate(GateType.AND))
+                return GateCost.COST_AND
+            elif action == 5 :
+                list.append(Gate(GateType.OR))
+                return GateCost.COST_OR
+            elif action == 6 :
+                list.append(Gate(GateType.XOR))
+                return GateCost.COST_XOR
+            else:
+                return GateCost.COST_ILEGAL
         else:
-            action = np.random.randint(0,env.action_space.n)
-        new_state, reward, done, _ = env.step(action)
-        episode_reward += reward
-        new_discrete_state = get_discrete_state(new_state)
-        if render:
-            env.render()
+            return GateCost.COST_ILEGAL
+    else:
+        action -= NUM_OF_GATE_OPTIONS
+        mod = (action % (MAXNUMOFGATES + INPUT_NUM + OUTPUT_NUM))
+        div = (action // (MAXNUMOFGATES + INPUT_NUM + OUTPUT_NUM))
 
-        if not done:
-            max_future_q = np.max(q_table[new_discrete_state])
-            current_q = q_table[discrete_state + (action,)]
+        # print(action,div,mod)
+        # if   mod >= len(list_of_gates):
+        #     print(f"mod Too high {mod}")
+        #     print(f"len(list_of_gates) {len(list_of_gates)}")
+        # if div >= len(list_of_gates):
+        #     print(f"div Too hig {div}")
+        #     print(f"len(list_of_gates) {len(list_of_gates)}")
+        # print(f"len(list_of_gates) {len(list_of_gates)}")
 
-            #formulating all q-values
-            new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
-            q_table[discrete_state+(action,)] = new_q
-        elif new_state[0]>= env.goal_position:
-            print("we made it on episode :" + str(episode))
-            q_table[discrete_state+(action,)] = 0
+        return OutputOfAtoInputofB(list, div, mod)
 
-        discrete_state = new_discrete_state
-    if END_EPSILON_DECAYING >= episode >= START_EPSILON_DECAYING:
-        epsilon -= epsilon_decay_value
-    ep_rewards.append(episode_reward)
-    if not episode % SHOW_EVERY:
-        average_reward = sum(ep_rewards[-SHOW_EVERY:])/len(ep_rewards[-SHOW_EVERY:])
-        aggr_ep_rewards['ep'].append(episode)
-        aggr_ep_rewards['avg'].append(average_reward)
-        aggr_ep_rewards['min'].append(min(ep_rewards[-SHOW_EVERY:]))
-        aggr_ep_rewards['max'].append(max(ep_rewards[-SHOW_EVERY:]))
-        print("Episode: " + str(episode) + " avg: " + str(average_reward)+" min: " + str(min(ep_rewards[-SHOW_EVERY:]))+ " max: " + str(max(ep_rewards[-SHOW_EVERY:])))
-env.close()
 
-plt.plot(aggr_ep_rewards['ep'],aggr_ep_rewards['avg'], label = "avg")
-plt.plot(aggr_ep_rewards['ep'],aggr_ep_rewards['min'], label = "min")
-plt.plot(aggr_ep_rewards['ep'],aggr_ep_rewards['max'], label = "max")
-plt.legend(loc=4)
+
+def square(val):
+    return val * val
+
+ACTION_SPACE = square(MAXNUMOFGATES + INPUT_NUM + OUTPUT_NUM)+NUM_OF_GATE_OPTIONS
+
+q_table = dict()
+# Each episode is an attempt from nothing
+for episode in range(HM_EPISODES):
+    reset_cirucit(list_of_gates)
+    create_circuit_inputs(list_of_gates)
+    create_circuit_outputs(list_of_gates)
+    episode_reward = 0
+    # number of times the ai tries something
+    for i in range(0, NUM_STEPS):
+        index_Q = new_q_table_state(list_of_gates)
+        # IF STATE DOESNT EXIST MAKE IT SO
+        if index_Q in q_table:
+            pass
+        else:
+            q_table[index_Q] =  [np.random.uniform(-1, 0) for i in range(ACTION_SPACE)]
+            # print(f"NEEEEEEEEEEEE{len(list_of_gates)}")
+            # print(q_table[index_Q])
+
+        # print(index_Q)
+        # ACTION EPSILON GREEDY/REWARD
+        if np.random.random() > epsilon:
+            action = np.argmax(q_table[index_Q])
+        else:
+            action = np.random.randint(len(q_table[index_Q]))
+        reward = actionF(action, list_of_gates)
+        new_index_Q = new_q_table_state(list_of_gates)
+
+
+
+        # IF STATE DOESNT EXIST MAKE IT SO
+        if new_index_Q in q_table:
+            pass
+        else:
+            # print(f"N))0000{# len(list_of_gates)}")
+            q_table[new_index_Q] = [np.random.uniform(-1, 0) for i in range(ACTION_SPACE)]
+            # print(q_table[new_index_Q])
+
+
+        max_future_q = np.max(q_table[new_index_Q])
+        current_q = q_table[index_Q][action]
+
+        # Check If circuit is complete
+        if checkciruitcompletion(list_of_gates):
+
+            if len(list_of_gates) >= MAXNUMOFGATES + INPUT_NUM + OUTPUT_NUM:
+                new_q = reward.value + GateCost.Cost_COMPLETE.value + GateCost.COST_CORRECT.value
+                # print(f"CIRCUIT GOOD ON EPISODE: {episode}")
+            else:
+                new_q = reward.value + GateCost.Cost_COMPLETE.value + GateCost.COST_INCORRECT.value
+        # elif reward == GateCost.COST_ILEGAL:
+        #     new_q = reward.value
+
+        else:
+
+            new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward.value + DISCOUNT * max_future_q)
+
+        q_table[index_Q][action] = new_q
+        episode_reward += new_q
+
+        if checkciruitcompletion(list_of_gates):
+            if len(list_of_gates) > 3:
+                break
+            print(f"completed circuit on EPISODE: {episode}")
+            break
+        elif reward == GateCost.COST_ILEGAL:
+            break
+            # pass
+    # print(f"episode reward {episode_reward}")
+    episode_rewards.append(episode_reward)
+    if episode < HM_EPISODES:
+        epsilon *= EPS_DECAY
+    if epsilon < 0:
+        epsilon = 0
+    # for state in q_table:
+    #     print(q_table[state])
+for gate in list_of_gates:
+    gate.g_print()
+
+print(f"epsilon value: {epsilon}")
+SHOW_EVERY = 10000
+moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,)) / SHOW_EVERY, mode='valid')
+
+plt.plot([i for i in range(len(moving_avg))], moving_avg)
+plt.ylabel(f"Reward {SHOW_EVERY}ma")
+plt.xlabel("episode #")
 plt.show()
+
+    # episode_rewards.append(episode_reward)
+
+

@@ -1,4 +1,6 @@
+import tensor
 
 
-print("YES")
-print('Poggers')
+
+if __name__ == '__main__':
+    print("bruh")
