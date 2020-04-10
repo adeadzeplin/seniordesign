@@ -1,6 +1,6 @@
-import tensor
-
+from qlark_class import Qlark
 
 
 if __name__ == '__main__':
-    print("bruh")
+    Qlearingai = Qlark()
+    Qlearingai.run()

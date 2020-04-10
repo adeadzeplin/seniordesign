@@ -1,4 +1,4 @@
-from dan_classes import Gate, GateType, GateCost
+from qlark_logicgates_class import Gate, GateType, GateCost
 import numpy as np
 # number of circuit inputs/outputs
 INPUT_NUM = 2

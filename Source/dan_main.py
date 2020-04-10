@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pickle
 from matplotlib import style
 import time
-from dan_classes import *
+from qlark_logicgates_class import *
 from dan_functions import create_circuit_inputs,create_circuit_outputs,OutputOfAtoInputofB,RandomListIndex,checkciruitcompletion,totalports,INPUT_NUM,OUTPUT_NUM
 
 import pprint
@@ -21,25 +21,36 @@ def new_q_table_state(big_list):
     # state_id = '/'.join([str(x) for x in state])
     # # Example state_id is '20/12/56/9/76/30'
 
-    temp = []
-    for i in big_list:
-        temp.append(i.gate_id)
-        temp.append(i.type.value)
-
-        for x in i.inputs:
-            temp.append(x._ID)
-            temp.append(x.type.value)
-            for n in x.mated_to:
-                temp.append(n)
-
-        for y in i.outputs:
-            temp.append(y._ID)
-            temp.append(y.type.value)
-            for m in y.mated_to:
-                temp.append(m)
+    state_id = []
+    for gate in big_list:
+        output_list = []
+        gate.append_attributes_to_list(output_list)
+        # for x in vars(i):
+        #     if not callable(getattr(i, x)) and not x.startswith("__"):
+        #         if isinstance(x,list):
+        #
+        # temp.append(i.gate_id)
+        # temp.append(i.type.value)
+        #
+        # for x in i.inputs:
+        #     temp.append(x._ID)
+        #     temp.append(x.type.value)
+        #     for n in x.mated_to:
+        #         temp.append(n)
+        #
+        # for y in i.outputs:
+        #     temp.append(y._ID)
+        #     temp.append(y.type.value)
+        #     for m in y.mated_to:
+        #         temp.append(m)
         # mini_index.append(tuple(temp))
-    state_id = '/'.join([str(x) for x in temp])
+        state_id.append('/'.join([str(x) for x in output_list]))
+    state_id.sort()
+    state_id = tuple(state_id)
+    # print(state_id)
+
     return state_id
+
 
 
 def reset_cirucit(gate_list):
@@ -51,8 +62,8 @@ def reset_cirucit(gate_list):
 
 # print(temp)
 # q_table[bruh] = [np.random.uniform(-5,0) for i in range(4)]
-HM_EPISODES = 50000
-NUM_STEPS = 30
+HM_EPISODES = 25000
+NUM_STEPS = 100
 epsilon = .5 # randomness
 EPS_DECAY = .9998
 LEARNING_RATE = 0.1
@@ -60,10 +71,10 @@ DISCOUNT = 0.95
 
 
 init_flag = True
-MAXNUMOFGATES = 3
+MAXNUMOFGATES = 2
 # maxarg = 4
 episode_rewards = []
-NUM_OF_GATE_OPTIONS = 6
+NUM_OF_GATE_OPTIONS = 7
 
 
 def actionF(action,list):
@@ -126,9 +137,8 @@ for episode in range(HM_EPISODES):
     for i in range(0, NUM_STEPS):
         index_Q = new_q_table_state(list_of_gates)
         # IF STATE DOESNT EXIST MAKE IT SO
-        if index_Q in q_table:
-            pass
-        else:
+        if  index_Q not in q_table:
+
             q_table[index_Q] =  [np.random.uniform(-1, 0) for i in range(ACTION_SPACE)]
             # print(f"NEEEEEEEEEEEE{len(list_of_gates)}")
             # print(q_table[index_Q])
@@ -161,7 +171,7 @@ for episode in range(HM_EPISODES):
 
             if len(list_of_gates) >= MAXNUMOFGATES + INPUT_NUM + OUTPUT_NUM:
                 new_q = reward.value + GateCost.Cost_COMPLETE.value + GateCost.COST_CORRECT.value
-                # print(f"CIRCUIT GOOD ON EPISODE: {episode}")
+                print(f"CIRCUIT GOOD ON EPISODE: {episode}")
             else:
                 new_q = reward.value + GateCost.Cost_COMPLETE.value + GateCost.COST_INCORRECT.value
         # elif reward == GateCost.COST_ILEGAL:
@@ -194,7 +204,7 @@ for gate in list_of_gates:
     gate.g_print()
 
 print(f"epsilon value: {epsilon}")
-SHOW_EVERY = 10000
+SHOW_EVERY = 100
 moving_avg = np.convolve(episode_rewards, np.ones((SHOW_EVERY,)) / SHOW_EVERY, mode='valid')
 
 plt.plot([i for i in range(len(moving_avg))], moving_avg)
@@ -202,6 +212,8 @@ plt.ylabel(f"Reward {SHOW_EVERY}ma")
 plt.xlabel("episode #")
 plt.show()
 
-    # episode_rewards.append(episode_reward)
+#saves
+# with open(f"qtable-{int(time.time())}.pickle", "wb") as f:
+#     pickle.dump(q_table, f)
 
 
