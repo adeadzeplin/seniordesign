@@ -2,15 +2,18 @@ from gate_class import Gate, GateType
 #from main import inputsTotal,outputsTotal
 
 def Output_to_Input(GateList,a,b):
-    try:
-        if GateList[a].type == GateType.circuitInput or GateList[b].type == GateType.circuitInput:
-            if GateList[a].type == GateType.circuitOutput or GateList[b].type == GateType.circuitOutput:
-                print("asd")
+    if a==b:
+        return
+    else:
+        try:
+            if GateList[a].type == GateType.circuitInput or GateList[b].type == GateType.circuitInput:
+                if GateList[a].type == GateType.circuitOutput or GateList[b].type == GateType.circuitOutput:
+                    print("asd")
 
-        return GateList[a].connect_to_(GateList[b])
-    except:
-        #return GateCost.COST_ILEGAL
-        print("as")
+            return GateList[a].gateConnect(GateList[b])
+        except:
+            #return GateCost.COST_ILEGAL
+            print("as")
 
 def create_circuit_inputs(mega_list):
     from main import inputsTotal
@@ -27,3 +30,12 @@ def Total_Power():
 
 def Total_Delay():
     pass
+
+def gateNumtoName(listofGatesNum):
+    for i in range(listofGatesNum):
+        if listofGatesNum[i] == 0:
+            return "IN"
+        elif listofGatesNum[i] == 1:
+            return "OUT"
+        elif listofGatesNum[i] == 2:
+            return "AND"
