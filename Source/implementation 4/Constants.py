@@ -1,4 +1,3 @@
 INPUTSTOTAL = 2
 OUTPUTSTOTAL = 1
-listOfGates = []
 

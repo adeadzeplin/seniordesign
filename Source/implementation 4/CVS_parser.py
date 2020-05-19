@@ -1,9 +1,9 @@
-from circuit_creation import inputsTotal, gateNumtoName
-from Constants import listOfGates
+from CVS_circuit_creation import gateNumtoName
+from Constants import INPUTSTOTAL
 import ttg
 
 
-def organizing():
+def organizing(listOfGates):
     for gate in listOfGates:
         gate.g_print()
     print(listOfGates[3].type)
@@ -11,7 +11,7 @@ def organizing():
     inputTTList = []
     gatesInList = []
     TToutputs = []
-    for i in range(inputsTotal):
+    for i in range(INPUTSTOTAL):
         inputTTList.append(i)
         print((list(map(str, list(set(inputTTList))))))
     for i in range(len(listOfGates)):

@@ -1,9 +1,9 @@
-from gate_class import Gate, GateType
+from CVS_gate_class import Gate, GateType
 from Constants import INPUTSTOTAL, OUTPUTSTOTAL
 
 # Constants
-inputsTotal = INPUTSTOTAL
-outputsTotal = OUTPUTSTOTAL
+#inputsTotal = INPUTSTOTAL
+#outputsTotal = OUTPUTSTOTAL
 
 
 def Output_to_Input(GateList, a, b):
@@ -22,12 +22,12 @@ def Output_to_Input(GateList, a, b):
 
 
 def create_circuit_inputs(mega_list):
-    for i in range(inputsTotal):
+    for i in range(INPUTSTOTAL):
         mega_list.append(Gate(GateType.circuitInput, 0, 1))  # making input circuit port
 
 
 def create_circuit_outputs(mega_list):
-    for i in range(outputsTotal):
+    for i in range(OUTPUTSTOTAL):
         mega_list.append(Gate(GateType.circuitOutput, 1, 0))  # making output circuit port
 
 
