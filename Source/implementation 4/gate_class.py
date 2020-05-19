@@ -6,23 +6,8 @@ class ConnectorType(enum.IntEnum):
     INPUT = 0
     OUTPUT = 1
 
-class Connector:
-    id = 0
-    def __init__(self, host, type):
-        self._ID = Connector.id
-        Connector.id += 1
-        self.host = host
-        self.type = type
-        self.mated_to = []
 
-    def connect(self, anotherconnector):
-        self.mated_to.append(anotherconnector._ID)
-
-    def c_print(self):
-        print(f"host ID: {self.host}  connector ID: {self._ID}  Mated connector ID: {self.mated_to} ")
-
-
-class GateType:
+class GateType:     #no enum here since i need the numbers, not GateType.Type: # as a return
     # in & outs
     circuitInput = 0
     circuitOutput = 1
@@ -35,11 +20,21 @@ class GateType:
     XOR = 7
 
 
-class GateMetrics:
-    def __init__(self, power, delay, cost):
-        self.power = power
-        self.delay = delay
-        self.cost = cost
+class Connector:
+    id = 0
+
+    def __init__(self, host, type):
+        self._ID = Connector.id
+        Connector.id += 1
+        self.host = host
+        self.type = type
+        self.mated_to = []
+
+    def connect(self, anotherconnector):
+        self.mated_to.append(anotherconnector._ID)
+
+    def c_print(self):
+        print(f"host ID: {self.host}  connector ID: {self._ID}  Mated connector ID: {self.mated_to} ")
 
 
 class Gate:
@@ -62,11 +57,11 @@ class Gate:
             self.outputs.append(Connector(self.gate_id, ConnectorType.OUTPUT))
 
     def gateConnect(self, anothergate):
-        for i in self.outputs:
-            for x in i.mated_to:
-                for j in anothergate.inputs:
-                    if x == j._ID:
-                        pass
+        #for i in self.outputs:
+        #    for x in i.mated_to:
+        #        for j in anothergate.inputs:
+        #            if x == j._ID:
+        #                print('connection')
         if self != anothergate:
             for j in anothergate.inputs:
                 if len(j.mated_to) == 0:  # if gate not connected to another other gates

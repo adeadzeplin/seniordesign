@@ -1,44 +1,38 @@
-import gate_class, functions
-import ttg
-
-# Constants
-inputsTotal = 2
-outputsTotal = 1
-
-listOfGates = []
-# Half adder
-# make A B inputs
-inputGateList = functions.create_circuit_inputs(listOfGates)
-outputGateList = functions.create_circuit_outputs(listOfGates)
-
-# make XOR gate with A B inputs
-listOfGates.append(gate_class.Gate(gate_class.GateType.AND))
-
-# connect gates
-functions.Output_to_Input(listOfGates,0,3)
-functions.Output_to_Input(listOfGates,1,3)
-functions.Output_to_Input(listOfGates,3,2)
+import gate_class, circuit_creation, Parser
+from Constants import listOfGates
 
 
-for gate in listOfGates:
-    gate.g_print()
+def main():
+    # listOfGates = []
+    # Half adder
+    # make A B inputs
+    inputGateList = circuit_creation.create_circuit_inputs(listOfGates)
+    outputGateList = circuit_creation.create_circuit_outputs(listOfGates)
 
-# create TT based on num inputs
-inputTTList = []
-gatesInList = []
-TToutputs = []
-for i in range(inputsTotal):
-    inputTTList.append(i)
-    print((list(map(str,list(set(inputTTList))))))
-for i in range(len(listOfGates)):
-    gatesInList = listOfGates[i].type
-    print(gatesInList)
+    # make XOR gate with A B inputs
+    listOfGates.append(gate_class.Gate(gate_class.GateType.AND))
+    #listOfGates.append(gate_class.Gate(gate_class.GateType.XOR))
 
-#TToutputs.append(functions.gateNumtoName(gatesInList))
+    # connect gates
+    circuit_creation.Output_to_Input(listOfGates, 0, 3)
+    circuit_creation.Output_to_Input(listOfGates, 1, 4)
+    circuit_creation.Output_to_Input(listOfGates, 3, 2)
 
-table = ttg.Truths((list(map(str,list(set(inputTTList))))) )
-print(table)
+    # circuit_creation.Output_to_Input(listOfGates, 0, 4)
+    # circuit_creation.Output_to_Input(listOfGates, 1, 5)
+    # circuit_creation.Output_to_Input(listOfGates, 6, 2)
+    #
+    # circuit_creation.Output_to_Input(listOfGates, 0, 7)
+    # circuit_creation.Output_to_Input(listOfGates, 1, 8)
+    # circuit_creation.Output_to_Input(listOfGates, 9, 3)
 
-# add column based on outputs
-# metrics calculation
+    ParserOutputs = Parser.organizing()
+    CrawlerOut = Parser.circuitCrawling(listOfGates, ParserOutputs[1])
+    Parser.printTable(ParserOutputs[0],CrawlerOut)
 
+    # add column based on outputs
+    # metrics calculation
+
+
+if __name__ == '__main__':
+    main()
