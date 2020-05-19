@@ -1,5 +1,5 @@
-from CVS_gate_class import Gate, GateType
-from Constants import INPUTSTOTAL, OUTPUTSTOTAL
+from Source.CVS_gate_class import Gate, GateType
+from Source.CVS_constants import INPUTSTOTAL, OUTPUTSTOTAL
 
 # Constants
 #inputsTotal = INPUTSTOTAL

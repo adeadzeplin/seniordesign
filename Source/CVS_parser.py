@@ -1,5 +1,5 @@
-from CVS_circuit_creation import gateNumtoName
-from Constants import INPUTSTOTAL
+from Source.CVS_circuit_creation import gateNumtoName
+from Source.CVS_constants import INPUTSTOTAL
 import ttg
 
 
