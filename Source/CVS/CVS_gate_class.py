@@ -32,6 +32,7 @@ class Connector:
 
     def connect(self, anotherconnector):
         self.mated_to.append(anotherconnector._ID)
+        #print(str(self.mated_to) + "hello")
 
     def c_print(self):
         print(f"host ID: {self.host}  connector ID: {self._ID}  Mated connector ID: {self.mated_to} ")
@@ -57,17 +58,25 @@ class Gate:
             self.outputs.append(Connector(self.gate_id, ConnectorType.OUTPUT))
 
     def gateConnect(self, anothergate):
-        #for i in self.outputs:
-        #    for x in i.mated_to:
-        #        for j in anothergate.inputs:
-        #            if x == j._ID:
-        #                print('connection')
+
+        for i in self.outputs:
+            #print(i.mated_to)
+            for x in i.mated_to:    #doesnt do anything here, never reaches x==j._ID
+                #print(x)
+                for j in anothergate.inputs:
+                    if x == j._ID:
+                        # print(f"We all ready got {j._ID} in da bag")
+
+                        return "hello"
         if self != anothergate:
             for j in anothergate.inputs:
-                if len(j.mated_to) == 0:  # if gate not connected to another other gates
-                    if len(self.outputs) != 0:  # if outputs
+                if len(j.mated_to) <= 0: # if theres nothing connected to an input
+                    if len(self.outputs) != 0: # if there is anoutput
+                        print(self.outputs[0]._ID, j._ID)       #why is it applying '0' to both connectors and not applying '1'
                         self.outputs[0].connect(j)
                         j.connect(self.outputs[0])
+
+
 
     def g_print(self):
         print(

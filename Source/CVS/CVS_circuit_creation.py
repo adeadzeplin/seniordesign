@@ -13,11 +13,11 @@ def Output_to_Input(GateList, a, b):
         try:
             if GateList[a].type == GateType.circuitInput or GateList[b].type == GateType.circuitInput:
                 if GateList[a].type == GateType.circuitOutput or GateList[b].type == GateType.circuitOutput:
-                    print("asd")
-
+                    return "weird stuff happening flag here"
+            #print(GateList[a].gate_id, GateList[b].gate_id)
             return GateList[a].gateConnect(GateList[b])
         except:
-            return False
+            return "False"
 
 
 
@@ -35,9 +35,19 @@ def gateNumtoName(listofGatesNum):
     temp =[]
     for i in range(len(listofGatesNum)):
         if listofGatesNum[i] == 0:
-            temp.append( "IN")
+            temp.append("IN")
         elif listofGatesNum[i] == 1:
             temp.append("OUT")
         elif listofGatesNum[i] == 2:
             temp.append("AND")
+        elif listofGatesNum[i] == 3:
+            temp.append("OR")
+        elif listofGatesNum[i] == 4:
+            temp.append("NOT")
+        elif listofGatesNum[i] == 5:
+            temp.append("NAND")
+        elif listofGatesNum[i] == 6:
+            temp.append("NOR")
+        elif listofGatesNum[i] == 7:
+            temp.append("XOR")
     return temp
