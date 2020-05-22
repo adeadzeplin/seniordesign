@@ -32,6 +32,7 @@ class Connector:
 
     def connect(self, anotherconnector):
         self.mated_to.append(anotherconnector._ID)
+        #print(str(self.mated_to) + "hello")
 
     def c_print(self):
         print(f"host ID: {self.host}  connector ID: {self._ID}  Mated connector ID: {self.mated_to} ")
@@ -57,17 +58,23 @@ class Gate:
             self.outputs.append(Connector(self.gate_id, ConnectorType.OUTPUT))
 
     def gateConnect(self, anothergate):
-        #for i in self.outputs:
-        #    for x in i.mated_to:
-        #        for j in anothergate.inputs:
-        #            if x == j._ID:
-        #                print('connection')
+        #print(self.outputs[0]._ID)
+        for i in range(len(self.outputs)):
+            for j in anothergate.inputs:
+                print(self.outputs[i]._ID, j._ID)
+                if self.outputs[i]._ID == j._ID:
+                    print("hiasd")
+
         if self != anothergate:
             for j in anothergate.inputs:
-                if len(j.mated_to) == 0:  # if gate not connected to another other gates
-                    if len(self.outputs) != 0:  # if outputs
+                #print(self.outputs[0]._ID, j._ID)
+                #print(self.inputs[0]._ID, self.inputs[1]._ID)
+                if len(j.mated_to) <= 0:  # if theres nothing connected to an input
+                    if len(self.outputs) != 0:  # if there is anoutput
                         self.outputs[0].connect(j)
                         j.connect(self.outputs[0])
+                        #print(self.outputs[0]._ID, j._ID)
+
 
     def g_print(self):
         print(
