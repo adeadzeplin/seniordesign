@@ -107,7 +107,7 @@ def printTable(inputTTList, CrawlerOut):
     # print(circuitInput)
 
 
-    print("\n")
+
     gateOutput = []
     mated_to_list = []
     matches = []
@@ -132,9 +132,10 @@ def printTable(inputTTList, CrawlerOut):
             #print(mated_to_list)
             #resets array in array -> just one array
             normalized_mated_list = []
+            #print((mated_to_list))
             for g in mated_to_list:
                 normalized_mated_list.append(g[0])
-            print(normalized_mated_list)
+            #print(normalized_mated_list)
 
             for c in normalized_mated_list:
                 if c in tableInput_IDs:
@@ -226,6 +227,7 @@ def printTable(inputTTList, CrawlerOut):
             mated_to_list.append(i.inputs[j].mated_to)
 
         normalized_mated_list = []
+        #print(mated_to_list)
         for g in mated_to_list:
             normalized_mated_list.append(g[0])
         #print(normalized_mated_list)

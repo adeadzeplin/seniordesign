@@ -8,12 +8,20 @@ def Total_Delay():
 def table_column_get(tableInput_TableOut,circuitInput):
     tableColumn = []
     for q in range(len(tableInput_TableOut)):
-        for k in range(1, len(tableInput_TableOut) ** 2):
-            # print(k,tableInput_TableOut[q][str(q)][k])
-            tableColumn.append(tableInput_TableOut[q][str(q)][k])
-        temp = tableColumn
-        tableColumn = []
-        circuitInput.append(temp)
+        if len(tableInput_TableOut)**2 ==4:
+            for k in range(1, len(tableInput_TableOut) ** 2+1):
+                # print(k,tableInput_TableOut[q][str(q)][k])
+                tableColumn.append(tableInput_TableOut[q][str(q)][k])
+            temp = tableColumn
+            tableColumn = []
+            circuitInput.append(temp)
+        else:
+            for k in range(1, len(tableInput_TableOut) ** 2):
+                # print(k,tableInput_TableOut[q][str(q)][k])
+                tableColumn.append(tableInput_TableOut[q][str(q)][k])
+            temp = tableColumn
+            tableColumn = []
+            circuitInput.append(temp)
     print(circuitInput)
     return circuitInput
 
