@@ -5,8 +5,8 @@ import pickle
 import time
 
 style.use("ggplot")
+from QLARK.qlark_cvs_interface import QlarkCircuitInterface
 
-from qlark_environment_class import BootLeg_Logic
 
 def square(val):
     return val * val
@@ -19,7 +19,7 @@ class Qlark:
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
-        self.QRANDOMINIT = -5  # The range of random starting values
+        self.QRANDOMINIT = -1  # The range of random starting values
         self.EPSILONSTART = .7
 
         # AI Variables
@@ -33,7 +33,7 @@ class Qlark:
             self.q_table = dict()
 
         # Space for AI to play and get feedback from
-        self.environment = BootLeg_Logic(C_IN_CT=2, C_OUT_CT=1, MAX_GATE_NUM=1, NUM_OF_GATE_TYPES=2)
+        self.environment = QlarkCircuitInterface(C_IN_CT=2, C_OUT_CT=1, MAX_GATE_NUM=1, NUM_OF_GATE_TYPES=2)
 
         self.NUM_STEPS = 50#self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         print(self.NUM_STEPS)
@@ -53,7 +53,9 @@ class Qlark:
                 # get state for q-table
                 index_q = self.new_q_table_state()
                 # IF STATE DOESNT EXIST MAKE IT SO
-                if index_q not in self.q_table:
+                if index_q in self.q_table:
+                    pass
+                else:
                     self.q_table[index_q] = [np.random.uniform(self.QRANDOMINIT, 0) for i in range(self.environment.ACTION_SPACE)]
 
                 # ACTION based on EPSILON GREEDY/REWARD
@@ -61,15 +63,16 @@ class Qlark:
                     action = np.argmax(self.q_table[index_q])
                 else:
                     action = np.random.randint(len(self.q_table[index_q]))
-                    # decay epsilon everytime it's used
-                    # self.epsilon *= self.EPS_DECAY
+
                 # Update the environment and find out how it did
                 reward = self.environment.takeaction(action)
                 # get future q
                 new_index_q = self.new_q_table_state()
 
                 # IF THE NEW STATE DOESNT EXIST MAKE IT SO
-                if new_index_q not in self.q_table:
+                if new_index_q in self.q_table:
+                    pass
+                else:
                     self.q_table[new_index_q] = [np.random.uniform(self.QRANDOMINIT, 0) for i in range(self.environment.ACTION_SPACE)]
 
                 max_future_q = np.max(self.q_table[new_index_q])
@@ -86,10 +89,13 @@ class Qlark:
                 episode_reward += new_q
 
                 if self.environment.checkwin():
+                    print(f"SUCCESS ON EPISODE: {episode}")
+                    self.environment.printout()
+                    self.environment.parseLogic()
                     # print(f"SUCCESS ON EPISODE: {episode}")
-                    if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
-                        print(f"SUCCESS ON EPISODE: {episode}")
-                        self.environment.printout()
+                    # if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
+                    #     print(f"SUCCESS ON EPISODE: {episode}")
+                    #     self.environment.printout()
                     break
                 elif self.environment.checklose(reward):
                     # print(step)
@@ -103,16 +109,17 @@ class Qlark:
                 print(f"REMAINING EPISODES: {self.EPISODE_NUM - episode}")
                 self.saveq()
 
-                pass
             if self.epsilon < 0.001:
                 self.epsilon = self.EPSILONSTART
                 print("Epsilon RESET")
             # self.environment.printout()
-                pass
+
             if step == self.NUM_STEPS - 1:
                 print("LIMIT REACHED")
         self.saveq()
-        self.environment.printout()
+        # self.environment.printout()
+        self.environment.parseLogic()
+
         self.showaiadata()
 
     def saveq(self):
