@@ -121,7 +121,32 @@ def printTable(inputTTList, CrawlerOut):
         whatGatesConnectedTo.append(i.inputs)
             #check if NOt
         if i.type == 4:
-            print(i.gate_id)
+            #print(i.gate_id)
+            formatted_gateOutputExpression = []
+            mated_to_list.append(i.inputs[0].mated_to)
+            #print(mated_to_list)
+            normalized_mated_list = []
+            # print((mated_to_list))
+            for g in mated_to_list:
+                normalized_mated_list.append(g[0])
+            #print(normalized_mated_list)
+
+            gateOutputExpression = "%s %s" % ( convertNumtoWord(i.type),normalized_mated_list[0])
+            print(gateOutputExpression)
+
+            formatted_gateOutputExpression.append(gateOutputExpression)
+            formatted_gateOutputExpression = (list(map(str, list(set(formatted_gateOutputExpression)))))
+            gateOutput_both = ttg.Truths(tableInput_IDs_formated, formatted_gateOutputExpression).as_pandas()
+            #print(gateOutput_both)
+            gateOutputExpression = gateOutput_both[[gateOutputExpression]]
+            tablecolumn = []
+            #print(gateOutputExpression)
+            for u in range(1, len(circuitInput[0]) + 1):
+                tablecolumn.append(gateOutputExpression[formatted_gateOutputExpression[0]][u])
+            print(tablecolumn)
+
+            i.tableOutput = tablecolumn
+
         else:
             #print(i.gate_id)
             tempoutput =[]
@@ -146,7 +171,7 @@ def printTable(inputTTList, CrawlerOut):
 
 
             if len(matches) == 2:   #both inputs are from circuit inputs
-                #print('both')
+                print('both')
                 gateOutputExpression = "%s %s %s" % (matches[0], convertNumtoWord(i.type), matches[1])
                 print(gateOutputExpression)
                 formatted_gateOutputExpression.append(gateOutputExpression)
@@ -170,7 +195,7 @@ def printTable(inputTTList, CrawlerOut):
             #else if only one input is circuit input, and other is gate output
 
             elif len(matches) == 1:
-                #print('one')
+                print('one')
                 circuitInput_temp = 0
                 for v in matches:   #input to circuit
                     for b in normalized_mated_list: #output of gate
@@ -196,7 +221,7 @@ def printTable(inputTTList, CrawlerOut):
 
             #else if BOTH inputs are gate outputs
             elif len(matches) == 0:
-                #print('none')
+                print('none')
                 temp_outputs = []
 
                 for n in CrawlerOut[2]: #looking for check gate output
