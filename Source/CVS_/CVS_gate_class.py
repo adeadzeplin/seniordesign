@@ -39,13 +39,13 @@ class Connector:
 
 
 class Gate:
-    gate_id = 0
+    gate_idcounter = 0
 
     def __init__(self, type=None, inputNum=2, outputNum=1):
         if type == GateType.NOT:
             self.inputNum = 1
-        self.gate_id = self.gate_id
-        Gate.gate_id += 1
+        self.gate_id = self.gate_idcounter
+        Gate.gate_idcounter += 1
         self.type = type
         self.inputs = []
         self.outputs = []
