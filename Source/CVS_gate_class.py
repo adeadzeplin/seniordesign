@@ -7,7 +7,7 @@ class ConnectorType(enum.IntEnum):
     OUTPUT = 1
 
 
-class GateType:     #no enum here since i need the numbers, not GateType.Type: # as a return
+class GateType(enum.IntEnum):     #no enum here since i need the numbers, not GateType.Type: # as a return
     # in & outs
     circuitInput = 0
     circuitOutput = 1
@@ -50,6 +50,7 @@ class Gate:
         self.inputs = []
         self.outputs = []
         self.makePorts(inputNum, outputNum)
+        self.tableOutput = []
 
     def makePorts(self, inPorts, outPorts):  # creates / connects inputs and outputs only
         for i in range(0, inPorts):
@@ -58,22 +59,22 @@ class Gate:
             self.outputs.append(Connector(self.gate_id, ConnectorType.OUTPUT))
 
     def gateConnect(self, anothergate):
-        #print(self.outputs[0]._ID)
-        for i in range(len(self.outputs)):
-            for j in anothergate.inputs:
-                print(self.outputs[i]._ID, j._ID)
-                if self.outputs[i]._ID == j._ID:
-                    print("hiasd")
+
+        for i in self.outputs:
+            for x in i.mated_to:
+                for j in anothergate.inputs:
+                    if x == j._ID:
+                        # print(f"We all ready got {j._ID} in da bag")
+                        return "gateConnect issue"
 
         if self != anothergate:
             for j in anothergate.inputs:
-                #print(self.outputs[0]._ID, j._ID)
-                #print(self.inputs[0]._ID, self.inputs[1]._ID)
-                if len(j.mated_to) <= 0:  # if theres nothing connected to an input
-                    if len(self.outputs) != 0:  # if there is anoutput
+                if len(j.mated_to) <= 0: # if theres nothing connected to an input
+                    if len(self.outputs) != 0: # if there is anoutput
+                        #print(self.outputs[0]._ID, j._ID)
                         self.outputs[0].connect(j)
                         j.connect(self.outputs[0])
-                        #print(self.outputs[0]._ID, j._ID)
+                        return
 
 
     def g_print(self):
