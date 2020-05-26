@@ -1,4 +1,5 @@
 import enum
+import numpy as np
 
 def Total_Power():
     pass
@@ -34,6 +35,16 @@ class circuit_errors(enum.Enum):
     ERROR_CIRCUIT_OUTPUT =2
     ERROR_GATE =3
 
+def circuit_output_compare(circuitOutput, ogOutput):
+    counterCorrect = 0
+    if circuitOutput == ogOutput:
+        return 100
+    else:
+        #see how much is correct
+        a = np.array(circuitOutput)
+        b = np.array(ogOutput)
+        error = np.mean(a!=b)
+        return error
 
 
 def table_column_get(tableInput_TableOut,circuitInput):
