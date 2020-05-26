@@ -1,6 +1,6 @@
-from Source.CVS_circuit_creation import gateNumtoName
-from Source.CVS_constants import INPUTSTOTAL
-from Source.CVS_circuit_calculations import table_column_get, table_output
+from Source.CVS_.CVS_circuit_creation import gateNumtoName
+from Source.CVS_.CVS_constants import INPUTSTOTAL
+from Source.CVS_.CVS_circuit_calculations import table_column_get, table_output
 import ttg
 
 

@@ -1,4 +1,4 @@
-from Source import CVS_parser, CVS_circuit_creation, CVS_gate_class, CVS_circuit_calculations
+from Source.CVS_ import CVS_parser, CVS_circuit_creation, CVS_gate_class, CVS_circuit_calculations
 
 
 def CVS():
