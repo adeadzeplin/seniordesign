@@ -1,6 +1,6 @@
-from CVS_.CVS_circuit_creation import gateNumtoName
-from CVS_.CVS_constants import INPUTSTOTAL
-from CVS_.CVS_circuit_calculations import table_column_get, table_output
+from Source.CVS_circuit_creation import gateNumtoName
+from Source.CVS_constants import INPUTSTOTAL
+from Source.CVS_circuit_calculations import table_column_get, table_output
 import ttg
 
 
@@ -66,7 +66,7 @@ def convertNumtoWord(type):
 
 def printTable(inputTTList, CrawlerOut):
 
-    formattedGateOutLabel = []
+    print("\n")
     whatInputsConnectedTo = []
     tableInput_IDs = []
     tableInput_TableOut = []
@@ -74,7 +74,6 @@ def printTable(inputTTList, CrawlerOut):
     whatOutputsConnectedTo = []
     circuitInput =  []
     circuitOutput = []
-
 
     for i in CrawlerOut[1]: #inputs----------------------------------------------------------------
         for j in range(len(i.outputs)):
@@ -87,33 +86,13 @@ def printTable(inputTTList, CrawlerOut):
     for i in tableInput_IDs_formated:
         #print(tempTable[[i]])
         tableInput_TableOut.append(tempTable[[i]])
-    #print(tableInput_TableOut[0],tableInput_TableOut[1],tableInput_TableOut[2])
-    # q = 0
-    # w= '0'
-    # e = 4
-    #print(tableInput_TableOut[q][w][e])
 
     circuitInput = table_column_get(tableInput_TableOut, circuitInput)
-
-    #in fucntion now
-    # tableColumn = []
-    # for q in range(len(tableInput_TableOut)):
-    #     for k in range(1,len(tableInput_TableOut)**2):
-    #         #print(k,tableInput_TableOut[q][str(q)][k])
-    #         tableColumn.append(tableInput_TableOut[q][str(q)][k])
-    #     temp = tableColumn
-    #     tableColumn = []
-    #     circuitInput.append(temp)
-    # print(circuitInput)
-
-
 
     gateOutput = []
     mated_to_list = []
     matches = []
     listOFGateOutputs = []
-
-
 
     for i in CrawlerOut[2]: #gates----------------------------------------------------------------
         print("\n")
@@ -169,7 +148,6 @@ def printTable(inputTTList, CrawlerOut):
             #print(matches)
             formatted_gateOutputExpression =[]
 
-
             if len(matches) == 2:   #both inputs are from circuit inputs
                 print('both')
                 gateOutputExpression = "%s %s %s" % (matches[0], convertNumtoWord(i.type), matches[1])
@@ -190,7 +168,6 @@ def printTable(inputTTList, CrawlerOut):
                 #listOFGateOutputs.append(listOFGateOutputs)
                 i.tableOutput = tablecolumn
                 #print(i.type,i.tableOutput)
-
 
             #else if only one input is circuit input, and other is gate output
 
@@ -218,7 +195,6 @@ def printTable(inputTTList, CrawlerOut):
                             i.tableOutput = table_output(a,b,i.type)
                             print(i.tableOutput)
 
-
             #else if BOTH inputs are gate outputs
             elif len(matches) == 0:
                 print('none')
@@ -237,7 +213,6 @@ def printTable(inputTTList, CrawlerOut):
             #clears arrays for next gate
             matches = []
             mated_to_list = []
-
 
 
     print("\n")
@@ -264,34 +239,13 @@ def printTable(inputTTList, CrawlerOut):
                     #print(i.inputs[0]._ID, i.outputs)
                     i.outputs = n.tableOutput
                     print(i.outputs)
+
         circuitOutput.append(i.outputs)
         mated_to_list = []
 
-                        #print(n.outputs[0]._ID, m)
-        #i.tableOutput = n.tableOutput
-
-
-        # if i.type == 4:
-        #     gateName = convertNumtoWord(i.type)
-        #     input1 = inputTTList[0]
-        #     operand = gateName
-        #     expression = "%s %s" % (operand, input1)
-        #     #print(expression)
-        #     formattedLabel.append(expression)
-        # else:
-        #     gateName = convertNumtoWord(i.type)
-        #     input1 = inputTTList[0]
-        #     input2 = inputTTList[1]
-        #     operand = gateName
-        #     expression = "%s %s %s" % (input1, operand, input2)
-        #     #print(expression)
-        #     formattedLabel.append(expression)
-
-    #this should have only the output gates labeled as output# and saved as variable
-    #print("\n" + str(formattedGateOutLabel))
     print("\n")
-        #print((list(map(str, list(set(formattedLabel))))))
-        #formattedLabel = (list(map(str, list(set(formattedLabel)))))
 
     table = ttg.Truths(tableInput_IDs_formated)
     print(table.as_tabulate())
+
+    return circuitOutput

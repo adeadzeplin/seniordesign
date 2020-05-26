@@ -1,9 +1,40 @@
+import enum
+
 def Total_Power():
     pass
 
 
 def Total_Delay():
     pass
+
+def circuit_connection_check(listofallgates):
+    for gate in listofallgates:
+        for j in range(len(gate.outputs)):
+            if gate.type == 0:
+                if len(gate.outputs[j].mated_to) == 0 :
+                    return circuit_errors.ERROR_CIRCUIT_INPUT
+                else:
+                    pass #print(gate.gate_id,gate.outputs[j].mated_to)
+            else:
+                if len(gate.outputs[j].mated_to) == 0 or len(gate.inputs[j].mated_to) > 2:
+                    return circuit_errors.ERROR_GATE
+                else:
+                    pass #print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
+
+        for k in range(len(gate.inputs)):
+            if gate.type == 1:
+                if len(gate.inputs[k].mated_to) == 0 or len(gate.inputs[k].mated_to) > 1:
+                    return circuit_errors.ERROR_CIRCUIT_OUTPUT
+                else:
+                    pass #print(gate.gate_id,gate.inputs[k].mated_to)
+
+class circuit_errors(enum.Enum):
+    #Circuit Error codes
+    ERROR_CIRCUIT_INPUT =1
+    ERROR_CIRCUIT_OUTPUT =2
+    ERROR_GATE =3
+
+
 
 def table_column_get(tableInput_TableOut,circuitInput):
     tableColumn = []
