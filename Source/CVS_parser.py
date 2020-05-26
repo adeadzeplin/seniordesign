@@ -18,8 +18,8 @@ def organizing(listOfGates):
         gatesInList.append(listOfGates[i].type)
 
     #print(" \n"  + str(gatesInList))
-    #TToutputs.append(gateNumtoName(gatesInList))
-    #print(TToutputs)
+    TToutputs.append(gateNumtoName(gatesInList))
+    print(TToutputs)
     return inputTTList
 
 def circuitCrawling(listOFGates):
@@ -245,7 +245,10 @@ def printTable(inputTTList, CrawlerOut):
 
     print("\n")
 
-    table = ttg.Truths(tableInput_IDs_formated)
-    print(table.as_tabulate())
+    #table = ttg.Truths(tableInput_IDs_formated)
+    #print(table.as_tabulate())
+
+    for i in circuitOutput:
+        i.reverse()
 
     return circuitOutput
