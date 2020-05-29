@@ -1,4 +1,4 @@
-from qlark_class import Qlark
+from QLARK.qlark_class import Qlark
 
 
 if __name__ == '__main__':
