@@ -15,7 +15,7 @@ def square(val):
 class Qlark:
     def __init__(self):
         # AI constants
-        self.EPISODE_NUM = 50000    # number of circuit Attempts
+        self.EPISODE_NUM = 1000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95

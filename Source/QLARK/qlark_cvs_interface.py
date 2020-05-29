@@ -43,8 +43,7 @@ class QlarkCircuitInterface():
         self.reset_circuit()
         self.create_circuit_inputs()
         self.create_circuit_outputs()
-        if np.random.random()>= 0:
-            self.list_of_gates.append(Gate(GateType.NAND))
+
 
     def getstate(self):
         return self.get_Logic_state()
@@ -143,7 +142,7 @@ class QlarkCircuitInterface():
         for i in range(len(self.list_of_gates)):
             self.list_of_gates.pop()
         Connector.id = 0
-        Gate.gate_idcounter = 0
+        Gate.gate_id_counter = 0
 
     def create_circuit_inputs(self):
         for i in range(self.CIRCUIT_INPUTS_COUNT):
