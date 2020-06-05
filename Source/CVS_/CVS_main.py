@@ -14,7 +14,7 @@ def CVS():
     listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.AND))
     listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.XOR))
     listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.XOR))
-    #listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.NOT))
+    # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.NOT))
 
     # connect gates
     #one gate
@@ -42,7 +42,7 @@ def CVS():
 
 
 # full adder
-#     #xor 5
+    #xor 5
     CVS_circuit_creation.Output_to_Input(listOfGates, 0, 5)
     CVS_circuit_creation.Output_to_Input(listOfGates, 1, 5)
     CVS_circuit_creation.Output_to_Input(listOfGates, 5, 18)
@@ -73,16 +73,10 @@ def CVS():
     Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(listOfGates)
 
     if Circuit_Errors == None:
-        ParserOutputs = CVS_parser.organizing(listOfGates)
-        CrawlerOut = CVS_parser.circuitCrawling(listOfGates)
-        returnValue = CVS_parser.printTable(ParserOutputs[0], CrawlerOut)
-        print("Circuit Output:",returnValue)
-        circuitPercentSame = CVS_circuit_calculations.circuit_output_compare(returnValue,ogCircuitOutput)
-        print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+        CVS_parser.runParser(listOfGates,ogCircuitOutput)
     else:
         print(Circuit_Errors)
 
-    # add column based on outputs
     # metrics calculation
 
 
