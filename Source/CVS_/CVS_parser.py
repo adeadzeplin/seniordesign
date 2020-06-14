@@ -12,6 +12,13 @@ def runParser(listOfGates,ogCircuitOutput):
     circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
     print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
 
+def runQParser(listOfGates,ogCircuitOutput):
+    CrawlerOut = circuitParsing(listOfGates)
+    returnValue = circuitConnecting(CrawlerOut)
+    return circuit_output_compare(returnValue, ogCircuitOutput)
+
+
+
 def convertNumtoWord(type):
     if type == 2:
         return "and"
@@ -78,7 +85,7 @@ def circuitParsing(listOFGates): #this gets a list of outputs, inputs, and other
 
 
 def circuitConnecting(CrawlerOut): # goes through circuit starting from input gates, and determines the outputs of each gate
-    print("\n")
+    # print("\n")
     whatInputsConnectedTo = []
     tableInput_IDs = []
     tableInput_TableOut = []
@@ -91,7 +98,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
 
     for i in CrawlerOut[1]:  # inputs----------------------------------------------------------------
         for j in range(len(i.outputs)):
-            print(i.type, i.outputs[j].mated_to, i.gate_id)
+            # print(i.type, i.outputs[j].mated_to, i.gate_id)
             tableInput_IDs.append(i.gate_id)
 
     #generate inital input states
@@ -105,7 +112,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
     for i in CrawlerOut[1]:
         i.tableOutput = circuitInput[i.gate_id]
 
-    print("\n")
+    # print("\n")
 
     for i in CrawlerOut[2]:  # gates----------------------------------------------------------------
         if i.gate_id:
@@ -246,7 +253,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
             # matches = []
             # mated_to_list = []
 
-    print("\n")
+    # print("\n")
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
@@ -264,12 +271,12 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
                     # print(n.outputs[0]._ID, m)
                     # print(i.inputs[0]._ID, i.outputs)
                     i.tableOutput = n.tableOutput
-                    print(i.tableOutput)
+                    # print(i.tableOutput)
 
         circuitOutput.append(i.tableOutput)
         mated_to_list = []
 
-    print("\n")
+    # print("\n")
 
     # table = ttg.Truths(tableInput_IDs_formated)
     # print(table.as_tabulate())
