@@ -35,9 +35,13 @@ class QlarkCircuitInterface():
         self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + self.NUM_OF_GATE_TYPES
 
     def parseLogic(self):
-        ParserOutputs = organizing(self.list_of_gates)
-        CrawlerOut = circuitCrawling(self.list_of_gates)
-        printTable(ParserOutputs[0], CrawlerOut)
+        # intial circuit connection check
+        Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.listOfGates)
+
+        if Circuit_Errors == None:
+            CVS_parser.runParser(self.listOfGates, ogCircuitOutput)
+        else:
+            print(Circuit_Errors)
 
     def reset(self):
         self.reset_circuit()
@@ -153,7 +157,6 @@ class QlarkCircuitInterface():
             self.list_of_gates.append(Gate(GateType.circuitOutput, 1, 0))
 
     def OutputOfAtoInputofB(self, a, b):
-
         try:
             temp = self.list_of_gates[a].check_if_connection_available(self.list_of_gates[b])
         except:
@@ -179,7 +182,7 @@ class QlarkCircuitInterface():
 
 
 
-    def actionf(self,action):
+    def attempt_action(self,action):
         if action < self.NUM_OF_GATE_TYPES:
             temp = len(self.list_of_gates) - (self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT)
             if temp < self.MAX_GATE_NUM:

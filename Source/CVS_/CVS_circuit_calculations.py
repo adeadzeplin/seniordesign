@@ -99,7 +99,7 @@ def table_column_get(tableInput_TableOut, circuitInput):
             temp = tableColumn
             tableColumn = []
             circuitInput.append(temp)
-    print(circuitInput)
+    # print(circuitInput)
     return circuitInput
 
 

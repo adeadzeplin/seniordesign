@@ -1,5 +1,5 @@
 from CVS_ import CVS_parser, CVS_circuit_creation, CVS_gate_class, CVS_circuit_calculations
-
+import ttg
 
 def CVS():
     listOfGates = []
@@ -62,12 +62,12 @@ def CVS():
     CVS_circuit_creation.Output_to_Input(listOfGates, 2, 8)
     CVS_circuit_creation.Output_to_Input(listOfGates, 8, 3)
 
-    #xor 9
-    CVS_circuit_creation.Output_to_Input(listOfGates, 7, 9)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 6, 9)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 9, 4)
+    # #xor 9
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 7, 9)
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 6, 9)
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 9, 4)
 
-    ogCircuitOutput = [[0, 1, 1, 0, 1, 0, 0, 1], [0, 0, 0, 1, 0, 1, 1, 1]]
+    ogCircuitOutput = [[0, 1, 1, 0, 0, 0, 0, 1], [0, 0, 0, 1, 0, 1, 1, 1]]
 
     #intial circuit connection check
     Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(listOfGates)
@@ -77,8 +77,10 @@ def CVS():
     else:
         print(Circuit_Errors)
 
+
     # metrics calculation
 
 
 if __name__ == '__main__':
-    CVS()
+    print(ttg.Truths(['a','b'],['a xor b','a and b']))
+    # CVS()
