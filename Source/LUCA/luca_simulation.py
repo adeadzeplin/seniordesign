@@ -38,5 +38,6 @@ class Simulation:
             index = np.random.randint(0, self.pop_size)
             partner = self.population[index]
             val = np.random.randint(0, 8)
-            if val < partner.fitness:
+            if val < partner.fitness * 8:
                 return partner
+

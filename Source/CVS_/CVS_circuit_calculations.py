@@ -70,6 +70,8 @@ def circuit_output_compare(circuitOutput, ogOutput):
         # see how much is correct
         a = np.array(circuitOutput)
         b = np.array(ogOutput)
+        print("A", a)
+        print("B", b)
         error = np.mean(a != b)
         return error
 
@@ -87,7 +89,7 @@ def table_column_get(tableInput_TableOut, circuitInput):
 
         elif len(tableInput_TableOut) ** 2 <= 4:
             for k in range(1, len(tableInput_TableOut) ** 2 + 1):
-                # print(k,tableInput_TableOut[q][str(q)][k])
+                print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
             temp = tableColumn
             tableColumn = []
@@ -104,9 +106,8 @@ def table_column_get(tableInput_TableOut, circuitInput):
 
 
 def table_output(a, b, gatetype):
-    # print(a,b,gatetype)
+    print(a,b,gatetype)
     output = []
-
     if gatetype == 2:
         for i in range(len(a)):
             if a[i] == 1 and b[i] == 1:
@@ -140,7 +141,9 @@ def table_output(a, b, gatetype):
                 output.append(0)
             else:
                 output.append(1)
-
+    elif gatetype == 8:
+        for i in range(len(a)):
+            output.append(a[i])
     return output
 
     # AND = 2
@@ -149,3 +152,4 @@ def table_output(a, b, gatetype):
     # NAND = 5
     # NOR = 6
     # XOR = 7
+    # NOGATE

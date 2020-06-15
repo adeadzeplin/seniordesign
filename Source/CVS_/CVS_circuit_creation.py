@@ -1,4 +1,4 @@
-from CVS_.CVS_gate_class import Gate, GateType
+from CVS_.CVS_gate_class import Gate
 from CVS_.CVS_constants import INPUTSTOTAL, OUTPUTSTOTAL
 
 
@@ -7,8 +7,8 @@ def Output_to_Input(GateList, a, b):
         return
     else:
         try:
-            if GateList[a].type == GateType.circuitInput or GateList[b].type == GateType.circuitInput:
-                if GateList[a].type == GateType.circuitOutput or GateList[b].type == GateType.circuitOutput:
+            if GateList[a].type == 0 or GateList[b].type == 0:
+                if GateList[a].type == 1 or GateList[b].type == 1:
                     return "weird stuff happening flag here"
             #print(GateList[a].gate_id, GateList[b].gate_id)
             return GateList[a].gateConnect(GateList[b])
@@ -18,12 +18,12 @@ def Output_to_Input(GateList, a, b):
 
 def create_circuit_inputs(mega_list):
     for i in range(INPUTSTOTAL):
-        mega_list.append(Gate(GateType.circuitInput, 0, 1))  # making input circuit port
+        mega_list.append(Gate(0, 0, 1))  # making input circuit port
 
 
 def create_circuit_outputs(mega_list):
     for i in range(OUTPUTSTOTAL):
-        mega_list.append(Gate(GateType.circuitOutput, 1, 0))  # making output circuit port
+        mega_list.append(Gate(1, 1, 0))  # making output circuit port
 
 
 # def gateNumtoName(listofGatesNum):

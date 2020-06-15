@@ -12,28 +12,29 @@ class Circuit:
         self.num_gates = gates
         self.transistor_count = 0
         self.truth_table = np.zeros((4, 4), dtype=int)
-
+        self.gates = []
+        self.connections = []
     def gate_selector(self, gate_id):
         if gate_id[1] == 0:
-            gt = np.random.randint(1, 8)
+            gt = np.random.randint(2, 8)
         else:
-            gt = np.random.randint(1, 9)
-        if gt == 1:
-            gt = 'AND'
-        elif gt == 2:
-            gt = 'OR'
-        elif gt == 3:
-            gt = 'NOT'
-        elif gt == 4:
-            gt = 'NOR'
-        elif gt == 5:
-            gt = 'NAND'
-        elif gt == 6:
-            gt = 'XOR'
-        elif gt == 7:
-            gt = 'XNOR'
-        elif gt == 8:
-            gt = 'NOGATE'
+            gt = np.random.randint(2, 9)
+        #if gt == 1:
+         #   gt = 'AND'
+        #elif gt == 2:
+         #   gt = 'OR'
+        #elif gt == 3:
+         #   gt = 'NOT'
+        #elif gt == 4:
+        #    gt = 'NOR'
+        #elif gt == 5:
+        #    gt = 'NAND'
+        #elif gt == 6:
+        #    gt = 'XOR'
+        #elif gt == 7:
+        #    gt = 'XNOR'
+        #elif gt == 8:
+        #   gt = 'NOGATE'
         return gt
 
     def input_selector(self, gate_id, gate_output):
@@ -63,19 +64,29 @@ class Circuit:
 
     def create_circuit(self, gate_output, rows):
         gate_id = [0, 0]
+        self.gates = []
+        self.connections = []
         for j in range(0, (self.num_gates * 4), 4):
             gate_type = self.gate_selector(gate_id)
             output = gate_output
             inputs = self.input_selector(gate_id, gate_output)
+            self.gates.append(gate_type)
             self.genes[j] = inputs[0]
             self.genes[j+1] = inputs[1]
             self.genes[j+2] = gate_type
             self.genes[j+3] = output
+            if gate_type == 8 or gate_type == 4:
+                self.connections.append([inputs[0], output])
+            else:
+                self.connections.append([inputs[0], output])
+                self.connections.append([inputs[1], output])
             gate_output += 1
             gate_id[0] += 1
             if gate_id[0] == rows:
                 gate_id[1] += 1
                 gate_id[0] = 0
+        self.connections.append([gate_output - 1, gate_output])
+        self.connections.append([gate_output - 2, gate_output + 1])
         self.genes[self.num_gates * 4] = gate_output
         self.genes[(self.num_gates * 4) + 1] = gate_output + 1
 
