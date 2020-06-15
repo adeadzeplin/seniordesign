@@ -31,7 +31,7 @@ def circuit_connection_check(listofallgates):
     elif output_gate_counter == 0:
         return circuit_errors.ERROR_MISSING_OUTPUT
 
-    # checks is each gate has any inputs and outputs
+    # checks is each gate has any inputs and outputs        #can simplify
     for gate in listofallgates:
         for j in range(len(gate.outputs)):
             if gate.type == 0:
@@ -55,23 +55,23 @@ def circuit_connection_check(listofallgates):
 
 class circuit_errors(enum.Enum):
     # Circuit Error codes
-    ERROR_CIRCUIT_INPUT = 10
-    ERROR_CIRCUIT_OUTPUT = 20
-    ERROR_GATE = 30
-    ERROR_MISSING_INPUT = 40
-    ERROR_MISSING_LOGIC = 50
-    ERROR_MISSING_OUTPUT = 60
+    ERROR_CIRCUIT_INPUT = 10        #if input gate has no mated gates
+    ERROR_CIRCUIT_OUTPUT = 20       #if output gate has no mated gates
+    ERROR_GATE = 30                 #if gate doesnt have the right amount of mated inputs and outputs (1,2)
+    ERROR_MISSING_INPUT = 40        #there are no input gates in the cirucit
+    ERROR_MISSING_LOGIC = 50        #there are no gates in the cirucit
+    ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
-    if circuitOutput == ogOutput:
-        return 100
-    else:
-        # see how much is correct
-        a = np.array(circuitOutput)
-        b = np.array(ogOutput)
-        error = np.mean(a != b)
-        return error
+    counterRight = 0
+    counterWrong = 0
+    for i in range(len(circuitOutput)):
+        if circuitOutput[i] == ogOutput[i]:
+            counter += 1
+        else:
+            return i/len(circuitOutput)
+
 
 
 def table_column_get(tableInput_TableOut, circuitInput):

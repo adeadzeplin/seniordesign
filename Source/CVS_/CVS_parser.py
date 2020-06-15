@@ -99,6 +99,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
     tempTable = ttg.Truths(tableInput_IDs_formated).as_pandas()
     for i in tableInput_IDs_formated:
+        print("hello",i)
         tableInput_TableOut.append(tempTable[[i]])
 
     circuitInput = table_column_get(tableInput_TableOut, circuitInput)
@@ -232,10 +233,10 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
                 if n.outputs[0]._ID == m:
                     # print(n.outputs[0]._ID, m)
                     # print(i.inputs[0]._ID, i.outputs)
-                    i.outputs = n.tableOutput
-                    print(i.outputs)
+                    i.tableOutput = n.tableOutput
+                    print(i.tableOutput)
 
-        circuitOutput.append(i.outputs)
+        circuitOutput.append(i.tableOutput)
         mated_to_list = []
 
     print("\n")

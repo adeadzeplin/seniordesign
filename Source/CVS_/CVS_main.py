@@ -39,13 +39,13 @@ def CVS():
     #
     # ogCircuitOutput = [[0,1,1,0],[0,0,0,1]]
 
-
+  #  [0, 0, 0, 1, 0, 1, 1, 1]
 
 # full adder
     #xor 5
     CVS_circuit_creation.Output_to_Input(listOfGates, 0, 5)
     CVS_circuit_creation.Output_to_Input(listOfGates, 1, 5)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 5, 18)
+    CVS_circuit_creation.Output_to_Input(listOfGates, 5, 8)
 
     #and 6
     CVS_circuit_creation.Output_to_Input(listOfGates, 0, 6)
@@ -67,7 +67,7 @@ def CVS():
     CVS_circuit_creation.Output_to_Input(listOfGates, 6, 9)
     CVS_circuit_creation.Output_to_Input(listOfGates, 9, 4)
 
-    ogCircuitOutput = [[0, 1, 1, 0, 1, 0, 0, 1], [0, 0, 0, 1, 0, 1, 1, 1]]
+    ogCircuitOutput = [[0, 1, 1, 0, 1, 0, 0, 1],[]]
 
     #intial circuit connection check
     Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(listOfGates)
