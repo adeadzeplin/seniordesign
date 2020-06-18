@@ -10,11 +10,10 @@ class Simulation:
         self.population = []
         self.max_generations = g
         self.num_circuit_inputs = 2
-        self.num_circuit_outputs = 2
         self.rows = r
         self.columns = c
         self.num_gates = self.rows * self.columns
-        self.circuit_size = (self.num_gates * 4) + self.num_circuit_outputs
+        self.circuit_size = (self.num_gates * 4) + 2
         self.newpop = []
 
     def create_population(self):
@@ -39,6 +38,5 @@ class Simulation:
             index = np.random.randint(0, self.pop_size)
             partner = self.population[index]
             val = np.random.randint(0, 8)
-            if val < partner.fitness * 8:
+            if val < partner.fitness:
                 return partner
-

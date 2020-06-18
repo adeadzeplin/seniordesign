@@ -7,6 +7,19 @@ class ConnectorType(enum.IntEnum):
     OUTPUT = 1
 
 
+class GateType(enum.IntEnum):     #no enum here since i need the numbers, not GateType.Type: # as a return
+    # in & outs
+    circuitInput = 0
+    circuitOutput = 1
+    # gates
+    AND = 2
+    OR = 3
+    NOT = 4
+    NAND = 5
+    NOR = 6
+    XOR = 7
+
+
 class Connector:
     id = 0
 
@@ -28,13 +41,12 @@ class Connector:
 class Gate:
     gate_id_counter = 0
 
-    def __init__(self, type=None , inputNum=2, outputNum=1):
-
+    def __init__(self, type=None, inputNum=2, outputNum=1):
+        if type == GateType.NOT:
+            inputNum = 1
         self.gate_id = Gate.gate_id_counter
         Gate.gate_id_counter += 1
         self.type = type
-        if self.type == 4 or self.type == 8:
-            inputNum = 1
         self.inputs = []
         self.outputs = []
         self.makePorts(inputNum, outputNum)
@@ -52,7 +64,7 @@ class Gate:
             for x in i.mated_to:
                 for j in anothergate.inputs:
                     if x == j._ID:
-                        # print(f"We all ready got {j._ID} in da bag")
+                        #print(f"We all ready got {j._ID} in da bag")
                         return "gateConnect issue"
 
         if self != anothergate:

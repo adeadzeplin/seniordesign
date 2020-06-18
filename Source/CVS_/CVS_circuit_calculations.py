@@ -31,7 +31,7 @@ def circuit_connection_check(listofallgates):
     elif output_gate_counter == 0:
         return circuit_errors.ERROR_MISSING_OUTPUT
 
-    # checks is each gate has any inputs and outputs
+    # checks is each gate has any inputs and outputs        #can simplify
     for gate in listofallgates:
         for j in range(len(gate.outputs)):
             if gate.type == 0:
@@ -55,12 +55,12 @@ def circuit_connection_check(listofallgates):
 
 class circuit_errors(enum.Enum):
     # Circuit Error codes
-    ERROR_CIRCUIT_INPUT = 10
-    ERROR_CIRCUIT_OUTPUT = 20
-    ERROR_GATE = 30
-    ERROR_MISSING_INPUT = 40
-    ERROR_MISSING_LOGIC = 50
-    ERROR_MISSING_OUTPUT = 60
+    ERROR_CIRCUIT_INPUT = 10        #if input gate has no mated gates
+    ERROR_CIRCUIT_OUTPUT = 20       #if output gate has no mated gates
+    ERROR_GATE = 30                 #if gate doesnt have the right amount of mated inputs and outputs (1,2)
+    ERROR_MISSING_INPUT = 40        #there are no input gates in the cirucit
+    ERROR_MISSING_LOGIC = 50        #there are no gates in the cirucit
+    ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
@@ -69,21 +69,25 @@ def circuit_output_compare(circuitOutput, ogOutput):
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):
-            if len(circuitOutput[i]) != len(ogOutput[i]):
+            #sprint(ogOutput[i][j])
+            if len(circuitOutput[i]) != len(ogOutput[i]):   #if the output arrays are not the same size i.e [], just ignore
                 counterWrong += 1
             else:
-                if ogOutput[i][j] == circuitOutput[i][j]:
+                if ogOutput[i][j] == circuitOutput[i][j]:   #check if the values are the same between wanted output vs AI output
                     counterRight += 1
                 else:
                     counterWrong += 1
 
     return counterRight / (counterRight + counterWrong)
 
+# [0,0] take first values from each output column and compare first values in og circuit out
+# [0,1]
+
 
 def table_column_get(tableInput_TableOut, circuitInput):
     tableColumn = []
     for q in range(len(tableInput_TableOut)):
-        if len(tableInput_TableOut) == 1:
+        if len(tableInput_TableOut) == 1:       #one gate
             for k in range(1, len(tableInput_TableOut) + 2):
                 # print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
@@ -91,27 +95,28 @@ def table_column_get(tableInput_TableOut, circuitInput):
             tableColumn = []
             circuitInput.append(temp)
 
-        elif len(tableInput_TableOut) ** 2 <= 4:
-            for k in range(1, len(tableInput_TableOut) ** 2 + 1):
-                print(k,tableInput_TableOut[q][str(q)][k])
-                tableColumn.append(tableInput_TableOut[q][str(q)][k])
-            temp = tableColumn
-            tableColumn = []
-            circuitInput.append(temp)
-        else:
-            for k in range(1, len(tableInput_TableOut) ** 2):
+        elif 2**len(tableInput_TableOut) <= 4:
+            for k in range(1, 2**len(tableInput_TableOut) + 2):
                 # print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
             temp = tableColumn
             tableColumn = []
             circuitInput.append(temp)
-    print(circuitInput)
+        else:
+            for k in range(1, 2**len(tableInput_TableOut)+1):
+                # print(k,tableInput_TableOut[q][str(q)][k])
+                tableColumn.append(tableInput_TableOut[q][str(q)][k])
+            temp = tableColumn
+            tableColumn = []
+            circuitInput.append(temp)
+    #print(circuitInput)
     return circuitInput
 
 
 def table_output(a, b, gatetype):
-    print('DATA', a,b,gatetype)
+    # print(a,b,gatetype)
     output = []
+
     if gatetype == 2:
         for i in range(len(a)):
             if a[i] == 1 and b[i] == 1:
@@ -126,7 +131,8 @@ def table_output(a, b, gatetype):
                 output.append(0)
     elif gatetype == 4:
         for i in range(len(a)):
-            output.append(not a[i])
+            tempnot = (not a[i])
+            output.append(tempnot.real)
     elif gatetype == 5:
         for i in range(len(a)):
             if a[i] == 1 and b[i] == 1:
@@ -145,10 +151,9 @@ def table_output(a, b, gatetype):
                 output.append(0)
             else:
                 output.append(1)
-    elif gatetype == 8:
-        for i in range(len(a)):
-            output.append(a[i])
+
     return output
+
 
     # AND = 2
     # OR = 3
@@ -156,4 +161,3 @@ def table_output(a, b, gatetype):
     # NAND = 5
     # NOR = 6
     # XOR = 7
-    # NOGATE
