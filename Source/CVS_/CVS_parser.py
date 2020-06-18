@@ -1,5 +1,5 @@
 # from CVS_.CVS_circuit_creation import gateNumtoName
-# from CVS_.CVS_constants import INPUTSTOTAL
+from CVS_.CVS_constants import INPUTSTOTAL
 from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare
 import ttg
 
@@ -93,134 +93,165 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         for j in range(len(i.outputs)):
             print(i.type, i.outputs[j].mated_to, i.gate_id)
             tableInput_IDs.append(i.gate_id)
-            whatInputsConnectedTo.append(i.outputs[j].mated_to)
 
-
+    #generate inital input states
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
     tempTable = ttg.Truths(tableInput_IDs_formated).as_pandas()
     for i in tableInput_IDs_formated:
         tableInput_TableOut.append(tempTable[[i]])
-
     circuitInput = table_column_get(tableInput_TableOut, circuitInput)
 
+    #pass generate table inpputs, into input gate outputs
+    for i in CrawlerOut[1]:
+        i.tableOutput = circuitInput[i.gate_id]
 
     print("\n")
 
     for i in CrawlerOut[2]:  # gates----------------------------------------------------------------
+        if i.gate_id:
+            print(i.gate_id, i.type, i.inputs[0]._ID, i.outputs[0]._ID)
+        else:
+            print(i.gate_id, i.type, i.inputs[0]._ID, i.inputs[1]._ID, i.outputs[0]._ID)
 
-        print(i.gate_id, i.type, i.inputs[0]._ID, i.inputs[1]._ID, i.outputs[0]._ID)
-        whatGatesConnectedTo.append(i.inputs)
-        if i.type == 4: # check if NOT gate
-            formatted_gateOutputExpression = []
-            mated_to_list.append(i.inputs[0].mated_to)
-            normalized_mated_list = []
-            for g in mated_to_list:             #loop that reformats t array
-                normalized_mated_list.append(g[0])
+        connected_gate_output =[]
+        # extract outputs from connected gates
+        input_len = len(i.inputs)
+        for num in range(input_len):
+            #print(i.inputs[num].mated_to[0])
+            connector_id = i.inputs[num].mated_to[0]
+            if connector_id < INPUTSTOTAL:     # if gate is connected to only input gates
+                #print(CrawlerOut[1][connector_id].tableOutput)
+                connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
+            else:
+                for gate in CrawlerOut[2]:
+                    #print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
+                    if gate.outputs[0]._ID == connector_id:
+                        #print(gate.tableOutput)
+                        connected_gate_output.append((gate.tableOutput))
+        if i.type  == 4 :
+            i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+        else:
+            i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
 
-            gateOutputExpression = "%s %s" % (convertNumtoWord(i.type), normalized_mated_list[0])
-            print(gateOutputExpression)
+        print(i.tableOutput)
 
-            formatted_gateOutputExpression.append(gateOutputExpression)
-            formatted_gateOutputExpression = (list(map(str, list(set(formatted_gateOutputExpression)))))
-            gateOutput_both = ttg.Truths(tableInput_IDs_formated, formatted_gateOutputExpression).as_pandas()
-            #print(gateOutput_both)
-            gateOutputExpression = gateOutput_both[[gateOutputExpression]]
-            tablecolumn = []
-            # print(gateOutputExpression)
-            for u in range(1, len(circuitInput[0]) + 1):
-                tablecolumn.append(gateOutputExpression[formatted_gateOutputExpression[0]][u])
-            print(tablecolumn)
 
-            i.tableOutput = tablecolumn
+        # if i.type == 4: # check if NOT gate
+        #     #-------------NOT gate if right after input-----------------------
+        #     formatted_gateOutputExpression = []
+        #     mated_to_list.append(i.inputs[0].mated_to)
+        #     normalized_mated_list = []
+        #     for g in mated_to_list:             #loop that reformats t array from [[]] to []
+        #         normalized_mated_list.append(g[0])
+        #
+        #     gateOutputExpression = "%s %s" % (convertNumtoWord(i.type), normalized_mated_list[0])
+        #     print(gateOutputExpression)
+        #
+        #     formatted_gateOutputExpression.append(gateOutputExpression)
+        #     formatted_gateOutputExpression = (list(map(str, list(set(formatted_gateOutputExpression)))))
+        #     gateOutput_both = ttg.Truths(tableInput_IDs_formated, formatted_gateOutputExpression).as_pandas()
+        #     #print(gateOutput_both)
+        #     gateOutputExpression = gateOutput_both[[gateOutputExpression]]
+        #     tablecolumn = []
+        #     # print(gateOutputExpression)
+        #     for u in range(1, len(circuitInput[0]) + 1):
+        #         tablecolumn.append(gateOutputExpression[formatted_gateOutputExpression[0]][u])
+        #     print(tablecolumn)
+        #
+        #     i.tableOutput = tablecolumn
 
-        else:       #other gate types
-            # print(i.gate_id)
+        # else:       #other gate types
 
-            for j in range(len(i.inputs)):
-                mated_to_list.append(i.inputs[j].mated_to)
 
-            normalized_mated_list = []
 
-            for g in mated_to_list:               # resets array in array -> just one array
-                normalized_mated_list.append(g[0])
+            # print(table_output(connected_gate_output[0],connected_gate_output[1],i.type))
+            # i.tableOutput
 
-            for c in normalized_mated_list:
-                if c in tableInput_IDs:
-                    matches.append(c)
 
-            formatted_gateOutputExpression = []
 
-            if len(matches) == 2:  # both inputs are from circuit inputs
-                # print('both')
-                gateOutputExpression = "%s %s %s" % (matches[0], convertNumtoWord(i.type), matches[1])
-                print(gateOutputExpression)
-                formatted_gateOutputExpression.append(gateOutputExpression)
-                formatted_gateOutputExpression = (list(map(str, list(set(formatted_gateOutputExpression)))))
-                gateOutput_both = ttg.Truths(tableInput_IDs_formated, formatted_gateOutputExpression).as_pandas()
-
-                # get column with expression
-                gateOutputExpression = gateOutput_both[[gateOutputExpression]]
-                tablecolumn = []
-                for u in range(1, len(circuitInput[0]) + 1):
-                    tablecolumn.append(gateOutputExpression[formatted_gateOutputExpression[0]][u])
-                print(tablecolumn)
-                # listOFGateOutputs.append(listOFGateOutputs)
-                i.tableOutput = tablecolumn
-                # print(i.type,i.tableOutput)
-
-            # else if only one input is circuit input, and other is gate output
-            elif len(matches) == 1:
-                # print('one')
-                circuitInput_temp = 0
-                for v in matches:  # input to circuit
-                    for b in normalized_mated_list:  # output of gate
-                        try:
-                            if v != b:
-                                gateOutputExpression = "%s %s %s" % (v, convertNumtoWord(i.type), b)
-                                circuitInput_temp = v
-                                print(gateOutputExpression)
-                        except:
-                            print("fial")
-
-                for n in CrawlerOut[2]:             # looking for check gate output
-                    for m in normalized_mated_list:
-                        if n.outputs[0]._ID == m:
-                            # take gates output
-                            # print(n.type, n.tableOutput) #output of gate
-                            # print(circuitInput[circuitInput_temp])
-                            a = n.tableOutput
-                            b = circuitInput[circuitInput_temp]
-                            i.tableOutput = table_output(a, b, i.type)
-                            print(i.tableOutput)
-
-            # else if BOTH inputs are gate outputs
-            elif len(matches) == 0:
-                temp_outputs = []
-                for n in CrawlerOut[2]:  # looking for check gate output
-                    for m in normalized_mated_list:
-                        if n.outputs[0]._ID == m:
-                            # print( n.outputs[0]._ID, m)
-                            temp_outputs.append(n.tableOutput)
-                a = temp_outputs[0]
-                b = temp_outputs[1]
-                i.tableOutput = table_output(a, b, i.type)
-                print(i.tableOutput)
-
-            # clears arrays for next gate
-            matches = []
-            mated_to_list = []
+            # # print(i.gate_id)
+            #
+            # for j in range(len(i.inputs)):
+            #     mated_to_list.append(i.inputs[j].mated_to)
+            #
+            # normalized_mated_list = []
+            #
+            # for g in mated_to_list:               # resets array in array -> just one array
+            #     normalized_mated_list.append(g[0])
+            #
+            # for c in normalized_mated_list:
+            #     if c in tableInput_IDs:
+            #         matches.append(c)
+            # print("matches", matches)
+            # formatted_gateOutputExpression = []
+            #
+            # if len(matches) == 2:  # both inputs are from circuit inputs
+            #     # print('both')
+            #     gateOutputExpression = "%s %s %s" % (matches[0], convertNumtoWord(i.type), matches[1])
+            #     print(gateOutputExpression)
+            #     formatted_gateOutputExpression.append(gateOutputExpression)
+            #     formatted_gateOutputExpression = (list(map(str, list(set(formatted_gateOutputExpression)))))
+            #     gateOutput_both = ttg.Truths(tableInput_IDs_formated, formatted_gateOutputExpression).as_pandas()
+            #     #print(gateOutput_both)
+            #
+            #     # get column with expression
+            #     gateOutputExpression = gateOutput_both[[gateOutputExpression]]
+            #     tablecolumn = []
+            #     for u in range(1, len(circuitInput[0]) + 1):
+            #         tablecolumn.append(gateOutputExpression[formatted_gateOutputExpression[0]][u])
+            #     print(tablecolumn)
+            #     # listOFGateOutputs.append(listOFGateOutputs)
+            #     i.tableOutput = tablecolumn
+            #     # print(i.type,i.tableOutput)
+            #
+            # # else if only one input is circuit input, and other is gate output
+            # elif len(matches) == 1:
+            #     # print('one')
+            #     circuitInput_temp = 0
+            #     for v in matches:  # input to circuit
+            #         for b in normalized_mated_list:  # output of gate
+            #             try:
+            #                 if v != b:
+            #                     gateOutputExpression = "%s %s %s" % (v, convertNumtoWord(i.type), b)
+            #                     circuitInput_temp = v
+            #                     print(gateOutputExpression)
+            #             except:
+            #                 print("fial")
+            #
+            #     for n in CrawlerOut[2]:             # looking for check gate output
+            #         for m in normalized_mated_list:
+            #             if n.outputs[0]._ID == m:
+            #                 # take gates output
+            #                 # print(n.type, n.tableOutput) #output of gate
+            #                 # print(circuitInput[circuitInput_temp])
+            #                 a = n.tableOutput
+            #                 b = circuitInput[circuitInput_temp]
+            #                 i.tableOutput = table_output(a, b, i.type)
+            #                 print(i.tableOutput)
+            #
+            # # else if BOTH inputs are gate outputs
+            # elif len(matches) == 0:
+            #     temp_outputs = []
+            #     for n in CrawlerOut[2]:  # looking for check gate output
+            #         for m in normalized_mated_list:
+            #             if n.outputs[0]._ID == m:
+            #                 # print( n.outputs[0]._ID, m)
+            #                 temp_outputs.append(n.tableOutput)
+            #     a = temp_outputs[0]
+            #     b = temp_outputs[1]
+            #     i.tableOutput = table_output(a, b, i.type)
+            #     print(i.tableOutput)
+            #
+            # # clears arrays for next gate
+            # matches = []
+            # mated_to_list = []
 
     print("\n")
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
-        temp_outputs = []
-        for j in range(len(i.inputs)):
-            print(i.gate_id, i.type, i.inputs[j].mated_to)
-            whatOutputsConnectedTo.append(i.inputs[j].mated_to)
         for j in range(len(i.inputs)):
             # print(i.inputs[j].mated_to)
             mated_to_list.append(i.inputs[j].mated_to)
-
         normalized_mated_list = []
         # print(mated_to_list)
         for g in mated_to_list:
@@ -232,10 +263,10 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
                 if n.outputs[0]._ID == m:
                     # print(n.outputs[0]._ID, m)
                     # print(i.inputs[0]._ID, i.outputs)
-                    i.outputs = n.tableOutput
-                    print(i.outputs)
+                    i.tableOutput = n.tableOutput
+                    print(i.tableOutput)
 
-        circuitOutput.append(i.outputs)
+        circuitOutput.append(i.tableOutput)
         mated_to_list = []
 
     print("\n")
