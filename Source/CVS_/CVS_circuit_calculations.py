@@ -66,18 +66,28 @@ class circuit_errors(enum.Enum):
 def circuit_output_compare(circuitOutput, ogOutput):
     counterRight = 0
     counterWrong = 0
-    for i in range(len(circuitOutput)):
-        if circuitOutput[i] == ogOutput[i]:
-            counter += 1
-        else:
-            return i/len(circuitOutput)
 
+    for i in range(len(ogOutput)):
+        for j in range(len(ogOutput[i])):
+            #sprint(ogOutput[i][j])
+            if len(circuitOutput[i]) != len(ogOutput[i]):   #if the output arrays are not the same size i.e [], just ignore
+                counterWrong += 1
+            else:
+                if ogOutput[i][j] == circuitOutput[i][j]:   #check if the values are the same between wanted output vs AI output
+                    counterRight += 1
+                else:
+                    counterWrong += 1
+
+    return counterRight / (counterRight + counterWrong)
+
+# [0,0] take first values from each output column and compare first values in og circuit out
+# [0,1]
 
 
 def table_column_get(tableInput_TableOut, circuitInput):
     tableColumn = []
     for q in range(len(tableInput_TableOut)):
-        if len(tableInput_TableOut) == 1:
+        if len(tableInput_TableOut) == 1:       #one gate
             for k in range(1, len(tableInput_TableOut) + 2):
                 # print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
@@ -85,21 +95,21 @@ def table_column_get(tableInput_TableOut, circuitInput):
             tableColumn = []
             circuitInput.append(temp)
 
-        elif len(tableInput_TableOut) ** 2 <= 4:
-            for k in range(1, len(tableInput_TableOut) ** 2 + 1):
+        elif 2**len(tableInput_TableOut) <= 4:
+            for k in range(1, 2**len(tableInput_TableOut) + 2):
                 # print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
             temp = tableColumn
             tableColumn = []
             circuitInput.append(temp)
         else:
-            for k in range(1, len(tableInput_TableOut) ** 2):
+            for k in range(1, 2**len(tableInput_TableOut)+1):
                 # print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
             temp = tableColumn
             tableColumn = []
             circuitInput.append(temp)
-    print(circuitInput)
+    #print(circuitInput)
     return circuitInput
 
 
@@ -121,7 +131,8 @@ def table_output(a, b, gatetype):
                 output.append(0)
     elif gatetype == 4:
         for i in range(len(a)):
-            output.append(not a[i])
+            tempnot = (not a[i])
+            output.append(tempnot.real)
     elif gatetype == 5:
         for i in range(len(a)):
             if a[i] == 1 and b[i] == 1:
@@ -142,6 +153,7 @@ def table_output(a, b, gatetype):
                 output.append(1)
 
     return output
+
 
     # AND = 2
     # OR = 3
