@@ -14,27 +14,12 @@ class Circuit:
         self.truth_table = np.zeros((4, 4), dtype=int)
         self.gates = []
         self.connections = []
+
     def gate_selector(self, gate_id):
         if gate_id[1] == 0:
             gt = np.random.randint(2, 8)
         else:
-            gt = np.random.randint(2, 9)
-        #if gt == 1:
-         #   gt = 'AND'
-        #elif gt == 2:
-         #   gt = 'OR'
-        #elif gt == 3:
-         #   gt = 'NOT'
-        #elif gt == 4:
-        #    gt = 'NOR'
-        #elif gt == 5:
-        #    gt = 'NAND'
-        #elif gt == 6:
-        #    gt = 'XOR'
-        #elif gt == 7:
-        #    gt = 'XNOR'
-        #elif gt == 8:
-        #   gt = 'NOGATE'
+            gt = np.random.randint(2, 8)
         return gt
 
     def input_selector(self, gate_id, gate_output):
@@ -85,8 +70,8 @@ class Circuit:
             if gate_id[0] == rows:
                 gate_id[1] += 1
                 gate_id[0] = 0
-        self.connections.append([gate_output - 1, gate_output])
-        self.connections.append([gate_output - 2, gate_output + 1])
+        self.connections.append([gate_output - 2, gate_output])
+        self.connections.append([gate_output - 1, gate_output + 1])
         self.genes[self.num_gates * 4] = gate_output
         self.genes[(self.num_gates * 4) + 1] = gate_output + 1
 
@@ -135,21 +120,19 @@ class Circuit:
                 inp2 = out[inp2]
             gate_type = self.genes[i + 2]
             otp = self.genes[i + 3]
-            if gate_type == "AND":
+            if gate_type == 2:
                 out[otp] = luca_logic.logic_and(inp1, inp2)
-            elif gate_type == "OR":
+            elif gate_type == 3:
                 out[otp] = luca_logic.logic_or(inp1, inp2)
-            elif gate_type == "NOT":
+            elif gate_type == 4:
                 out[otp] = luca_logic.logic_not(inp1)
-            elif gate_type == "NOR":
+            elif gate_type == 6:
                 out[otp] = luca_logic.logic_nor(inp1, inp2)
-            elif gate_type == "NAND":
+            elif gate_type == 5:
                 out[otp] = luca_logic.logic_nand(inp1, inp2)
-            elif gate_type == "XOR":
+            elif gate_type == 7:
                 out[otp] = luca_logic.logic_xor(inp1, inp2)
-            elif gate_type == "XNOR":
-                out[otp] = luca_logic.logic_xnor(inp1, inp2)
-            elif gate_type == "NOGATE":
+            elif gate_type == 8:
                 out[otp] = inp1
         return out
 

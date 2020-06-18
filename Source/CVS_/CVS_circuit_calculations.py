@@ -64,16 +64,20 @@ class circuit_errors(enum.Enum):
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
-    if circuitOutput == ogOutput:
-        return 100
-    else:
-        # see how much is correct
-        a = np.array(circuitOutput)
-        b = np.array(ogOutput)
-        print("A", a)
-        print("B", b)
-        error = np.mean(a != b)
-        return error
+    counterRight = 0
+    counterWrong = 0
+
+    for i in range(len(ogOutput)):
+        for j in range(len(ogOutput[i])):
+            if len(circuitOutput[i]) != len(ogOutput[i]):
+                counterWrong += 1
+            else:
+                if ogOutput[i][j] == circuitOutput[i][j]:
+                    counterRight += 1
+                else:
+                    counterWrong += 1
+
+    return counterRight / (counterRight + counterWrong)
 
 
 def table_column_get(tableInput_TableOut, circuitInput):
@@ -106,7 +110,7 @@ def table_column_get(tableInput_TableOut, circuitInput):
 
 
 def table_output(a, b, gatetype):
-    print(a,b,gatetype)
+    print('DATA', a,b,gatetype)
     output = []
     if gatetype == 2:
         for i in range(len(a)):

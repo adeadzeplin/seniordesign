@@ -206,8 +206,9 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
                             temp_outputs.append(n.tableOutput)
                 a = temp_outputs[0]
                 b = temp_outputs[1]
+                print('AB', a, b)
                 i.tableOutput = table_output(a, b, i.type)
-                print(i.tableOutput)
+                print('OUTPUTS', i.tableOutput)
 
             # clears arrays for next gate
             matches = []
