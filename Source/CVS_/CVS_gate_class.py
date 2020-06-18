@@ -43,7 +43,7 @@ class Gate:
 
     def __init__(self, type=None, inputNum=2, outputNum=1):
         if type == GateType.NOT:
-            self.inputNum = 1
+            inputNum = 1
         self.gate_id = Gate.gate_id_counter
         Gate.gate_id_counter += 1
         self.type = type
@@ -64,7 +64,7 @@ class Gate:
             for x in i.mated_to:
                 for j in anothergate.inputs:
                     if x == j._ID:
-                        # print(f"We all ready got {j._ID} in da bag")
+                        #print(f"We all ready got {j._ID} in da bag")
                         return "gateConnect issue"
 
         if self != anothergate:
