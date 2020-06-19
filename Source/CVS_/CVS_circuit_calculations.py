@@ -61,11 +61,24 @@ class circuit_errors(enum.Enum):
     ERROR_MISSING_INPUT = 40        #there are no input gates in the cirucit
     ERROR_MISSING_LOGIC = 50        #there are no gates in the cirucit
     ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
+    ERROR_GATE_MISSING_INPUTS = 70  #gate has no mated gates
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
     counterRight = 0
     counterWrong = 0
+    counterLen = 0
+    tempCircuitOutput = circuitOutput
+
+    for u in ogOutput:
+        counterLen += len(u)
+
+    for k in ogOutput:
+        for p in tempCircuitOutput:
+            if k == p :
+                counterRight += len(p)
+    if counterRight == counterLen :
+        return counterRight/counterLen
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):
