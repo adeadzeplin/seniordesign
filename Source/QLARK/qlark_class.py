@@ -130,7 +130,7 @@ class Qlark:
                     # self.environment.printout()
                     # self.environment.parseLogic()
                     # print(f"SUCCESS ON EPISODE: {episode}")
-                    if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
+                    if episode % 2000 == 0 :
                         print(f"THREAD: {self.thread_ID} SUCCESS ON EPISODE: {episode}")
                         # self.environment.printout()
                     # return

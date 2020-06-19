@@ -1,6 +1,7 @@
 import threading
 import pickle
 from QLARK.qlark_class import Qlark
+import numpy as np
 
 class QlarkThread(threading.Thread):
     threadIDcounter = 1
@@ -29,7 +30,7 @@ class QlarkThread(threading.Thread):
             print(f"Thread: {self.id} - Number of training sets remaining: {self.trainingsetnum-i}")
             Qlearningai.train()
             if Qlearningai.success_flag == True:
-                print(f"THREAD: {self.thread_ID} QLARK SUCCESSFULLY LEARNED on set: {i}")
+                print(f"THREAD: {self.id} QLARK SUCCESSFULLY LEARNED on set: {i}")
                 break
         # Qlearingai.runBest()
         return Qlearningai
@@ -62,6 +63,8 @@ def Needlethreading(thread_num,desired_truth,trainingsetnum):
             if thread.success_counter >= max_success:
                 max_success = thread.success_counter
                 thread_winner_index = i
+    if max_success == 0:
+        thread_winner_index = np.random.randint(len(thread_list))
     print(f"max success count: {max_success}")
     print(f"thread winner id: {thread_list[thread_winner_index].id}")
     best_qtable = thread_list[thread_winner_index].qtable
