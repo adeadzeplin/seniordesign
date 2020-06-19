@@ -22,7 +22,7 @@ class Qlark:
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
         self.QRANDOMINIT = -1  # The range of random starting values
-        self.EPSILONSTART = .7
+        self.EPSILONSTART = 1
         self.NUM_STEPS = 12# self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         print(self.NUM_STEPS)
         self.DESIREDLOGIC = desired_logic
@@ -132,11 +132,11 @@ class Qlark:
                 print(f"REMAINING EPISODES: {self.EPISODE_NUM - episode}")
                 self.saveq()
 
-            if self.epsilon < 0.0001:
-                self.epsilon = self.EPSILONSTART
-                break
-
-                print("Epsilon RESET")
+            # if self.epsilon < 0.0001:
+            #     self.epsilon = self.EPSILONSTART
+            #     break
+            #
+            #     print("Epsilon RESET")
             #     self.environment.printout()
 
 
