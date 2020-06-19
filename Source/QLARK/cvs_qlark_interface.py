@@ -81,7 +81,7 @@ class QlarkCircuitInterface():
         if self.circuitstatus == CircuitStatus.Broken:
             return AIRewards.CircuitBroken
         elif self.circuitstatus == CircuitStatus.Completed:
-            aireward_calc = self.circuitlogic * 100 - 100
+            aireward_calc = (self.circuitlogic * 100 - 100)*2
 
             return aireward_calc
 
@@ -99,7 +99,7 @@ class QlarkCircuitInterface():
         if circuit_completion_flag:
             self.circuitlogic = CVS_parser.runQParser(self.list_of_gates, self.DESIRED_LOGIC)
 
-            if self.circuitlogic == 100:
+            if self.circuitlogic == 1.0:
                 self.circuitstatus = CircuitStatus.Correct
 
             else:
@@ -119,20 +119,20 @@ class QlarkCircuitInterface():
             if val == 0:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
                 self.update_transistorcount(CVS_metrics.GateTransCost.AND)
-            elif val == 1:
-                # self.breakcircuit()
-                # return AIRewards.CircuitBroken
-                self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
-            elif val == 3:
-                self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
-            elif val == 4:
-                self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
-            elif val == 5:
-                self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.OR)
+            # elif val == 1:
+            #     # self.breakcircuit()
+            #     # return AIRewards.CircuitBroken
+            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
+            #     self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
+            # elif val == 3:
+            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
+            #     self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
+            # elif val == 4:
+            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
+            #     self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
+            # elif val == 5:
+            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
+            #     self.update_transistorcount(CVS_metrics.GateTransCost.OR)
             elif val == 6:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
                 self.update_transistorcount(CVS_metrics.GateTransCost.XOR)
@@ -195,12 +195,14 @@ class QlarkCircuitInterface():
         temp = []
         # temp.append(self.MAX_GATE_NUM)
         # temp.append(self.NUM_OF_GATE_TYPES)
-        temp.append(self.DESIRED_LOGIC)
+        # temp.append(self.DESIRED_LOGIC)
         # temp.append(self.TRANSISTOR_BUDGET)
+
+        for i in self.DESIRED_LOGIC:
+            for j in i:
+                temp.append(j)
         temp.append(self.ACTION_SPACE)
-        # for i in self.DESIRED_LOGIC:
-        #     temp.append(i)
-        temp.append(self.OPTIMIZEMETRIC)
+        # temp.append(self.OPTIMIZEMETRIC)
         # temp.append(self.transistor_count)
         # temp.append(len(self.list_of_gates))
 
@@ -220,6 +222,6 @@ class QlarkCircuitInterface():
                 for m in y.mated_to:
                     temp.append(m)
             # mini_index.append(tuple(temp))
-        state_id = '|'.join([str(x) for x in temp])
-
+        state_id = ''.join([str(x) for x in temp])
+        state_id = int(state_id)
         return state_id
