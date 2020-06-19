@@ -79,7 +79,7 @@ class Gate:
 
     def g_print(self):
         print(
-            f"\ngate_id: {self.gate_id},    type: {self.type},  numofinputs: {len(self.inputs)},    numofoutputs: {len(self.outputs)}")
+            f"\ngate_id: {self.gate_id},    type: {self.type.name},  numofinputs: {len(self.inputs)},    numofoutputs: {len(self.outputs)}")
         for i in self.inputs:
             i.c_print()
         for i in self.outputs:

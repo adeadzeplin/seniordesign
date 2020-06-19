@@ -96,8 +96,8 @@ def table_column_get(tableInput_TableOut, circuitInput):
             circuitInput.append(temp)
 
         elif 2**len(tableInput_TableOut) <= 4:
-            for k in range(1, 2**len(tableInput_TableOut) + 2):
-                # print(k,tableInput_TableOut[q][str(q)][k])
+            for k in range(1, 2**len(tableInput_TableOut) + 1):
+                #print(k,tableInput_TableOut[q][str(q)][k])
                 tableColumn.append(tableInput_TableOut[q][str(q)][k])
             temp = tableColumn
             tableColumn = []
