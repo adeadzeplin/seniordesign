@@ -115,10 +115,10 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
     # print("\n")
 
     for i in CrawlerOut[2]:  # gates----------------------------------------------------------------
-        if i.gate_id:
-            print(i.gate_id, i.type, i.inputs[0]._ID, i.outputs[0]._ID)
-        else:
-            print(i.gate_id, i.type, i.inputs[0]._ID, i.inputs[1]._ID, i.outputs[0]._ID)
+        # if i.gate_id:
+        #     print(i.gate_id, i.type, i.inputs[0]._ID, i.outputs[0]._ID)
+        # else:
+        #     print(i.gate_id, i.type, i.inputs[0]._ID, i.inputs[1]._ID, i.outputs[0]._ID)
 
         connected_gate_output =[]
         # extract outputs from connected gates
@@ -143,7 +143,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
             else:
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
 
-        print(i.tableOutput)
+        # print(i.tableOutput)
 
 
         # if i.type == 4: # check if NOT gate
