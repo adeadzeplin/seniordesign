@@ -81,15 +81,12 @@ class QlarkCircuitInterface():
         if self.circuitstatus == CircuitStatus.Broken:
             return AIRewards.CircuitBroken
         elif self.circuitstatus == CircuitStatus.Completed:
-
-            if self.circuitlogic == 1.0:
-                aireward_calc = -5
-            else:
-                aireward_calc = self.circuitlogic*10 - 10
+            aireward_calc = self.circuitlogic * 100 - 100
 
             return aireward_calc
+
         elif self.circuitstatus == CircuitStatus.Correct:
-            return AIRewards.CircuitBroken
+            return AIRewards.CircuitCorrect
         exit("INVALID SPECIAL REWARDVALUE")
 
     def getcircuitstatus(self):
@@ -122,20 +119,20 @@ class QlarkCircuitInterface():
             if val == 0:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
                 self.update_transistorcount(CVS_metrics.GateTransCost.AND)
-            # elif val == 1:
-            #     # self.breakcircuit()
-            #     # return AIRewards.CircuitBroken
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
-            # elif val == 3:
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
-            # elif val == 4:
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
-            # elif val == 5:
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.OR)
+            elif val == 1:
+                # self.breakcircuit()
+                # return AIRewards.CircuitBroken
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
+                self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
+            elif val == 3:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
+                self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
+            elif val == 4:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
+                self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
+            elif val == 5:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
+                self.update_transistorcount(CVS_metrics.GateTransCost.OR)
             elif val == 6:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
                 self.update_transistorcount(CVS_metrics.GateTransCost.XOR)

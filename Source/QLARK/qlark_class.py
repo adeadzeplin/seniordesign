@@ -17,12 +17,12 @@ def square(val):
 class Qlark:
     def __init__(self, desired_logic):
         # AI constants
-        self.EPISODE_NUM = 10000    # number of circuit Attempts
+        self.EPISODE_NUM = 100000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
         self.QRANDOMINIT = -1  # The range of random starting values
-        self.EPSILONSTART = .5
+        self.EPSILONSTART = 1
         self.NUM_STEPS = 12# self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         print(self.NUM_STEPS)
         self.DESIREDLOGIC = desired_logic
@@ -114,13 +114,13 @@ class Qlark:
 
                 if self.environment.circuitstatus == CircuitStatus.Correct:
                     print(f"SUCCESS ON EPISODE: {episode}")
-                    self.environment.printout()
-                    self.environment.parseLogic()
+                    # self.environment.printout()
+                    # self.environment.parseLogic()
                     # print(f"SUCCESS ON EPISODE: {episode}")
                     # if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
                     #     print(f"SUCCESS ON EPISODE: {episode}")
                     #     self.environment.printout()
-                    return
+                    # return
                     break
                 elif self.environment.circuitstatus != CircuitStatus.Valid:
                     break
@@ -132,8 +132,10 @@ class Qlark:
                 print(f"REMAINING EPISODES: {self.EPISODE_NUM - episode}")
                 self.saveq()
 
-            # if self.epsilon < 0.001:
+            # if self.epsilon < 0.0001:
             #     self.epsilon = self.EPSILONSTART
+            #     break
+            #
             #     print("Epsilon RESET")
             #     self.environment.printout()
 
