@@ -15,23 +15,25 @@ def square(val):
 
 
 class Qlark:
-    def __init__(self, desired_logic):
+    def __init__(self,desiredlogic,thread_ID):
+        self.thread_ID = thread_ID
         # AI constants
         self.EPISODE_NUM = 10000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
         self.QRANDOMINIT = -1  # The range of random starting values
-        self.EPSILONSTART = .5
+        self.EPSILONSTART = .7
         self.NUM_STEPS = 12# self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
-        print(self.NUM_STEPS)
-        self.DESIREDLOGIC = desired_logic
+        # print(self.NUM_STEPS)
+        self.DESIREDLOGIC = desiredlogic
 
 
         # AI Variables
         self.epsilon = self.EPSILONSTART  # probability of randomness. Goes down over time
         self.episode_rewards = []  # list of rewards for every episode
-
+        self.success_flag = False
+        self.success_counter = 0
         try:
             with open("qtable.pickle", "rb") as f:
                 self.q_table = pickle.load(f)
@@ -53,15 +55,24 @@ class Qlark:
             reward = self.environment.attempt_action(action)
             # get future q
             new_index_q = self.environment.get_state()
-            if self.environment.getcircuitstatus() != CircuitStatus.Valid:
-                self.environment.printout()
+            # Check If environment is in end state
+            if step == self.NUM_STEPS - 1:
+                print("runBest Failed")
+                self.environment.breakcircuit()
+
+            if self.environment.getcircuitstatus() == CircuitStatus.Valid:
+                pass
+            else:
+                new_q = self.environment.getspecialreward()
                 self.environment.parseLogic()
                 break
 
+    # def seetruth(self,desiredCircuit):
+    #     self.DESIREDLOGIC = desiredCircuit
 
     # Train The AI on an Environment
     def train(self):
-
+        self.success_flag = False
         # Each episode is an attempt from nothing
         for episode in range(self.EPISODE_NUM):
 
@@ -113,14 +124,16 @@ class Qlark:
                 episode_reward += new_q
 
                 if self.environment.circuitstatus == CircuitStatus.Correct:
-                    print(f"SUCCESS ON EPISODE: {episode}")
-                    self.environment.printout()
-                    self.environment.parseLogic()
                     # print(f"SUCCESS ON EPISODE: {episode}")
-                    # if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
-                    #     print(f"SUCCESS ON EPISODE: {episode}")
-                    #     self.environment.printout()
-                    return
+                    self.success_flag = True
+                    self.success_counter += 1
+                    # self.environment.printout()
+                    # self.environment.parseLogic()
+                    # print(f"SUCCESS ON EPISODE: {episode}")
+                    if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
+                        print(f"THREAD: {self.thread_ID} SUCCESS ON EPISODE: {episode}")
+                        # self.environment.printout()
+                    # return
                     break
                 elif self.environment.circuitstatus != CircuitStatus.Valid:
                     break
@@ -128,28 +141,30 @@ class Qlark:
             self.episode_rewards.append(episode_reward)
             if episode < self.EPISODE_NUM:
                 self.epsilon *= self.EPS_DECAY
-            if episode % 3000 == 0:
-                print(f"REMAINING EPISODES: {self.EPISODE_NUM - episode}")
-                self.saveq()
+            if episode % 5000 == 0:
+                print(f"THREAD: {self.thread_ID} REMAINING EPISODES: {self.EPISODE_NUM - episode}")
+                # self.saveq()
 
-            # if self.epsilon < 0.001:
+            if self.epsilon < 0.0001:
             #     self.epsilon = self.EPSILONSTART
-            #     print("Epsilon RESET")
-            #     self.environment.printout()
+                print(f"THREAD: {self.thread_ID} Cutting Off Training Set")
+                break
 
-
-        self.saveq()
-        self.environment.printout()
-        self.environment.parseLogic()
-
-        self.showaiadata()
+        # self.saveq()
+        # self.environment.printout()
+        # self.environment.parseLogic()
+        #
+        # self.showaiadata()
 
     def saveq(self):
-        print("\nSAVING Q-table")
-        with open("qtable.pickle", "wb") as f:  # every once in a while autosave just in case
+        # print("\nSAVING Q-table")
+        pathname = f"qtable_thread{self.thread_ID}.pickle"
+        with open(pathname, "wb") as f:  # every once in a while autosave just in case
             pickle.dump(self.q_table, f)
-        print("SAVING finished")
+        # print("SAVING finished")
 
+
+        # print("SAVING finished")
         # with open(f"qtable-{int(time.time())}.pickle", "wb") as f:
         #     pickle.dump(self.q_table, f)
         # with open("qtable_backup.pickle", "wb") as f:
