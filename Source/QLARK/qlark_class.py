@@ -18,7 +18,7 @@ class Qlark:
     def __init__(self,desiredlogic,thread_ID):
         self.thread_ID = thread_ID
         # AI constants
-        self.EPISODE_NUM = 10000    # number of circuit Attempts
+        self.EPISODE_NUM = 5000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
@@ -130,7 +130,7 @@ class Qlark:
                     # self.environment.printout()
                     # self.environment.parseLogic()
                     # print(f"SUCCESS ON EPISODE: {episode}")
-                    if episode % 10000 == 0 or episode > self.EPISODE_NUM*.90:
+                    if episode % 5000 == 0 :
                         print(f"THREAD: {self.thread_ID} SUCCESS ON EPISODE: {episode}")
                         # self.environment.printout()
                     # return
@@ -170,7 +170,7 @@ class Qlark:
         # with open("qtable_backup.pickle", "wb") as f:
         #     pickle.dump(self.q_table, f)
 
-    def showaiadata(self):
+    def showaidata(self):
 
         GRAPH_GRANULARITY = 1000
         moving_avg = np.convolve(self.episode_rewards, np.ones((GRAPH_GRANULARITY,)) / GRAPH_GRANULARITY, mode='valid')
