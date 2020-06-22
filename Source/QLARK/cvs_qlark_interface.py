@@ -57,7 +57,7 @@ class QlarkCircuitInterface():
         Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
 
         if Circuit_Errors == None:
-            CVS_parser.runParser(self.list_of_gates, self.DESIRED_LOGIC )
+            CVS_parser.runParser(self.list_of_gates, self.DESIRED_LOGIC)
         else:
 
              print(Circuit_Errors)
