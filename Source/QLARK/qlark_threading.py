@@ -76,8 +76,8 @@ def Needlethreading(thread_num,desired_truth,trainingsetnum):
 
 def RunBestAI(desired_truth):
     BestAI = Qlark(desired_truth,"BESTPOSSIBLE")
-    BestAI.EPSILONSTART = 0
-    BestAI.EPISODE_NUM = 1
+    BestAI.EPSILONSTART = .25
+    BestAI.showcase_flag = True
     BestAI.train()
     BestAI.environment.parseLogic()
 
