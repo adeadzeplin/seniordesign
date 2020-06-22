@@ -18,10 +18,10 @@ class QlarkThread(threading.Thread):
 
     def run(self):
         print(f"Starting Thread : {self.id}")
-        Q_AI = self.TrainQlark()
-        self.qtable = Q_AI.q_table
-        self.success_flag = Q_AI.success_flag
-        self.success_counter = Q_AI.success_counter
+        self.Q_AI = self.TrainQlark()
+        self.qtable = self.Q_AI.q_table
+        self.success_flag = self.Q_AI.success_flag
+        self.success_counter = self.Q_AI.success_counter
         print(f"Exiting Thread: {self.id}")
 
     def TrainQlark(self):
@@ -71,7 +71,15 @@ def Needlethreading(thread_num,desired_truth,trainingsetnum):
 
 
     saveqtable(best_qtable)
-    BestAI = Qlark(desired_truth,99)
-    BestAI.runBest()
+    RunBestAI(desired_truth)
+    thread_list[thread_winner_index].Q_AI.showaidata()
+
+def RunBestAI(desired_truth):
+    BestAI = Qlark(desired_truth,"BESTPOSSIBLE")
+    BestAI.EPSILONSTART = 0
+    BestAI.EPISODE_NUM = 1
+    BestAI.train()
+    BestAI.environment.parseLogic()
+
 
 
