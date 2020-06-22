@@ -9,7 +9,7 @@ def CVS():
     CVS_circuit_creation.create_circuit_outputs(listOfGates)
 
     # make XOR gate with A B inputs
-    # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.XOR))
+    listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.XOR))
     # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.AND))
     # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.AND))
     # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.XOR))
@@ -18,7 +18,7 @@ def CVS():
     # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.NOT))
     # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.NOT))
 
-    listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.AND,4))
+    # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.AND,4))
 
 
     # connect gates
@@ -35,28 +35,30 @@ def CVS():
     # ogCircuitOutput = [[1,0]]
 
     #4 input gate
-    CVS_circuit_creation.Output_to_Input(listOfGates, 0, 5)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 1, 5)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 2, 5)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 3, 5)
-    CVS_circuit_creation.Output_to_Input(listOfGates, 5, 4)
-
-    ogCircuitOutput = [[0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1]]
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 0, 5)
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 1, 5)
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 2, 5)
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 3, 5)
+    # CVS_circuit_creation.Output_to_Input(listOfGates, 5, 4)
+    #
+    # ogCircuitOutput = [[0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1]]
 
 
 
 
 # half adder
     #xor 4
-    # CVS_circuit_creation.Output_to_Input(listOfGates, 0, 4)
-    # CVS_circuit_creation.Output_to_Input(listOfGates, 1, 4)
-    # CVS_circuit_creation.Output_to_Input(listOfGates, 4, 2)
-    # #and 5
+    CVS_circuit_creation.Output_to_Input(listOfGates, 0, 4)
+    CVS_circuit_creation.Output_to_Input(listOfGates, 1, 4)
+    CVS_circuit_creation.Output_to_Input(listOfGates, 4, 3)
+    CVS_circuit_creation.Output_to_Input(listOfGates, 4, 2)
+
+    #and 5
     # CVS_circuit_creation.Output_to_Input(listOfGates, 0, 5)
     # CVS_circuit_creation.Output_to_Input(listOfGates, 1, 5)
     # CVS_circuit_creation.Output_to_Input(listOfGates, 5, 3)
-    #
-    # ogCircuitOutput = [[0,1,1,0],[0,0,0,1]]
+
+    ogCircuitOutput = [[0,1,1,0],[0,0,0,1]]
 
   #  [0, 0, 0, 1, 0, 1, 1, 1]
 
