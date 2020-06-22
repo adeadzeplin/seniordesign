@@ -69,16 +69,19 @@ def circuit_output_compare(circuitOutput, ogOutput):
     counterWrong = 0
     counterLen = 0
     tempCircuitOutput = circuitOutput
+    same_counter = 0
 
-    for u in ogOutput:
-        counterLen += len(u)
-
-    for k in ogOutput:
-        for p in tempCircuitOutput:
-            if k == p :
-                counterRight += len(p)
-    if counterRight == counterLen :
-        return counterRight/counterLen
+    # for u in ogOutput:
+    #     counterLen += len(u)
+    #
+    # for k in ogOutput:
+    #     for p in tempCircuitOutput:
+    #         if k == p:
+    #             counterRight += len(p)
+    #             same_counter +=1
+    #             #tempCircuitOutput.pop((tempCircuitOutput.index(p)))
+    # if counterRight == counterLen :
+    #     return counterRight/counterLen
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):

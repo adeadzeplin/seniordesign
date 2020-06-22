@@ -4,8 +4,8 @@ from CVS_.CVS_circuit_calculations import table_column_get, table_output, circui
 import ttg
 
 def runParser(listOfGates,ogCircuitOutput):
-    for gate in listOfGates:
-        gate.g_print()
+    # for gate in listOfGates:
+    #     gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     print("Circuit Output:", returnValue)
@@ -105,7 +105,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         input_len = len(i.inputs)
         for num in range(input_len):
             #print(i.inputs[num].mated_to[0])
-            if i.inputs[num].mated_to[0] == []:
+            if i.inputs[num].mated_to[0] == [] or i.inputs[num] == []:
                 return circuit_errors.ERROR_GATE_MISSING_INPUTS
 
             connector_id = i.inputs[num].mated_to[0]
