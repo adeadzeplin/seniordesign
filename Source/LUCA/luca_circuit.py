@@ -12,6 +12,8 @@ class Circuit:
         self.num_gates = gates
         self.transistor_count = 0
         self.truth_table = np.zeros((4, 4), dtype=int)
+        self.cgp_id = []
+        self.circuits = []
 
     def gate_selector(self, gate_id):
         if gate_id[1] == 0:

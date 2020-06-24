@@ -4,12 +4,13 @@ from luca_circuit import Circuit
 
 class Simulation:
 
-    def __init__(self, pop, r, c, g):
+    def __init__(self, pop, r, c, g, inp, out):
         self.mutation_rate = 0
         self.pop_size = pop
         self.population = []
         self.max_generations = g
-        self.num_circuit_inputs = 2
+        self.num_circuit_inputs = inp
+        self.num_circuit_outputs = out
         self.rows = r
         self.columns = c
         self.num_gates = self.rows * self.columns

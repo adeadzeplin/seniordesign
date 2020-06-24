@@ -79,7 +79,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
     for i in CrawlerOut[1]:  # inputs----------------------------------------------------------------
         for j in range(len(i.outputs)):
             # print(i.type, i.outputs[j].mated_to, i.gate_id)
-            tableInput_IDs.append(i.gate_id)
+            tableInput_IDs.append(i.cgp)
 
     #generate inital input states
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
@@ -90,7 +90,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
 
     #pass generate table inpputs, into input gate outputs
     for i in CrawlerOut[1]:
-        i.tableOutput = circuitInput[i.gate_id]
+        i.tableOutput = circuitInput[i.cgp]
 
     # print("\n")
 
