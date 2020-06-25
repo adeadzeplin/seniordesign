@@ -1,14 +1,61 @@
 import enum
-import numpy as np
+
+def circuit_Metrics(listOfGates):
+    renamed_list = []
+    metrics = []
+    for gate in listOfGates:
+        renamed_list.append(gate.type)
+    #print(renamed_list)
+
+    metrics.append(total_Delay(renamed_list))
+    metrics.append(total_Power(renamed_list))
+    metrics.append(total_transistor(renamed_list))
+
+    return metrics
+
+def total_Power(renamed_list):
+    esti_power = 0
+    for i in renamed_list:
+        if i == 0 or i == 1:    #inputs/outputs
+            esti_power +=0
+        elif i == 6:
+            esti_power += 20    #uA
+        elif i == 7:
+            esti_power += 40    #uA
+        else:
+            esti_power += 20    #uA
+    return esti_power
 
 
-def Total_Power():
-    pass
+def total_Delay(renamed_list):
+    esti_delay = 0
+    for i in renamed_list:
+        if i == 0 or i ==1:
+            esti_delay += 0
+        elif i == 2:
+            esti_delay += 8.5   #ns
+        elif i == 3:
+            esti_delay += 7
+        elif i == 4 or i == 5:
+            esti_delay += 6.5
+        elif i == 6:
+            esti_delay += 13
+        elif i == 7:
+            esti_delay += 12
+    return  esti_delay
 
-
-def Total_Delay():
-    pass
-
+def total_transistor(renamed_list):
+    transistor_num = 0
+    for i in renamed_list:
+        if i == 0 or i == 1:
+            transistor_num += 0
+        elif i ==2 or i==3 or i==7:
+            transistor_num += 6
+        elif i== 4:
+            transistor_num += 2
+        elif i == 5 or i==6:
+            transistor_num += 4
+    return transistor_num
 
 def circuit_connection_check(listofallgates):
     input_gate_counter = 0
@@ -45,12 +92,18 @@ def circuit_connection_check(listofallgates):
                 else:
                     pass  # print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
 
+
         for k in range(len(gate.inputs)):
             if gate.type == 1:
                 if len(gate.inputs[k].mated_to) == 0 or len(gate.inputs[k].mated_to) > 1:
                     return circuit_errors.ERROR_CIRCUIT_OUTPUT
                 else:
                     pass  # print(gate.gate_id,gate.inputs[k].mated_to)
+            elif gate.type != 0:        #error check #1
+                #print(gate.inputs[k].mated_to[0])
+                if gate.inputs[k].mated_to[0] == [] or gate.inputs[k] == []:
+                    print("ERROR_GATE_MISSING_INPUTS")
+                    return circuit_errors.ERROR_GATE_MISSING_INPUTS
 
 
 class circuit_errors(enum.Enum):
@@ -62,26 +115,12 @@ class circuit_errors(enum.Enum):
     ERROR_MISSING_LOGIC = 50        #there are no gates in the cirucit
     ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
     ERROR_GATE_MISSING_INPUTS = 70  #gate has no mated gates
+    ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
     counterRight = 0
     counterWrong = 0
-    counterLen = 0
-    tempCircuitOutput = circuitOutput
-    same_counter = 0
-
-    # for u in ogOutput:
-    #     counterLen += len(u)
-    #
-    # for k in ogOutput:
-    #     for p in tempCircuitOutput:
-    #         if k == p:
-    #             counterRight += len(p)
-    #             same_counter +=1
-    #             #tempCircuitOutput.pop((tempCircuitOutput.index(p)))
-    # if counterRight == counterLen :
-    #     return counterRight/counterLen
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):
@@ -170,6 +209,26 @@ def table_output(a, b, gatetype):
 
     return output
 
+def gateNumtoName(listofGatesNum):
+    temp =[]
+    for i in range(len(listofGatesNum)):
+        if listofGatesNum[i] == 0:
+            temp.append("IN")
+        elif listofGatesNum[i] == 1:
+            temp.append("OUT")
+        elif listofGatesNum[i] == 2:
+            temp.append("AND")
+        elif listofGatesNum[i] == 3:
+            temp.append("OR")
+        elif listofGatesNum[i] == 4:
+            temp.append("NOT")
+        elif listofGatesNum[i] == 5:
+            temp.append("NAND")
+        elif listofGatesNum[i] == 6:
+            temp.append("NOR")
+        elif listofGatesNum[i] == 7:
+            temp.append("XOR")
+    return temp
 
     # AND = 2
     # OR = 3
