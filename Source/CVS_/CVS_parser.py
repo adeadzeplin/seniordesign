@@ -11,6 +11,7 @@ def runParser(listOfGates,ogCircuitOutput):
     print("Circuit Output:", returnValue)
     circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
     print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+    return circuitPercentSame
 
 def runQParser(listOfGates,ogCircuitOutput):
     CrawlerOut = circuitParsing(listOfGates)
@@ -56,9 +57,9 @@ def circuitParsing(listOFGates): #this gets a list of outputs, inputs, and other
             except:
                 print('fail')
 
-    # print(temp_output_id)
-    # print(temp_input_id)
-    # print(temp_gate_id)
+    #rint(temp_output_id)
+    #print(temp_input_id)
+    #print(temp_gate_id)
 
     crawlerOutput = [temp_output_id, temp_input_id, temp_gate_id]
     return crawlerOutput
@@ -78,8 +79,8 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
 
     for i in CrawlerOut[1]:  # inputs----------------------------------------------------------------
         for j in range(len(i.outputs)):
-            # print(i.type, i.outputs[j].mated_to, i.gate_id)
-            tableInput_IDs.append(i.cgp)
+            #   print(i.type, i.outputs[j].mated_to, i.gate_id)
+            tableInput_IDs.append(i.gate_id)
 
     #generate inital input states
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
@@ -90,7 +91,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
 
     #pass generate table inpputs, into input gate outputs
     for i in CrawlerOut[1]:
-        i.tableOutput = circuitInput[i.cgp]
+        i.tableOutput = circuitInput[i.gate_id]
 
     # print("\n")
 
@@ -105,7 +106,7 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         input_len = len(i.inputs)
         for num in range(input_len):
             #print(i.inputs[num].mated_to[0])
-            if i.inputs[num].mated_to[0] == [] or i.inputs[num] == []:
+            if not i.inputs[num].mated_to or i.inputs[num] == []:
                 return circuit_errors.ERROR_GATE_MISSING_INPUTS
 
             connector_id = i.inputs[num].mated_to[0]
@@ -121,8 +122,9 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         if i.type  == 4 :
             i.tableOutput = table_output(connected_gate_output[0], [], i.type)
         else:
-            if connected_gate_output[1] == [] or connected_gate_output[0] == []:
-                return "put error here"
+            if connected_gate_output[0] == [] :
+                return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
+                #return "put error here"
             else:
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
 

@@ -62,6 +62,7 @@ class circuit_errors(enum.Enum):
     ERROR_MISSING_LOGIC = 50        #there are no gates in the cirucit
     ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
     ERROR_GATE_MISSING_INPUTS = 70  #gate has no mated gates
+    ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
 
 
 def circuit_output_compare(circuitOutput, ogOutput):

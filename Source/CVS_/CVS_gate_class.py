@@ -19,6 +19,7 @@ class GateType(enum.IntEnum):     #no enum here since i need the numbers, not Ga
     NOR = 6
     XOR = 7
     NOGATE = 8
+    DUMMY = 99
 
 
 class Connector:
@@ -45,6 +46,7 @@ class Gate:
     def __init__(self, type=None, inputNum=2, outputNum=1):
         if type == GateType.NOT or type == GateType.NOGATE:
             inputNum = 1
+        self.inputnum = inputNum
         self.gate_id = Gate.gate_id_counter
         Gate.gate_id_counter += 1
         self.type = type
