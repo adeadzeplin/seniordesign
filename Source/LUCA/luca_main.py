@@ -19,7 +19,6 @@ def main():
         p.create_circuit_inputs()
         p.create_circuit_gates()
         p.create_circuit_outputs()
-        print("GEE")
         p.create_dummy_gate()
         connect_gates(p.gate_list, p.stan_circuit, p.num_ports, p.output_list, p.dummy_list)
         for i in p.stan_circuit:

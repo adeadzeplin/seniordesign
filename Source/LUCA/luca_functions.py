@@ -65,8 +65,7 @@ def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_
                 if fullcheck == 0 or fullcheck is None:
                     outcheck = 0
                     full_flag = True
-                    print("DUMMY ID", g.gate_id, dummy_id)
-                    Output_to_Input(circuit, g.gate_id, dummy_id)
+                    #Output_to_Input(circuit, g.gate_id, dummy_id)
                 elif checkval == 1 or inpcheck == num_in:
                     outcheck = 1
                 else:
@@ -107,8 +106,7 @@ def connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list, dum
                 if fullcheck == 0 or fullcheck is None:
                     outcheck = 0
                     full_flag = True
-                    print("DUMMY ID", g.gate_id, dummy_id)
-                    Output_to_Input(circuit, g.gate_id, dummy_id)
+                    #Output_to_Input(circuit, g.gate_id, dummy_id)
                 elif checkval == 1 or inpcheck == num_in:
                     outcheck = 1
                 else:
