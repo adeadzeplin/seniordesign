@@ -57,9 +57,9 @@ def circuitParsing(listOFGates): #this gets a list of outputs, inputs, and other
             except:
                 print('fail')
 
-    #rint(temp_output_id)
-    #print(temp_input_id)
-    #print(temp_gate_id)
+    # print(temp_output_id)
+    # print(temp_input_id)
+    # print(temp_gate_id)
 
     crawlerOutput = [temp_output_id, temp_input_id, temp_gate_id]
     return crawlerOutput
@@ -116,17 +116,26 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
             else:
                 for gate in CrawlerOut[2]:
                     #print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
-                    if gate.outputs[0]._ID == connector_id:
-                        #print(gate.tableOutput)
-                        connected_gate_output.append((gate.tableOutput))
-        if i.type  == 4 :
+                    if gate.type == 99:
+                        pass
+                    else:
+                        #print(gate.gate_id)
+                        if gate.outputs[0]._ID == connector_id:
+                            #print(gate.gate_id,gate.tableOutput)
+                            connected_gate_output.append((gate.tableOutput))
+        if i.type  == 4  or i.type == 8:
             i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+        elif i.type == 99:
+            pass
         else:
             if connected_gate_output[0] == [] :
                 return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
                 #return "put error here"
             else:
+                #print(connected_gate_output, i.gate_id)
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+
+
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
@@ -136,15 +145,22 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         # print(mated_to_list)
         for g in mated_to_list:
             normalized_mated_list.append(g[0])
-        # print(normalized_mated_list)
+
+        #print(normalized_mated_list)
 
         for n in CrawlerOut[2]:  # looking for check gate output
-            for m in normalized_mated_list:
-                if n.outputs[0]._ID == m:
-                    # print(n.outputs[0]._ID, m)
-                    # print(i.inputs[0]._ID, i.outputs)
-                    i.tableOutput = n.tableOutput
-                    # print(i.tableOutput)
+            if n.type == 99:
+                pass
+            else:
+                for m in normalized_mated_list:
+                    #print(n.outputs)
+                    #print(n.gate_id,n.outputs[0]._ID,"m", m)
+                    if n.outputs[0]._ID == m:
+                        # print(n.outputs[0]._ID, m)
+                        #print("here")
+                        # print(i.inputs[0]._ID, i.outputs)
+                        i.tableOutput = n.tableOutput
+                        # print(i.tableOutput)
 
         circuitOutput.append(i.tableOutput)
         mated_to_list = []

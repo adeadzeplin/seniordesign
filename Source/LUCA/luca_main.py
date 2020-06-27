@@ -25,10 +25,11 @@ def main():
             i.g_print()
     for i in LUCA.population:
         Circuit_Errors = circuit_connection_check(i.stan_circuit)
-        print(Circuit_Errors)
-        i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
-        print(i.fitness)
-
+        if Circuit_Errors == None:
+            i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
+            print(i.fitness)
+        else:
+            print("Error: ", Circuit_Errors)
 
 if __name__ == '__main__':
     main()
