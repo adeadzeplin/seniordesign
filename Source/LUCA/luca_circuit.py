@@ -1,6 +1,8 @@
 import numpy as np
 from CVS_.CVS_gate_class import Gate
 from LUCA.luca_functions import *
+
+
 class Circuit:
 
     def __init__(self, i, o, r, c):
@@ -22,7 +24,6 @@ class Circuit:
         self.is_child = False
         self.cgp = [0, 0]
         self.dummy_list = []
-
 
     def create_circuit_inputs(self):
         for j in range(0, self.num_inputs):

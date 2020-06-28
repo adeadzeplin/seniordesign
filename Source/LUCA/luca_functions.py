@@ -1,5 +1,5 @@
 import numpy as np
-from CVS_.CVS_gate_class import Gate
+from CVS_.CVS_gate_class import Gate, Connector
 from CVS_.CVS_circuit_creation import Output_to_Input
 
 
@@ -259,23 +259,65 @@ def connect_1d_input_gates(input_1, output_1, circuit, ports, g, output_list, du
             incomplete = 0
 
 
+def create_genes(circuit):
+    gene = []
+    for gate in circuit:
+        temp = []
+        if gate.type == 0:
+            pass
+        else:
+            for i in gate.inputs:
+                val = find_host_id(i.mated_to[0], circuit)
+                temp.append(val)
+            temp.append(gate.gate_id)
+            temp.append(gate.type)
+            gene.append(temp)
+    return gene
 
 
-
-def next_generation(self):
-    for i in range(self.pop_size):
-        parent1 = self.accept_reject()
-        parent2 = self.accept_reject()
-        child = parent1.crossover(parent2)
-        child.mutate()
-        self.newpop.append(child)
-    return self.newpop
-
-
-def accept_reject(self):
+def accept_reject(population_size, population):
     while True:
-        index = np.random.randint(0, self.pop_size)
-        partner = self.population[index]
-        val = np.random.randint(0, 8)
+        index = np.random.randint(0, population_size)
+        partner = population[index]
+        val = np.random.uniform(0, 1)
         if val < partner.fitness:
             return partner
+
+
+def create_child(child, parent1, parent2):
+    split_point = np.random.randint(1, (len(parent1.genes) - 1))
+    for i in range(len(parent1.genes)):
+        if i > split_point:
+            child.genes.append(parent2.genes[i])
+        else:
+            child.genes.append(parent1.genes[i])
+
+def convert_form(population):
+    for i in population:
+        Gate.gate_id_counter = 0
+        Connector.id = 0
+        for k in range(i.num_inputs):
+            inp = Gate(0, 0, 1)
+            i.stan_circuit.append(inp)
+            i.input_list.append(inp)
+        for j in range(len(i.genes)):
+            type = i.genes[j][-1]
+            if type == 1:
+                out = Gate(1, 1, 0)
+                i.stan_circuit.append(out)
+                i.output_list.append(out)
+            elif type == 99:
+                dummy = Gate(type, (i.num_rows - i.num_outputs), 0)
+                i.stan_circuit.append(dummy)
+                i.dummy_list.append(dummy)
+            else:
+                gate = Gate(type)
+                i.stan_circuit.append(gate)
+                i.gate_list.append(gate)
+        for k in range(len(i.genes)):
+            if len(i.genes[k]) == 4:
+                Output_to_Input(i.stan_circuit, i.genes[k][0], i.genes[k][2])
+                Output_to_Input(i.stan_circuit, i.genes[k][1], i.genes[k][2])
+
+            else:
+                Output_to_Input(i.stan_circuit, i.genes[k][0], i.genes[k][1])
