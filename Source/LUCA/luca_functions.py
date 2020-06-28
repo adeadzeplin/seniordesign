@@ -131,7 +131,7 @@ def find_host_id(connector_id, circuit):
 def check_input_cgp(value, gate, circuit):
     for i in circuit:
         if i.gate_id == value:
-            if i.cgp_id[1] == gate.cgp_id[1] - 1:
+            if i.cgp_id[1] < gate.cgp_id[1]:
                 return 0
             else:
                 return 1

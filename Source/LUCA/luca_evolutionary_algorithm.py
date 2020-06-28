@@ -56,6 +56,7 @@ class EvolutionaryAlgorithm:
         for i in self.population:
             if i.fitness == 1.0:
                 print(i.genes)
+                print(i.fitness)
                 for j in i.stan_circuit:
                     j.g_print()
                 return False

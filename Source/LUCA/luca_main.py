@@ -8,6 +8,7 @@ from CVS_.CVS_parser import runParser
 
 
 def main():
+    historical_fitness = []
     generation = 0
     running = True
     while running:
@@ -16,7 +17,7 @@ def main():
         generations = 100
         LUCA = EvolutionaryAlgorithm(population, generations)
         LUCA.initialization()
-        ogCircuitOutput = [[0, 1, 1, 1], [0, 1, 0, 1]]
+        ogCircuitOutput = [[0, 1, 1, 0], [0, 0, 0, 1]]
         for p in LUCA.population:
             # INITIALIZATION CONTINUATION
             Gate.gate_id_counter = 0
@@ -39,18 +40,20 @@ def main():
             if Circuit_Errors == None:
                 i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
                 print(i.fitness)
+                historical_fitness.append(i.fitness)
             else:
                 print("Error: ", Circuit_Errors)
                 for j in i.stan_circuit:
                     j.g_print()
-
+        print(historical_fitness)
+        running = LUCA.termination()
+        print(running)
+        generation += 1
         LUCA.crossover()
         LUCA.mutation()
         LUCA.population = LUCA.new_population
         convert_form(LUCA.population)
-        running = LUCA.termination()
-        print(running)
-        generation += 1
+
 
 if __name__ == '__main__':
     main()
