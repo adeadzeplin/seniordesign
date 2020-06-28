@@ -15,8 +15,8 @@ class EvolutionaryAlgorithm:
         print("Define Circuit parameters")
         inputs = 2
         outputs = 2
-        rows = 3
-        columns = 3
+        rows = 2
+        columns = 2
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)

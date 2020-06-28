@@ -8,6 +8,7 @@ from CVS_.CVS_parser import runParser
 
 
 def main():
+    circ = []
     population = 1
     generations = 100
     LUCA = EvolutionaryAlgorithm(population, generations)
@@ -19,8 +20,11 @@ def main():
         p.create_circuit_inputs()
         p.create_circuit_gates()
         p.create_circuit_outputs()
-        p.create_dummy_gate()
-        connect_gates(p.gate_list, p.stan_circuit, p.num_ports, p.output_list, p.dummy_list)
+        if (p.num_rows - p.num_outputs) >= 1:
+            p.create_dummy_gate()
+            connect_gates_d(p.gate_list, p.stan_circuit, p.num_ports, p.output_list, p.dummy_list)
+        else:
+            connect_gates(p.gate_list, p.stan_circuit, p.num_ports, p.output_list)
         for i in p.stan_circuit:
             i.g_print()
     for i in LUCA.population:

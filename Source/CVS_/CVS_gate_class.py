@@ -39,6 +39,8 @@ class Connector:
     def c_print(self):
         print(f"host ID: {self.host}  connector ID: {self._ID}  Mated connector ID: {self.mated_to} ")
 
+    def get_id(self):
+        return self._ID
 
 class Gate:
     gate_id_counter = 0

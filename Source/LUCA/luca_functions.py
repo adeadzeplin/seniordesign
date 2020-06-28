@@ -26,7 +26,7 @@ def define_cgp(cgp0, cgp1, row):
 
 
 def create_gate(cgp):
-    if cgp[1] == 0:
+    if cgp[1] == 1:
         val = np.random.randint(2, 8)
     else:
         val = np.random.randint(2, 9)
@@ -35,25 +35,23 @@ def create_gate(cgp):
     return gate
 
 
-def connect_gates(gates, circuit, ports, output_list, dummy_list):
-    dummy_id = dummy_list[0].gate_id
+def connect_gates(gates, circuit, ports, output_list):
     for g in gates:
         if g.inputnum == 2:
             input_1 = g.inputs[0]
             input_2 = g.inputs[1]
             output_1 = g.outputs[0]
-            connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_list, dummy_id)
+            connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_list)
         else:
             input_1 = g.inputs[0]
             output_1 = g.outputs[0]
-            connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list, dummy_id)
+            connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list)
 
 
-def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_list, dummy_id):
+def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_list):
     incomplete = 1
     outcheck = 1
     check = 1
-    check2 = 1
     full_flag = False
     while incomplete:
         if not output_1.mated_to and full_flag is False:
@@ -61,11 +59,10 @@ def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_
                 outval = np.random.randint(g.gate_id, ports)
                 inpcheck, num_in = check_connecting_input(circuit, outval)
                 checkval = check_output_cgp(outval, g, circuit)
-                fullcheck = check_inputs_full(circuit, outval, ports, output_list)
+                fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
                 if fullcheck == 0 or fullcheck is None:
                     outcheck = 0
                     full_flag = True
-                    Output_to_Input(circuit, g.gate_id, dummy_id)
                 elif checkval == 1 or inpcheck == num_in:
                     outcheck = 1
                 else:
@@ -78,11 +75,13 @@ def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_
             Output_to_Input(circuit, val, g.gate_id)
         elif not input_2.mated_to:
             other_input = input_1.mated_to[0]
+            check2 = 1
             while check2:
                 connect_check = 1
                 while connect_check:
                     val = np.random.randint(0, g.gate_id)
-                    if val != other_input:
+                    other_host_id = find_host_id(other_input, circuit)
+                    if val != other_host_id:
                         connect_check = 0
                 check2 = check_input_cgp(val, g, circuit)
             Output_to_Input(circuit, val, g.gate_id)
@@ -91,7 +90,7 @@ def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_
             incomplete = 0
 
 
-def connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list, dummy_id):
+def connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list):
     incomplete = 1
     outcheck = 1
     check = 1
@@ -102,11 +101,10 @@ def connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list, dum
                 outval = np.random.randint(g.gate_id, ports)
                 inpcheck, num_in = check_connecting_input(circuit, outval)
                 checkval = check_output_cgp(outval, g, circuit)
-                fullcheck = check_inputs_full(circuit, outval, ports, output_list)
+                fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
                 if fullcheck == 0 or fullcheck is None:
                     outcheck = 0
                     full_flag = True
-                    Output_to_Input(circuit, g.gate_id, dummy_id)
                 elif checkval == 1 or inpcheck == num_in:
                     outcheck = 1
                 else:
@@ -122,10 +120,18 @@ def connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list, dum
             incomplete = 0
 
 
+def find_host_id(connector_id, circuit):
+    for k in circuit:
+        for j in k.outputs:
+            if connector_id == j.get_id():
+                other_host_id = j.host
+                return other_host_id
+
+
 def check_input_cgp(value, gate, circuit):
     for i in circuit:
         if i.gate_id == value:
-            if i.cgp_id[1] < gate.cgp_id[1]:
+            if i.cgp_id[1] == gate.cgp_id[1] - 1:
                 return 0
             else:
                 return 1
@@ -162,6 +168,98 @@ def check_inputs_full(circuit, val, ports, output_list):
                     if not i.mated_to:
                         cnt += 1
     return cnt
+
+
+def connect_gates_d(gates, circuit, ports, output_list, dummy_list):
+    dummy_id = dummy_list[0].gate_id
+
+    for g in gates:
+        if g.inputnum == 2:
+            input_1 = g.inputs[0]
+            input_2 = g.inputs[1]
+            output_1 = g.outputs[0]
+            connect_2d_input_gates(input_1, input_2, output_1, circuit, ports, g, output_list, dummy_id)
+        else:
+            input_1 = g.inputs[0]
+            output_1 = g.outputs[0]
+            connect_1d_input_gates(input_1, output_1, circuit, ports, g, output_list, dummy_id)
+
+
+def connect_2d_input_gates(input_1, input_2, output_1, circuit, ports, g, output_list, dummy_id):
+    incomplete = 1
+    outcheck = 1
+    check = 1
+    full_flag = False
+    while incomplete:
+        if not output_1.mated_to and full_flag is False:
+            while outcheck:
+                outval = np.random.randint(g.gate_id, ports)
+                inpcheck, num_in = check_connecting_input(circuit, outval)
+                checkval = check_output_cgp(outval, g, circuit)
+                fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
+                if fullcheck == 0 or fullcheck is None:
+                    outcheck = 0
+                    full_flag = True
+                    Output_to_Input(circuit, g.gate_id, dummy_id)
+                elif checkval == 1 or inpcheck == num_in:
+                    outcheck = 1
+                else:
+                    Output_to_Input(circuit, g.gate_id, outval)
+                    outcheck = 0
+        elif not input_1.mated_to:  # if input1 is empty
+            while check:
+                val = np.random.randint(0, g.gate_id)
+                check = check_input_cgp(val, g, circuit)
+            Output_to_Input(circuit, val, g.gate_id)
+        elif not input_2.mated_to:
+            other_input = input_1.mated_to[0]
+            check2 = 1
+            while check2:
+                connect_check = 1
+                while connect_check:
+                    val = np.random.randint(0, g.gate_id)
+                    other_host_id = find_host_id(other_input, circuit)
+                    if val != other_host_id:
+                        connect_check = 0
+                check2 = check_input_cgp(val, g, circuit)
+            Output_to_Input(circuit, val, g.gate_id)
+            incomplete = 0
+        else:
+            incomplete = 0
+
+
+def connect_1d_input_gates(input_1, output_1, circuit, ports, g, output_list, dummy_id):
+    incomplete = 1
+    outcheck = 1
+    check = 1
+    full_flag = False
+    while incomplete:
+        if not output_1.mated_to and full_flag is False:
+            while outcheck:
+                outval = np.random.randint(g.gate_id, ports)
+                inpcheck, num_in = check_connecting_input(circuit, outval)
+                checkval = check_output_cgp(outval, g, circuit)
+                fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
+                if fullcheck == 0 or fullcheck is None:
+                    outcheck = 0
+                    full_flag = True
+                    Output_to_Input(circuit, g.gate_id, dummy_id)
+                elif checkval == 1 or inpcheck == num_in:
+                    outcheck = 1
+                else:
+                    Output_to_Input(circuit, g.gate_id, outval)
+                    outcheck = 0
+        elif not input_1.mated_to:  # if input1 is empty
+            while check:
+                val = np.random.randint(0, g.gate_id)
+                check = check_input_cgp(val, g, circuit)
+            Output_to_Input(circuit, val, g.gate_id)
+            incomplete = 0
+        else:
+            incomplete = 0
+
+
+
 
 
 def next_generation(self):
