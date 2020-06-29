@@ -207,7 +207,7 @@ class QlarkCircuitInterface():
         # temp.append(len(self.list_of_gates))
 
         for i in self.list_of_gates:
-            temp.append(i.cgp)
+            temp.append(i.gate_id)
             temp.append(i.type.value)
 
             for x in i.inputs:
