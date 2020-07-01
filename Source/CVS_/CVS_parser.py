@@ -12,6 +12,7 @@ def runParser(listOfGates, ogCircuitOutput):
     print("Circuit Output:", returnValue)
     circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
     print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+    return circuitPercentSame
 
     metrics = circuit_Metrics(listOfGates)
     print("\n","Power(uA) | Delay(ns) | Transistors ", metrics)
@@ -79,7 +80,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
 
     for i in CrawlerOut[1]:  # inputs----------------------------------------------------------------
         for j in range(len(i.outputs)):
-            # print(i.type, i.outputs[j].mated_to, i.gate_id)
+            #   print(i.type, i.outputs[j].mated_to, i.gate_id)
             tableInput_IDs.append(i.gate_id)
 
     # generate inital input states
@@ -105,29 +106,41 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         # extract outputs from connected gates
         input_len = len(i.inputs)
         for num in range(input_len):
-            # print(i.inputs[num].mated_to[0])
-
-            # error check #1
-
+            if not i.inputs[num].mated_to or i.inputs[num] == []:
+                return circuit_errors.ERROR_GATE_MISSING_INPUTS
             connector_id = i.inputs[num].mated_to[0]
             if connector_id < INPUTSTOTAL:  # if gate is connected to only input gates
                 # print(CrawlerOut[1][connector_id].tableOutput)
                 connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
             else:
                 for gate in CrawlerOut[2]:
+                    #print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
+                    if gate.type == 99:
+                        pass
+                    else:
+                        #print(gate.gate_id)
+                        if gate.outputs[0]._ID == connector_id:
+                            #print(gate.gate_id,gate.tableOutput)
+                            connected_gate_output.append((gate.tableOutput))
+        if i.type  == 4  or i.type == 8:
                     # print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
                     if gate.outputs[0]._ID == connector_id:
                         # print(gate.tableOutput)
                         connected_gate_output.append((gate.tableOutput))
         if i.type == 4:
             i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+        elif i.type == 99:
+            pass
         else:
             if connected_gate_output[1] == [] or connected_gate_output[0] == []:
                 # print("error here")
                 pass
                 # return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
             else:
+                #print(connected_gate_output, i.gate_id)
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+
+
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
@@ -137,15 +150,22 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         # print(mated_to_list)
         for g in mated_to_list:
             normalized_mated_list.append(g[0])
-        # print(normalized_mated_list)
+
+        #print(normalized_mated_list)
 
         for n in CrawlerOut[2]:  # looking for check gate output
-            for m in normalized_mated_list:
-                if n.outputs[0]._ID == m:
-                    # print(n.outputs[0]._ID, m)
-                    # print(i.inputs[0]._ID, i.outputs)
-                    i.tableOutput = n.tableOutput
-                    # print(i.tableOutput)
+            if n.type == 99:
+                pass
+            else:
+                for m in normalized_mated_list:
+                    #print(n.outputs)
+                    #print(n.gate_id,n.outputs[0]._ID,"m", m)
+                    if n.outputs[0]._ID == m:
+                        # print(n.outputs[0]._ID, m)
+                        #print("here")
+                        # print(i.inputs[0]._ID, i.outputs)
+                        i.tableOutput = n.tableOutput
+                        # print(i.tableOutput)
 
         circuitOutput.append(i.tableOutput)
         mated_to_list = []
