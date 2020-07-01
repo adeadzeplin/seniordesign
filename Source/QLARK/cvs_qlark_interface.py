@@ -93,7 +93,7 @@ class QlarkCircuitInterface():
     def getcircuitstatus(self):
 
         circuit_completion_flag = self.checkciruitcompletion()
-        Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
+
 
         # print(Circuit_Errors)
 
@@ -101,7 +101,11 @@ class QlarkCircuitInterface():
             return CircuitStatus.Broken
         self.circuitlogic = 0
         if circuit_completion_flag:
-            self.circuitlogic = CVS_parser.runQParser(self.list_of_gates, self.DESIRED_LOGIC)
+            Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
+            if Circuit_Errors == None:
+                self.circuitlogic = CVS_parser.runQParser(self.list_of_gates, self.DESIRED_LOGIC)
+            else:
+                return self.circuitstatus
 
             if self.circuitlogic == 1.0:
                 self.circuitstatus = CircuitStatus.Correct

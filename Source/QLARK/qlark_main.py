@@ -14,7 +14,7 @@ if __name__ == '__main__':
                 'allowedgatetypes': [GateType.AND.name, GateType.XOR.name],
                 'maxsteps': 12,
                 'totalthreads': 1,
-                'trainingsetspthread':6
+                'trainingsetspthread':10
 
                      }
     qlarklearn(initdict)

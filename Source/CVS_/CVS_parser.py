@@ -122,6 +122,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         if i.type == 4:
             i.tableOutput = table_output(connected_gate_output[0], [], i.type)
         else:
+
             if connected_gate_output[1] == [] or connected_gate_output[0] == []:
                 # print("error here")
                 pass
