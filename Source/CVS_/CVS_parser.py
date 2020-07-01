@@ -1,11 +1,12 @@
 # from CVS_.CVS_circuit_creation import gateNumtoName
 from CVS_.CVS_constants import INPUTSTOTAL
-from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare, circuit_errors
+from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare,circuit_Metrics
 import ttg
 
-def runParser(listOfGates,ogCircuitOutput):
-    # for gate in listOfGates:
-    #     gate.g_print()
+
+def runParser(listOfGates, ogCircuitOutput):
+    for gate in listOfGates:
+        gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     print("Circuit Output:", returnValue)
@@ -13,11 +14,15 @@ def runParser(listOfGates,ogCircuitOutput):
     print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
     return circuitPercentSame
 
-def runQParser(listOfGates,ogCircuitOutput):
+    metrics = circuit_Metrics(listOfGates)
+    print("\n","Power(uA) | Delay(ns) | Transistors ", metrics)
+
+
+
+def runQParser(listOfGates, ogCircuitOutput):
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     return circuit_output_compare(returnValue, ogCircuitOutput)
-
 
 
 def convertNumtoWord(type):
@@ -35,13 +40,13 @@ def convertNumtoWord(type):
         return "xor"
 
 
-def circuitParsing(listOFGates): #this gets a list of outputs, inputs, and other gates types
+def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and other gates types
     temp_output_id = []
     temp_input_id = []
     temp_gate_id = []
 
     for i in listOFGates:  # start from output
-        if i.type == 1: #outputs gates
+        if i.type == 1:  # outputs gates
             try:
                 temp_output_id.append(i)
             except:
@@ -65,31 +70,27 @@ def circuitParsing(listOFGates): #this gets a list of outputs, inputs, and other
     return crawlerOutput
 
 
-def circuitConnecting(CrawlerOut): # goes through circuit starting from input gates, and determines the outputs of each gate
+def circuitConnecting(CrawlerOut):  # goes through circuit starting from input gates, and determines the outputs of each gate
     # print("\n")
-    whatInputsConnectedTo = []
     tableInput_IDs = []
     tableInput_TableOut = []
-    whatGatesConnectedTo = []
-    whatOutputsConnectedTo = []
     circuitInput = []
     circuitOutput = []
     mated_to_list = []
-    matches = []
 
     for i in CrawlerOut[1]:  # inputs----------------------------------------------------------------
         for j in range(len(i.outputs)):
             #   print(i.type, i.outputs[j].mated_to, i.gate_id)
             tableInput_IDs.append(i.gate_id)
 
-    #generate inital input states
+    # generate inital input states
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
     tempTable = ttg.Truths(tableInput_IDs_formated).as_pandas()
     for i in tableInput_IDs_formated:
         tableInput_TableOut.append(tempTable[[i]])
     circuitInput = table_column_get(tableInput_TableOut, circuitInput)
 
-    #pass generate table inpputs, into input gate outputs
+    # pass generate table inpputs, into input gate outputs
     for i in CrawlerOut[1]:
         i.tableOutput = circuitInput[i.gate_id]
 
@@ -101,17 +102,15 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         # else:
         #     print(i.gate_id, i.type, i.inputs[0]._ID, i.inputs[1]._ID, i.outputs[0]._ID)
 
-        connected_gate_output =[]
+        connected_gate_output = []
         # extract outputs from connected gates
         input_len = len(i.inputs)
         for num in range(input_len):
-            #print(i.inputs[num].mated_to[0])
             if not i.inputs[num].mated_to or i.inputs[num] == []:
                 return circuit_errors.ERROR_GATE_MISSING_INPUTS
-
             connector_id = i.inputs[num].mated_to[0]
-            if connector_id < INPUTSTOTAL:     # if gate is connected to only input gates
-                #print(CrawlerOut[1][connector_id].tableOutput)
+            if connector_id < INPUTSTOTAL:  # if gate is connected to only input gates
+                # print(CrawlerOut[1][connector_id].tableOutput)
                 connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
             else:
                 for gate in CrawlerOut[2]:
@@ -124,13 +123,19 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
                             #print(gate.gate_id,gate.tableOutput)
                             connected_gate_output.append((gate.tableOutput))
         if i.type  == 4  or i.type == 8:
+                    # print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
+                    if gate.outputs[0]._ID == connector_id:
+                        # print(gate.tableOutput)
+                        connected_gate_output.append((gate.tableOutput))
+        if i.type == 4:
             i.tableOutput = table_output(connected_gate_output[0], [], i.type)
         elif i.type == 99:
             pass
         else:
-            if connected_gate_output[0] == [] :
-                return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
-                #return "put error here"
+            if connected_gate_output[1] == [] or connected_gate_output[0] == []:
+                # print("error here")
+                pass
+                # return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
             else:
                 #print(connected_gate_output, i.gate_id)
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
@@ -174,4 +179,4 @@ def circuitConnecting(CrawlerOut): # goes through circuit starting from input ga
         i.reverse()
 
     return circuitOutput
-#---------------------------------End of circuitConnecting ----------------------------------------------------------
+# ---------------------------------End of circuitConnecting ----------------------------------------------------------

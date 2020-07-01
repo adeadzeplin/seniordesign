@@ -18,7 +18,7 @@ class Qlark:
     def __init__(self,desiredlogic,thread_ID):
         self.thread_ID = thread_ID
         # AI constants
-        self.EPISODE_NUM = 5000    # number of circuit Attempts
+        self.EPISODE_NUM = 10000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
@@ -42,7 +42,7 @@ class Qlark:
             self.q_table = dict()
 
         # Space for AI to play and get feedback from
-        self.environment = QlarkCircuitInterface(DESIRED_LOGIC=self.DESIREDLOGIC, C_IN_CT=2, C_OUT_CT=2, MAX_GATE_NUM=2, NUM_OF_GATE_TYPES=6)
+        self.environment = QlarkCircuitInterface(DESIRED_LOGIC=self.DESIREDLOGIC, C_IN_CT=2, C_OUT_CT=2, MAX_GATE_NUM=5, NUM_OF_GATE_TYPES=6)
 
 
     def runBest(self):
