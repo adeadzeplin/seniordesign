@@ -39,7 +39,7 @@ class QlarkThread(threading.Thread):
 
 def saveqtable(q_table):
     print("\nSAVING Q-table")
-    f = open("qtable.pickle", "wb")
+    f = open("QLARK/qtable.pickle", "wb")
     pickle.dump(q_table, f)
     f.close()
 
@@ -81,11 +81,12 @@ def notthreading(setupdict):
     for i in range(setupdict["trainingsetspthread"]):
         print(f'Number of training sets remaining: {setupdict["trainingsetspthread"] - i}')
         Qlearningai.train()
+        saveqtable(Qlearningai.q_table)
         if Qlearningai.success_flag == True:
             print(f"QLARK SUCCESSFULLY LEARNED on set: {i}")
             break
 
-    saveqtable(Qlearningai.q_table)
+
     RunBestAI(setupdict)
 
 

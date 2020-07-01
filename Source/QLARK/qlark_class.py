@@ -23,7 +23,7 @@ class Qlark:
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
         self.QRANDOMINIT = -1  # The range of random starting values
-        self.EPSILONSTART = .7
+        self.EPSILONSTART = 1
         self.NUM_STEPS = setupdict['maxsteps'] # self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         # print(self.NUM_STEPS)
         self.DESIREDLOGIC = setupdict['truthtable']
@@ -36,7 +36,7 @@ class Qlark:
         self.showcase_flag = False
         self.success_counter = 0
         try:
-            f = open("qtable.pickle", "rb")
+            f = open("QLARK/qtable.pickle", "rb")
             self.q_table = pickle.load(f)
             f.close()
 
@@ -153,9 +153,9 @@ class Qlark:
 
 
             if self.epsilon < 0.0001:
-            #     self.epsilon = self.EPSILONSTART
-                print(f"THREAD: {self.thread_ID} Cutting Off Training Set")
-                break
+                self.epsilon = self.EPSILONSTART
+                # print(f"THREAD: {self.thread_ID} Cutting Off Training Set")
+                # break
 
         # self.saveq()
         # self.environment.printout()

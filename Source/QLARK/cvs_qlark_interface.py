@@ -82,7 +82,7 @@ class QlarkCircuitInterface():
         if self.circuitstatus == CircuitStatus.Broken:
             return AIRewards.CircuitBroken
         elif self.circuitstatus == CircuitStatus.Completed:
-            aireward_calc = (self.circuitlogic * 100 - 100)*2
+            aireward_calc = (self.circuitlogic * 100 - 50)*2
 
             return aireward_calc
 

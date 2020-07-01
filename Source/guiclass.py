@@ -62,7 +62,7 @@ class MyFirstGUI:
             'circuitoutputs': 2,                                        #
             'maxgatenum': 2,                                            # Total num of gates AI is allowed toplace
             'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
-            'maxsteps': 12,                                             # For Qlark             please dont touch
+            'maxsteps': 8,                                             # For Qlark             please dont touch
             'totalthreads': 1,                                          # For Qlark threading   please dont touch
             'trainingsetspthread': 6                                    # For Qlark threading   please dont touch
         }
