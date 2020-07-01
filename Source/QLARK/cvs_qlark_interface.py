@@ -27,12 +27,13 @@ def square(val):
     return val * val
 
 class QlarkCircuitInterface():
-    def __init__(self,DESIRED_LOGIC,C_IN_CT = 2,C_OUT_CT = 1, MAX_GATE_NUM= 1,NUM_OF_GATE_TYPES= 1):
+    def __init__(self,DESIRED_LOGIC,C_IN_CT = 2,C_OUT_CT = 1, MAX_GATE_NUM= 1,ALLOWED_GATE_TYPES= 'list'):
         # Circuit constants
         self.CIRCUIT_INPUTS_COUNT = C_IN_CT
         self.CIRCUIT_OUTPUTS_COUNT = C_OUT_CT
         self.MAX_GATE_NUM = MAX_GATE_NUM  # Max num of gates the ai can place
-        self.NUM_OF_GATE_TYPES = NUM_OF_GATE_TYPES
+        self.MAX_GATE_TYPES = 6
+        self.ALLOWED_GATE_TYPES = ALLOWED_GATE_TYPES
         self.DESIRED_LOGIC = DESIRED_LOGIC
         self.TRANSISTOR_BUDGET = 20
         self.OPTIMIZEMETRIC = 'T'
@@ -46,7 +47,7 @@ class QlarkCircuitInterface():
 
 
         # Total Number of Actions posible that the AI can Take
-        self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + self.NUM_OF_GATE_TYPES
+        self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + len(self.ALLOWED_GATE_TYPES)
 
     def printout(self):
         for gate in self.list_of_gates:
@@ -92,6 +93,9 @@ class QlarkCircuitInterface():
     def getcircuitstatus(self):
 
         circuit_completion_flag = self.checkciruitcompletion()
+        Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
+
+        # print(Circuit_Errors)
 
         if self.circuitstatus == CircuitStatus.Broken:
             return CircuitStatus.Broken
@@ -116,24 +120,23 @@ class QlarkCircuitInterface():
     def placegate(self,val):
         temp = len(self.list_of_gates) - (self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT)
         if temp < self.MAX_GATE_NUM:
-            if val == 0:
+
+            if val == 0 and cvs.GateType.AND.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
                 self.update_transistorcount(CVS_metrics.GateTransCost.AND)
-            # elif val == 1:
-            #     # self.breakcircuit()
-            #     # return AIRewards.CircuitBroken
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
-            # elif val == 3:
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
-            # elif val == 4:
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
-            # elif val == 5:
-            #     self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
-            #     self.update_transistorcount(CVS_metrics.GateTransCost.OR)
-            elif val == 6:
+            elif val == 1 and cvs.GateType.NOT.name in self.ALLOWED_GATE_TYPES:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
+                self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
+            elif val == 3 and cvs.GateType.NOR.name in self.ALLOWED_GATE_TYPES:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
+                self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
+            elif val == 4 and cvs.GateType.NAND.name in self.ALLOWED_GATE_TYPES:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
+                self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
+            elif val == 5 and cvs.GateType.OR.name in self.ALLOWED_GATE_TYPES:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
+                self.update_transistorcount(CVS_metrics.GateTransCost.OR)
+            elif val == 6 and cvs.GateType.XOR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
                 self.update_transistorcount(CVS_metrics.GateTransCost.XOR)
             else:
@@ -150,7 +153,7 @@ class QlarkCircuitInterface():
 
 
     def attempt_action(self,action):
-        if action <= self.NUM_OF_GATE_TYPES:
+        if action <= self.MAX_GATE_TYPES:
             temp = len(self.list_of_gates) - (self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT)
             #   check if there is space to add another gate
             if temp < self.MAX_GATE_NUM:
@@ -160,7 +163,7 @@ class QlarkCircuitInterface():
                 return AIRewards.CircuitBroken
 
         else:
-            action -= self.NUM_OF_GATE_TYPES
+            action -=  self.MAX_GATE_TYPES
             # These values are calculated in order to map a 1D vector to a set of combinational outputs
             mod = (action % (self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT))
             div = (action // (self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT))

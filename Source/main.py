@@ -1,4 +1,6 @@
 from guiclass import *
-root = Tk()
-my_gui = MyFirstGUI(root)
-root.mainloop()
+
+if __name__ == '__main__':
+    root = Tk()
+    my_gui = MyFirstGUI(root)
+    root.mainloop()

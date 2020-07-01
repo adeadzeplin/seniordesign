@@ -1,11 +1,15 @@
 from tkinter import Tk, Label, Button, Checkbutton,IntVar, StringVar
 from QLARK.qlark_main import qlarklearn
+from CVS_.CVS_gate_class import GateType
 
 class MyFirstGUI:
     def __init__(self, master):
         self.input_truthtable = []
         self.temp = []
         self.master = master
+
+        self.initdict = dict()
+
         master.title("AI CIRCUIT DESIGN")
 
         self.label1 = Label(master, text="Bot")
@@ -43,7 +47,7 @@ class MyFirstGUI:
 
     def runQlark(self):
         #self.input_truthtable = [[0, 1, 1, 0], [0, 0, 0, 1]]  # Half Adder circuit Truth Table
-        qlarklearn(self.input_truthtable)
+        qlarklearn(self.initdict)
         #if error return maybe display in window
 
     def yeet(self):
@@ -51,11 +55,35 @@ class MyFirstGUI:
         #if error return maybe display in window
 
     def circuit1(self):
-        self.input_truthtable = [[0, 1, 1, 0], [0, 0, 0, 1]]
-        label4 = Label(self.master,text=self.input_truthtable)
+
+        self.initdict = {
+            'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],                 # Truthtable
+            'circuitinputs': 2,                                         #
+            'circuitoutputs': 2,                                        #
+            'maxgatenum': 2,                                            # Total num of gates AI is allowed toplace
+            'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
+            'maxsteps': 12,                                             # For Qlark             please dont touch
+            'totalthreads': 1,                                          # For Qlark threading   please dont touch
+            'trainingsetspthread': 6                                    # For Qlark threading   please dont touch
+        }
+
+        label4 = Label(self.master,text=self.initdict['truthtable'])
         label4.grid(row=2,column=2)
     def circuit2(self):
-        self.input_truthtable = [[1, 0, 0, 1, 0, 1, 1, 0],[1, 1, 1, 0, 1, 0, 0, 0]]
+
+        self.initdict = {
+            'truthtable': [[1, 0, 0, 1, 0, 1, 1, 0],[1, 1, 1, 0, 1, 0, 0, 0]],  # Truthtable Full Adder
+            'circuitinputs': 3,                         #
+            'circuitoutputs': 2,                        #
+            'maxgatenum': 6,                            # Total num of gates AI is allowed to place
+            'allowedgatetypes': [GateType.AND.name,     # For Qlark             please dont touch
+                                 GateType.XOR.name,     # For Qlark             please dont touch
+                                 GateType.OR.name],     # For Qlark             please dont touch
+            'maxsteps': 15,                             # For Qlark             please dont touch
+            'totalthreads': 1,                          # For Qlark threading   please dont touch
+            'trainingsetspthread': 6                    # For Qlark threading   please dont touch
+        }
+
         label4 = Label(self.master, text=self.input_truthtable)
         label4.grid(row=2, column=2)
     def circuit3(self):

@@ -93,8 +93,10 @@ def circuit_connection_check(listofallgates):
                 else:
                     pass  # print(gate.gate_id,gate.outputs[j].mated_to)
             elif gate.type != 1:
-                if len(gate.outputs[j].mated_to) == 0 or len(gate.inputs[j].mated_to) > 2:
+                if len(gate.outputs[j].mated_to) == 0:
                     return circuit_errors.ERROR_GATE
+                elif len(gate.inputs[j].mated_to) > 2:
+                    return circuit_errors.ERROR_MORE_THAN_2_MATED
                 else:
                     pass  # print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
 
@@ -107,9 +109,13 @@ def circuit_connection_check(listofallgates):
                     pass  # print(gate.gate_id,gate.inputs[k].mated_to)
             elif gate.type != 0:        #error check #1
                 #print(gate.inputs[k].mated_to[0])
-                if gate.inputs[k].mated_to[0] == [] or gate.inputs[k] == []:
+                if len(gate.inputs[k].mated_to) == []:
+
                     print("ERROR_GATE_MISSING_INPUTS")
                     return circuit_errors.ERROR_GATE_MISSING_INPUTS
+                elif len(gate.inputs[k].mated_to) > 2:
+                    print("ERROR_MORE_THAN_2_MATED")
+                    return circuit_errors.ERROR_MORE_THAN_2_MATED
 
 
 class circuit_errors(enum.Enum):
@@ -122,6 +128,7 @@ class circuit_errors(enum.Enum):
     ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
     ERROR_GATE_MISSING_INPUTS = 70  #gate has no mated gates
     ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
+    ERROR_MORE_THAN_2_MATED = 90
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
