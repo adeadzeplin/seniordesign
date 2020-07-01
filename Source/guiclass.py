@@ -47,7 +47,16 @@ class MyFirstGUI:
 
     def runQlark(self):
         #self.input_truthtable = [[0, 1, 1, 0], [0, 0, 0, 1]]  # Half Adder circuit Truth Table
-        qlarklearn(self.initdict)
+        whilecounter = 0
+
+        while True:
+            whilecounter += 1
+            print(f"{whilecounter}th pass of the infiniteLoop")
+
+            if qlarklearn(self.initdict):
+                print(f"The AI Learned on the {whilecounter}th pass of the infiniteLoop")
+                break
+
         #if error return maybe display in window
 
     def yeet(self):
@@ -62,9 +71,9 @@ class MyFirstGUI:
             'circuitoutputs': 2,                                        #
             'maxgatenum': 2,                                            # Total num of gates AI is allowed toplace
             'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
-            'maxsteps': 8,                                             # For Qlark             please dont touch
+            'maxsteps': 10,                                             # For Qlark             please dont touch
             'totalthreads': 1,                                          # For Qlark threading   please dont touch
-            'trainingsetspthread': 6                                    # For Qlark threading   please dont touch
+            'trainingsetspthread': 1                                    # For Qlark threading   please dont touch
         }
 
         label4 = Label(self.master,text=self.initdict['truthtable'])

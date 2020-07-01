@@ -3,7 +3,7 @@ import QLARK.qlark_threading as qt
 from CVS_.CVS_gate_class import GateType
 
 def qlarklearn(setupdict):
-    qt.notthreading(setupdict)
+    return qt.notthreading(setupdict)
     # qt.Needlethreading(setupdict)
 
 if __name__ == '__main__':

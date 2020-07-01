@@ -78,16 +78,21 @@ def Needlethreading(setupdict):
 
 def notthreading(setupdict):
     Qlearningai = Qlark(33, setupdict)
+    learnFlag = False
     for i in range(setupdict["trainingsetspthread"]):
         print(f'Number of training sets remaining: {setupdict["trainingsetspthread"] - i}')
         Qlearningai.train()
         saveqtable(Qlearningai.q_table)
         if Qlearningai.success_flag == True:
             print(f"QLARK SUCCESSFULLY LEARNED on set: {i}")
+            learnFlag = True
             break
+    Qlearningai.environment.parseLogic()
+    # Qlearningai.showaidata()
+    return learnFlag
 
 
-    RunBestAI(setupdict)
+
 
 
 def RunBestAI(setupdict):
