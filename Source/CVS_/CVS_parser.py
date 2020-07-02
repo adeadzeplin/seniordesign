@@ -105,7 +105,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         # extract outputs from connected gates
         input_len = len(i.inputs)
         for num in range(input_len):
-            # print(i.inputs[num].mated_to[0])
+            #print(i.inputs[num].mated_to)
 
             # error check #1
 
@@ -122,9 +122,9 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         if i.type == 4:
             i.tableOutput = table_output(connected_gate_output[0], [], i.type)
         else:
-
+            #print(connected_gate_output[1], connected_gate_output[0])
             if connected_gate_output[1] == [] or connected_gate_output[0] == []:
-                # print("error here")
+                print("error here")
                 pass
                 # return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
             else:
