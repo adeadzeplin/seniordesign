@@ -69,7 +69,7 @@ class MyFirstGUI:
             'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],                 # Truthtable
             'circuitinputs': 2,                                         #
             'circuitoutputs': 2,                                        #
-            'maxgatenum': 2,                                            # Total num of gates AI is allowed toplace
+            'maxgatenum': 3,                                            # Total num of gates AI is allowed toplace
             'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
             'maxsteps': 10,                                             # For Qlark             please dont touch
             'totalthreads': 1,                                          # For Qlark threading   please dont touch
