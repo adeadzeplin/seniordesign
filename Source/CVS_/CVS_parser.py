@@ -124,7 +124,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         else:
             #print(connected_gate_output[1], connected_gate_output[0])
             if connected_gate_output[1] == [] or connected_gate_output[0] == []:
-                print("error here")
+                #print("error here")
                 pass
                 # return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
             else:
