@@ -18,6 +18,8 @@ class GateType(enum.IntEnum):     #no enum here since i need the numbers, not Ga
     NAND = 5
     NOR = 6
     XOR = 7
+    NOGATE = 8
+    DUMMY = 99
 
 
 class Connector:
@@ -37,13 +39,16 @@ class Connector:
     def c_print(self):
         print(f"host ID: {self.host}  connector ID: {self._ID}  Mated connector ID: {self.mated_to} ")
 
+    def get_id(self):
+        return self._ID
 
 class Gate:
     gate_id_counter = 0
 
     def __init__(self, type=None, inputNum=2, outputNum=1):
-        if type == GateType.NOT:
+        if type == GateType.NOT or type == GateType.NOGATE:
             inputNum = 1
+        self.inputnum = inputNum
         self.gate_id = Gate.gate_id_counter
         Gate.gate_id_counter += 1
         self.type = type
@@ -51,6 +56,7 @@ class Gate:
         self.outputs = []
         self.makePorts(inputNum, outputNum)
         self.tableOutput = []
+        self.cgp_id = []
 
     def makePorts(self, inPorts, outPorts):  # creates / connects inputs and outputs only
         for i in range(0, inPorts):
@@ -76,10 +82,15 @@ class Gate:
                         j.connect(self.outputs[0])
                         return
 
+    def set_cgp_id(self, cgp):
+        self.cgp_id = cgp
+
+    def get_cgp_id(self):
+        return self.cgp_id
 
     def g_print(self):
         print(
-            f"\ngate_id: {self.gate_id},    type: {self.type.name},  numofinputs: {len(self.inputs)},    numofoutputs: {len(self.outputs)}")
+            f"\ngate_id: {self.gate_id},    type: {self.type},  numofinputs: {len(self.inputs)},    numofoutputs: {len(self.outputs)}")
         for i in self.inputs:
             i.c_print()
         for i in self.outputs:
