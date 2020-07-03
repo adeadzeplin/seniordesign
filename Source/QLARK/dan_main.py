@@ -23,7 +23,7 @@ def new_q_table_state(big_list):
 
     temp = []
     for i in big_list:
-        temp.append(i.gate_id)
+        temp.append(i.cgp)
         temp.append(i.type.value)
 
         for x in i.inputs:

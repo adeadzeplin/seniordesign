@@ -87,7 +87,7 @@ def circuit_connection_check(listofallgates):
     # checks is each gate has any inputs and outputs        #can simplify
     for gate in listofallgates:
         for j in range(len(gate.outputs)):
-            if gate.type == 0:
+            if gate.type == 0:      #if  input gate does not have outputs
                 if len(gate.outputs[j].mated_to) == 0:
                     return circuit_errors.ERROR_CIRCUIT_INPUT
                 else:
@@ -96,24 +96,22 @@ def circuit_connection_check(listofallgates):
                 if len(gate.outputs[j].mated_to) == 0:
                     return circuit_errors.ERROR_GATE
                 elif len(gate.inputs[j].mated_to) > 2:
-                    print("ERROR_MORE_THAN_2_MATED")
                     return circuit_errors.ERROR_MORE_THAN_2_MATED
                 else:
                     pass  # print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
 
         for k in range(len(gate.inputs)):
-            if gate.type == 1:
+            if gate.type == 1:      #if output gate have no inputs or more than 1 input
                 if len(gate.inputs[k].mated_to) == 0 or len(gate.inputs[k].mated_to) > 1:
                     return circuit_errors.ERROR_CIRCUIT_OUTPUT
                 else:
                     pass  # print(gate.gate_id,gate.inputs[k].mated_to)
             elif gate.type != 0:        #error check #1
-                #print(gate.inputs[k].mated_to[0])
-                if len(gate.inputs[k].mated_to) == [] :
-                    print("ERROR_GATE_MISSING_INPUTS")
+                if gate.inputs[k].mated_to == []:
+                    # print("ERROR_GATE_MISSING_INPUTS")
                     return circuit_errors.ERROR_GATE_MISSING_INPUTS
                 elif len(gate.inputs[k].mated_to) > 2:
-                    print("ERROR_MORE_THAN_2_MATED")
+                    # print("ERROR_MORE_THAN_2_MATED")
                     return circuit_errors.ERROR_MORE_THAN_2_MATED
 
 
@@ -121,10 +119,11 @@ class circuit_errors(enum.Enum):
     # Circuit Error codes
     ERROR_CIRCUIT_INPUT = 10        #if input gate has no mated gates
     ERROR_CIRCUIT_OUTPUT = 20       #if output gate has no mated gates
-    ERROR_GATE = 30                 #if gate doesnt have the right amount of mated inputs and outputs (1,2)
-    ERROR_MISSING_INPUT = 40        #there are no input gates in the cirucit
-    ERROR_MISSING_LOGIC = 50        #there are no gates in the cirucit
-    ERROR_MISSING_OUTPUT = 60       #there are no output gates in the cirucit
+    ERROR_GATE_IN = 30              #if gate doesnt have the right amount of mated inputs (1,2)
+    ERROR_GATE_OUT= 30              #if gate doesnt have the right amount of mated outputs (1,2)
+    ERROR_MISSING_INPUT = 40        #there are no input gates in the circuit
+    ERROR_MISSING_LOGIC = 50        #there are no logic gates in the circuit
+    ERROR_MISSING_OUTPUT = 60       #there are no output gates in the circuit
     ERROR_GATE_MISSING_INPUTS = 70  #gate has no mated gates
     ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
     ERROR_MORE_THAN_2_MATED = 90
@@ -218,6 +217,11 @@ def table_output(a, b, gatetype):
                 output.append(0)
             else:
                 output.append(1)
+    elif gatetype == 8:
+        if a == [] :
+            output = b
+        else:
+            output =a
 
     return output
 
