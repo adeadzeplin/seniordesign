@@ -9,11 +9,11 @@ from CVS_.CVS_parser import runParser
 
 def main():
     historical_fitness = []
-    generation = 0
+    generation = 1
     running = True
     while running:
         print('GENERATION', generation)
-        population = 100
+        population = 10
         generations = 100
         LUCA = EvolutionaryAlgorithm(population, generations)
         LUCA.initialization()
@@ -39,15 +39,13 @@ def main():
             Circuit_Errors = circuit_connection_check(i.stan_circuit)
             if Circuit_Errors == None:
                 i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
-                print(i.fitness)
+                print('GENERATION', generation, i.fitness)
                 historical_fitness.append(i.fitness)
             else:
                 print("Error: ", Circuit_Errors)
-                for j in i.stan_circuit:
-                    j.g_print()
+
         print(historical_fitness)
         running = LUCA.termination()
-        print(running)
         generation += 1
         LUCA.crossover()
         LUCA.mutation()

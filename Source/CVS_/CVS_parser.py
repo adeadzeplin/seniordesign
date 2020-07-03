@@ -122,17 +122,17 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
                         if gate.outputs[0]._ID == connector_id:
                             # print(gate.gate_id,gate.tableOutput)
                             connected_gate_output.append((gate.tableOutput))
-                if i.type == 4 or i.type == 8:
-                    i.tableOutput = table_output(connected_gate_output[0], [], i.type)
-                elif i.type == 99:
-                    pass
-                else:
-                    if connected_gate_output[0] == []:
-                        return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
-                        # return "put error here"
-                    else:
-                    # print(connected_gate_output, i.gate_id)
-                        i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+        if i.type == 4 or i.type == 8:
+            i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+        elif i.type == 99:
+            pass
+        else:
+            if connected_gate_output[0] == []:
+                return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
+                # return "put error here"
+            else:
+            # print(connected_gate_output, i.gate_id)
+                i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
 
 
 
