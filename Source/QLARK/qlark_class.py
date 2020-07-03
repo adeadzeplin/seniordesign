@@ -18,7 +18,7 @@ class Qlark:
     def __init__(self,thread_ID,setupdict):
         self.thread_ID = thread_ID
         # AI constants
-        self.EPISODE_NUM = 100000    # number of circuit Attempts
+        self.EPISODE_NUM = 10000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
