@@ -131,10 +131,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
                 return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
                 # return "put error here"
             else:
-            # print(connected_gate_output, i.gate_id)
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
-
-
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
