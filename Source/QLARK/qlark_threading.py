@@ -6,15 +6,15 @@ import numpy as np
 class QlarkThread(threading.Thread):
     threadIDcounter = 1
 
-    def __init__(self, truthtable, trainingsetnum):
+    def __init__(self, setupdict):
         super().__init__()
         self.id = QlarkThread.threadIDcounter
         QlarkThread.threadIDcounter +=1
-        self.truthtable = truthtable
-        self.trainingsetnum = trainingsetnum
+        self.trainingsetnum = setupdict['trainingsetspthread']
         self.qtable = None
         self.success_flag = False
         self.success_counter = 0
+        self.setupdict = setupdict
 
     def run(self):
         print(f"Starting Thread : {self.id}")
@@ -25,7 +25,7 @@ class QlarkThread(threading.Thread):
         print(f"Exiting Thread: {self.id}")
 
     def TrainQlark(self):
-        Qlearningai = Qlark(self.truthtable,self.id)
+        Qlearningai = Qlark(self.id,self.setupdict)
         for i in range(self.trainingsetnum):
             print(f"Thread: {self.id} - Number of training sets remaining: {self.trainingsetnum-i}")
             Qlearningai.train()
@@ -39,15 +39,17 @@ class QlarkThread(threading.Thread):
 
 def saveqtable(q_table):
     print("\nSAVING Q-table")
-    with open("qtable.pickle", "wb") as f:  # every once in a while autosave just in case
-        pickle.dump(q_table, f)
+    f = open("QLARK/qtable.pickle", "wb")
+    pickle.dump(q_table, f)
+    f.close()
 
-def Needlethreading(thread_num,desired_truth,trainingsetnum):
+
+def Needlethreading(setupdict):
     qtablelist = []
     thread_list = []
 
-    for i in range(thread_num):
-        tempthread = QlarkThread(desired_truth,trainingsetnum)
+    for i in range(setupdict['totalthreads']):
+        tempthread = QlarkThread(setupdict)
         tempthread.start()
         thread_list.append(tempthread)
     for thread in thread_list:
@@ -71,15 +73,35 @@ def Needlethreading(thread_num,desired_truth,trainingsetnum):
 
 
     saveqtable(best_qtable)
-    RunBestAI(desired_truth)
+    RunBestAI(setupdict)
     thread_list[thread_winner_index].Q_AI.showaidata()
 
-def RunBestAI(desired_truth):
-    BestAI = Qlark(desired_truth,"BESTPOSSIBLE")
+def notthreading(setupdict):
+    Qlearningai = Qlark(33, setupdict)
+    learnFlag = False
+    for i in range(setupdict["trainingsetspthread"]):
+        print(f'Number of training sets remaining: {setupdict["trainingsetspthread"] - i}')
+        Qlearningai.train()
+        saveqtable(Qlearningai.q_table)
+        if Qlearningai.success_flag == True:
+            print(f"QLARK SUCCESSFULLY LEARNED on set: {i}")
+            learnFlag = True
+            break
+    Qlearningai.environment.parseLogic()
+    # Qlearningai.showaidata()
+    return learnFlag
+
+
+
+
+
+def RunBestAI(setupdict):
+    BestAI = Qlark("BESTPOSSIBLE",setupdict)
     BestAI.EPSILONSTART = .25
     BestAI.showcase_flag = True
     BestAI.train()
     BestAI.environment.parseLogic()
+    BestAI.showaidata()
 
 
 

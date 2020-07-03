@@ -15,18 +15,18 @@ def square(val):
 
 
 class Qlark:
-    def __init__(self,desiredlogic,thread_ID):
+    def __init__(self,thread_ID,setupdict):
         self.thread_ID = thread_ID
         # AI constants
-        self.EPISODE_NUM = 1000    # number of circuit Attempts
+        self.EPISODE_NUM = 100000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
         self.QRANDOMINIT = -1  # The range of random starting values
-        self.EPSILONSTART = .7
-        self.NUM_STEPS = 12 # self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
+        self.EPSILONSTART = 1
+        self.NUM_STEPS = setupdict['maxsteps'] # self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         # print(self.NUM_STEPS)
-        self.DESIREDLOGIC = desiredlogic
+        self.DESIREDLOGIC = setupdict['truthtable']
 
 
         # AI Variables
@@ -36,13 +36,19 @@ class Qlark:
         self.showcase_flag = False
         self.success_counter = 0
         try:
-            with open("qtable.pickle", "rb") as f:
-                self.q_table = pickle.load(f)
+            f = open("QLARK/qtable.pickle", "rb")
+            self.q_table = pickle.load(f)
+            f.close()
+
         except:
             self.q_table = dict()
 
         # Space for AI to play and get feedback from
-        self.environment = QlarkCircuitInterface(DESIRED_LOGIC=self.DESIREDLOGIC, C_IN_CT=2, C_OUT_CT=2, MAX_GATE_NUM=5, NUM_OF_GATE_TYPES=6)
+        self.environment = QlarkCircuitInterface(DESIRED_LOGIC=self.DESIREDLOGIC,
+                                                 C_IN_CT=setupdict['circuitinputs'],
+                                                 C_OUT_CT=setupdict['circuitoutputs'],
+                                                 MAX_GATE_NUM=setupdict['maxgatenum'],
+                                                 ALLOWED_GATE_TYPES=setupdict['allowedgatetypes'])
 
 
     def runBest(self):
@@ -125,18 +131,16 @@ class Qlark:
                 episode_reward += new_q
 
                 if self.environment.circuitstatus == CircuitStatus.Correct:
-                    # print(f"SUCCESS ON EPISODE: {episode}")
                     self.success_flag = True
                     self.success_counter += 1
                     if self.showcase_flag:
-                        # self.environment.printout()
-                        # self.environment.parseLogic()
+
                         return
                     # print(f"SUCCESS ON EPISODE: {episode}")
                     if episode % 5000 == 0 :
                         print(f"THREAD: {self.thread_ID} SUCCESS ON EPISODE: {episode}")
                         # self.environment.printout()
-                    # return
+
                     break
                 elif self.environment.circuitstatus != CircuitStatus.Valid:
                     break
@@ -146,11 +150,11 @@ class Qlark:
                 self.epsilon *= self.EPS_DECAY
             if episode % 5000 == 0:
                 print(f"THREAD: {self.thread_ID} REMAINING EPISODES: {self.EPISODE_NUM - episode}")
-                # self.saveq()
 
-            if self.epsilon < 0.0001:
-            #     self.epsilon = self.EPSILONSTART
-                print(f"THREAD: {self.thread_ID} Cutting Off Training Set")
+
+            if self.epsilon < 0.00001:
+                # self.epsilon = self.EPSILONSTART
+                print(f"THREAD: {self.thread_ID} Cutting off Training set at {episode}")
                 break
 
         # self.saveq()
@@ -159,19 +163,14 @@ class Qlark:
         #
         # self.showaiadata()
 
-    def saveq(self):
-        # print("\nSAVING Q-table")
-        pathname = f"qtable_thread{self.thread_ID}.pickle"
-        with open(pathname, "wb") as f:  # every once in a while autosave just in case
-            pickle.dump(self.q_table, f)
-        # print("SAVING finished")
+    # def saveq(self):
+    #     # print("\nSAVING Q-table")
+    #     pathname = f"qtable_thread{self.thread_ID}.pickle"
+    #     with open(pathname, "wb") as f:  # every once in a while autosave just in case
+    #         pickle.dump(self.q_table, f)
+    #     # print("SAVING finished")
 
 
-        # print("SAVING finished")
-        # with open(f"qtable-{int(time.time())}.pickle", "wb") as f:
-        #     pickle.dump(self.q_table, f)
-        # with open("qtable_backup.pickle", "wb") as f:
-        #     pickle.dump(self.q_table, f)
 
     def showaidata(self):
 
