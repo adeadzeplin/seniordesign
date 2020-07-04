@@ -99,7 +99,7 @@ class QlarkGui:
             self.queue.put(whilecounter)
 
             print(f"{whilecounter}th pass of the infiniteLoop")
-            learnflag, qai = qt.Needlethreading(self.initdict,self.queue)
+            learnflag, qai = qt.notthreading(self.initdict)
             # textstring = qai.environment.getprintoutstring()
             # print("going in")
             textstring = qai.environment.getfancyprintoutstring()

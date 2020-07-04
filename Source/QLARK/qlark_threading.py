@@ -17,6 +17,7 @@ class QlarkThread(threading.Thread):
         self.setupdict = setupdict
         self.queue = queue
 
+
     def run(self):
         print(f"Starting Thread : {self.id}")
         self.Q_AI = self.TrainQlark()
