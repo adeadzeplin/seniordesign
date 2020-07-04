@@ -1,6 +1,5 @@
 import numpy as np
 from LUCA.luca_evolutionary_algorithm import EvolutionaryAlgorithm
-from CVS_.CVS_gate_class import Gate, Connector
 from LUCA.luca_circuit import *
 from LUCA.luca_functions import connect_gates
 from CVS_.CVS_circuit_calculations import circuit_connection_check
@@ -13,11 +12,12 @@ def main():
     running = True
     while running:
         print('GENERATION', generation)
-        population = 10
-        generations = 100
+        population = 50
+        generations = 1000
         LUCA = EvolutionaryAlgorithm(population, generations)
         LUCA.initialization()
-        ogCircuitOutput = [[0, 1, 1, 0], [0, 0, 0, 1]]
+        #ogCircuitOutput = [[0, 1, 1, 0], [0, 0, 0, 1]]
+        ogCircuitOutput = [[0, 1, 1, 0, 1, 0, 0, 1], [0, 0, 0, 1, 0, 1, 1, 1]]
         for p in LUCA.population:
             # INITIALIZATION CONTINUATION
             Gate.gate_id_counter = 0
@@ -39,7 +39,7 @@ def main():
             Circuit_Errors = circuit_connection_check(i.stan_circuit)
             if Circuit_Errors == None:
                 i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
-                print('GENERATION', generation, i.fitness)
+                print('GENERATION', generation)
                 historical_fitness.append(i.fitness)
             else:
                 print("Error: ", Circuit_Errors)
@@ -55,3 +55,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -5,8 +5,8 @@ import ttg
 
 
 def runParser(listOfGates, ogCircuitOutput):
-    for gate in listOfGates:
-        gate.g_print()
+    #for gate in listOfGates:
+      #  gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     print("Circuit Output:", returnValue)
@@ -127,7 +127,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            if connected_gate_output[0] == []:
+            if not connected_gate_output[0] or not connected_gate_output[1]:
                 return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
                 # return "put error here"
             else:

@@ -12,10 +12,10 @@ class EvolutionaryAlgorithm:
         self.max_num_generations = gens
 
     def initialization(self):
-        inputs = 2
+        inputs = 3
         outputs = 2
-        rows = 2
-        columns = 1
+        rows = 4
+        columns = 4
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)
@@ -24,7 +24,6 @@ class EvolutionaryAlgorithm:
         print("SELECT")
 
     def crossover(self):
-        print("CROSSOVER")
         for i in range(0, self.population_size):
             parent1 = accept_reject(self.population_size, self.population)
             parent2 = accept_reject(self.population_size, self.population)
@@ -33,7 +32,6 @@ class EvolutionaryAlgorithm:
             self.new_population.append(child)
 
     def mutation(self):
-        print("MUTATION")
         mutation_rate = 0.10
         for i in self.new_population:
             mutate_flag = False

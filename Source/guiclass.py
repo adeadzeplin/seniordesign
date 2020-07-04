@@ -2,6 +2,7 @@ from tkinter import Tk, Label, Button, Checkbutton,IntVar, StringVar
 from QLARK.qlark_main import qlarklearn
 from CVS_.CVS_gate_class import GateType
 
+
 class MyFirstGUI:
     def __init__(self, master):
         self.input_truthtable = []
@@ -78,6 +79,7 @@ class MyFirstGUI:
 
         label4 = Label(self.master,text=self.initdict['truthtable'])
         label4.grid(row=2,column=2)
+
     def circuit2(self):
 
         self.initdict = {
