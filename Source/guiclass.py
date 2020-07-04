@@ -1,5 +1,5 @@
 from tkinter import *
-
+from qlark_gui_class import ThreadedQlarkClient
 
 class MyFirstGUI:
     def __init__(self, master):
@@ -31,9 +31,17 @@ class MyFirstGUI:
 
     def qlarkgui(self):
         from qlark_gui_class import QlarkGui
-        rootq = Tk(className='Python Examples - Window Size')
-        qlark_gui = QlarkGui(rootq)
-        print("huh")
+
+        root = Tk()
+
+        client = ThreadedQlarkClient(root)
+        root.mainloop()
+
+
+
+        # rootq = Tk(className='Python Examples - Window Size')
+        # qlark_gui = QlarkGui(rootq)
+        # print("huh")
 
 
         #if error return maybe display in window

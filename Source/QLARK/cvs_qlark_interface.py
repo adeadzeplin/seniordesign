@@ -77,13 +77,6 @@ class QlarkCircuitInterface():
     def getfancyprintoutstring(self):
 
         arrow = ' -> '
-        # arrowup = ' ----^'
-        #
-        # f'CircInpt: 0{arrow}AND:4{arrow}CircOut:2    '
-        # f'CircInpt: 1{arrowup}                       '
-        # f'CircInpt: 0{arrow}XOR:5{arrow}CircOut:3    '
-        # f'CircInpt: 1{arrowup}                       '
-
         superlist = []
         for gate in self.list_of_gates:
             megalist = []
@@ -105,9 +98,7 @@ class QlarkCircuitInterface():
 
         return theprintout
 
-        # for gate in self.list_of_gates:
-        #     string += f"\ngate_id: {gate.gate_id},    type: {gate.type.name},  numofinputs: {len(gate.inputs)},    numofoutputs: {len(gate.outputs)}"
-        # return string
+
 
     def getprintoutstring(self):
         string =''

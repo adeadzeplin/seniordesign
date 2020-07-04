@@ -80,7 +80,7 @@ def Needlethreading(setupdict,thequeue):
     return thread_list[thread_winner_index].success_flag, thread_list[thread_winner_index].Q_AI
 
 
-def notthreading(setupdict,quq):
+def notthreading(setupdict):
     Qlearningai = Qlark(33, setupdict)
     learnFlag = False
     for i in range(setupdict["trainingsetspthread"]):

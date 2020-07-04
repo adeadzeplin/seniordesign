@@ -128,7 +128,7 @@ class QlarkGui:
                     'maxsteps': 10,                                             # For Qlark             please dont touch
                     'totalthreads': 1,                                          # For Qlark threading   please dont touch
                     'trainingsetspthread': 1,                                    # For Qlark threading   please dont touch
-                    'savepath': 'halfadder_qtable.pickle'
+                    'savepath': f'{getrootpath()}halfadder_qtable.pickle'
                 }
         self.statuslabel.configure(text=f"Half Adder Selected:\n{self.initdict['truthtable']}")
 
@@ -149,12 +149,12 @@ class QlarkGui:
             'maxsteps': 15,                             # For Qlark             please dont touch
             'totalthreads': 1,                          # For Qlark threading   please dont touch
             'trainingsetspthread': 1,                    # For Qlark threading   please dont touch
-            'savepath': 'fulladder_qtable.pickle'
+            'savepath': f'{getrootpath()}fulladder_qtable.pickle'
         }
         self.statuslabel.configure(text=f"Full Adder Selected:\n{self.initdict['truthtable']}")
 
 
-class ThreadedClient:
+class ThreadedQlarkClient:
     """
     Launch the main part of the GUI and the worker thread. periodicCall and
     endApplication could reside in the GUI part, but putting them here
@@ -212,9 +212,17 @@ class ThreadedClient:
 
     def endApplication(self):
         self.running = 0
+def getrootpath():
+    import os
 
-rand = random.Random(  )
-root = tkinter.Tk(  )
+    ROOT_DIR = os.path.abspath(os.curdir)
+    dirs = ROOT_DIR.split('\\')
+    dirs.pop()
+    rootpath = ''
+    for i in dirs:
+        rootpath += i + '/'
+    # print(rootpath)
+    return rootpath
 
-client = ThreadedClient(root)
-root.mainloop(  )
+
+

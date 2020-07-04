@@ -1,6 +1,6 @@
 # from CVS_.CVS_circuit_creation import gateNumtoName
 from CVS_.CVS_constants import INPUTSTOTAL
-from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare, circuit_Metrics
+from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare, circuit_Metrics, circuit_errors
 import ttg
 
 
@@ -127,14 +127,12 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            if len(connected_gate_output)>0:
-                if len(connected_gate_output[0]) == 0 or len(connected_gate_output[1]) == 0  :
-                    return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
-                    # return "put error here"
-                else:
-                    i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+            if len(connected_gate_output[0]) == 0 or len(connected_gate_output[1]) == 0  :
+                return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
+                # return "put error here"
             else:
-                return 'error city'
+                i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
             # print(i.inputs[j].mated_to)
