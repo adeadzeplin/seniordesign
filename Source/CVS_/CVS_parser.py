@@ -127,12 +127,14 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            if connected_gate_output[0] == []:
-                return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
-                # return "put error here"
+            if len(connected_gate_output)>0:
+                if len(connected_gate_output[0]) == 0 or len(connected_gate_output[1]) == 0  :
+                    return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
+                    # return "put error here"
+                else:
+                    i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
             else:
-                i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
-
+                return 'error city'
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
             # print(i.inputs[j].mated_to)

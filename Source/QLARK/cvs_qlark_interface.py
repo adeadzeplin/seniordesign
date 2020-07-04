@@ -49,6 +49,74 @@ class QlarkCircuitInterface():
         # Total Number of Actions posible that the AI can Take
         self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + len(self.ALLOWED_GATE_TYPES)
 
+    def scancirc(self,scanedorder,gate_id):
+        # print(scanedorder)
+        gate = None
+        for i in self.list_of_gates:
+            # print((i.gate_id , gate_id))
+            if i.gate_id == gate_id:
+                scanedorder.append((i.gate_id, i.type.name))
+                gate = i
+                break
+        if gate == None:
+            print('fuck')
+        # check if the gate has any inputs
+        if len(gate.inputs) > 0:
+            for inputport in gate.inputs:
+                #check if input port has connections
+                if len(inputport.mated_to)>0:
+                    for ngate in self.list_of_gates:
+                        for outputport in ngate.outputs:
+                            for matched_id in outputport.mated_to:
+                                if matched_id == inputport._ID:
+                                    self.scancirc(scanedorder,ngate.gate_id)
+                                    break
+        return scanedorder
+
+
+    def getfancyprintoutstring(self):
+
+        arrow = ' -> '
+        # arrowup = ' ----^'
+        #
+        # f'CircInpt: 0{arrow}AND:4{arrow}CircOut:2    '
+        # f'CircInpt: 1{arrowup}                       '
+        # f'CircInpt: 0{arrow}XOR:5{arrow}CircOut:3    '
+        # f'CircInpt: 1{arrowup}                       '
+
+        superlist = []
+        for gate in self.list_of_gates:
+            megalist = []
+            if gate.type == cvs.GateType.circuitOutput:
+                # megalist.append(self.scancirc(megalist,gate.gate_id))
+                superlist.append(self.scancirc(megalist,gate.gate_id))
+        print(superlist)
+        theprintout = ''
+        for logicout in superlist:
+
+            for line in reversed(logicout):
+                if line[1] == cvs.GateType.circuitOutput.name:
+                    theprintout += f"CircOUT:{line[0]}"
+                elif line[1] == cvs.GateType.circuitInput.name:
+                    theprintout += f"CircIN:{line[0]}{arrow}"
+                else:
+                    theprintout += f"{line[1]}:{line[0]}{arrow}"
+            theprintout+="\n"
+
+        return theprintout
+
+        # for gate in self.list_of_gates:
+        #     string += f"\ngate_id: {gate.gate_id},    type: {gate.type.name},  numofinputs: {len(gate.inputs)},    numofoutputs: {len(gate.outputs)}"
+        # return string
+
+    def getprintoutstring(self):
+        string =''
+
+        for gate in self.list_of_gates:
+
+            string += f"\ngate_id: {gate.gate_id},    type: {gate.type.name},  numofinputs: {len(gate.inputs)},    numofoutputs: {len(gate.outputs)}"
+        return string
+
     def printout(self):
         for gate in self.list_of_gates:
             gate.g_print()
@@ -104,6 +172,7 @@ class QlarkCircuitInterface():
             Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
             if Circuit_Errors == None:
                 self.circuitlogic = CVS_parser.runQParser(self.list_of_gates, self.DESIRED_LOGIC)
+
             else:
                 return self.circuitstatus
 

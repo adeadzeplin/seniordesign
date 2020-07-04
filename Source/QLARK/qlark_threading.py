@@ -6,7 +6,7 @@ import numpy as np
 class QlarkThread(threading.Thread):
     threadIDcounter = 1
 
-    def __init__(self, setupdict):
+    def __init__(self, setupdict,queue):
         super().__init__()
         self.id = QlarkThread.threadIDcounter
         QlarkThread.threadIDcounter +=1
@@ -15,6 +15,7 @@ class QlarkThread(threading.Thread):
         self.success_flag = False
         self.success_counter = 0
         self.setupdict = setupdict
+        self.queue = queue
 
     def run(self):
         print(f"Starting Thread : {self.id}")
@@ -37,19 +38,19 @@ class QlarkThread(threading.Thread):
 
 
 
-def saveqtable(q_table):
+def saveqtable(q_table,dicto):
     print("\nSAVING Q-table")
-    f = open("QLARK/qtable.pickle", "wb")
+    f = open(dicto['savepath'], "wb")
     pickle.dump(q_table, f)
     f.close()
 
 
-def Needlethreading(setupdict):
+def Needlethreading(setupdict,thequeue):
     qtablelist = []
     thread_list = []
-
+    QlarkThread.threadIDcounter = 1
     for i in range(setupdict['totalthreads']):
-        tempthread = QlarkThread(setupdict)
+        tempthread = QlarkThread(setupdict,thequeue)
         tempthread.start()
         thread_list.append(tempthread)
     for thread in thread_list:
@@ -65,6 +66,7 @@ def Needlethreading(setupdict):
             if thread.success_counter >= max_success:
                 max_success = thread.success_counter
                 thread_winner_index = i
+
     if max_success == 0:
         thread_winner_index = np.random.randint(len(thread_list))
     print(f"max success count: {max_success}")
@@ -72,24 +74,26 @@ def Needlethreading(setupdict):
     best_qtable = thread_list[thread_winner_index].qtable
 
 
-    saveqtable(best_qtable)
-    RunBestAI(setupdict)
-    thread_list[thread_winner_index].Q_AI.showaidata()
+    saveqtable(best_qtable,setupdict)
+    # RunBestAI(setupdict)
+    thread_list[thread_winner_index].Q_AI.environment.parseLogic()
+    return thread_list[thread_winner_index].success_flag, thread_list[thread_winner_index].Q_AI
 
-def notthreading(setupdict):
+
+def notthreading(setupdict,quq):
     Qlearningai = Qlark(33, setupdict)
     learnFlag = False
     for i in range(setupdict["trainingsetspthread"]):
         print(f'Number of training sets remaining: {setupdict["trainingsetspthread"] - i}')
         Qlearningai.train()
-        saveqtable(Qlearningai.q_table)
+        saveqtable(Qlearningai.q_table,setupdict)
         if Qlearningai.success_flag == True:
             print(f"QLARK SUCCESSFULLY LEARNED on set: {i}")
             learnFlag = True
             break
     Qlearningai.environment.parseLogic()
     # Qlearningai.showaidata()
-    return learnFlag
+    return learnFlag, Qlearningai
 
 
 

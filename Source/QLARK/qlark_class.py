@@ -18,12 +18,12 @@ class Qlark:
     def __init__(self,thread_ID,setupdict):
         self.thread_ID = thread_ID
         # AI constants
-        self.EPISODE_NUM = 10000    # number of circuit Attempts
+        self.EPISODE_NUM = 5000    # number of circuit Attempts
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
         self.QRANDOMINIT = -1  # The range of random starting values
-        self.EPSILONSTART = 1
+        self.EPSILONSTART = .2
         self.NUM_STEPS = setupdict['maxsteps'] # self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         # print(self.NUM_STEPS)
         self.DESIREDLOGIC = setupdict['truthtable']
@@ -35,8 +35,10 @@ class Qlark:
         self.success_flag = False
         self.showcase_flag = False
         self.success_counter = 0
+        self.most_resent_successful_circuit = None
+
         try:
-            f = open("QLARK/qtable.pickle", "rb")
+            f = open(setupdict['savepath'], "rb")
             self.q_table = pickle.load(f)
             f.close()
 
