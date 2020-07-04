@@ -101,7 +101,7 @@ class QlarkGui:
             print(f"{whilecounter}th pass of the infiniteLoop")
             learnflag, qai = qt.Needlethreading(self.initdict,self.queue)
             # textstring = qai.environment.getprintoutstring()
-            print("going in")
+            # print("going in")
             textstring = qai.environment.getfancyprintoutstring()
             # print(textstring)
             self.queue.put(textstring)
@@ -217,7 +217,8 @@ def getrootpath():
 
     ROOT_DIR = os.path.abspath(os.curdir)
     dirs = ROOT_DIR.split('\\')
-    dirs.pop()
+    if dirs[-0] == 'QLARK':
+        dirs.pop()
     rootpath = ''
     for i in dirs:
         rootpath += i + '/'
