@@ -16,6 +16,14 @@ def runParser(listOfGates, ogCircuitOutput):
     print("\n","Power(uA) | Delay(ns) | Transistors ", metrics)
     return circuitPercentSame
 
+def ParserMetrics(listOfGates, ogCircuitOutput):
+    CrawlerOut = circuitParsing(listOfGates)
+    returnValue = circuitConnecting(CrawlerOut)
+    circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
+    # print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+    metrics = circuit_Metrics(listOfGates)
+    # print("\n","Power(uA) | Delay(ns) | Transistors ", metrics)
+    return circuitPercentSame,metrics,returnValue
 
 
 def runQParser(listOfGates, ogCircuitOutput):

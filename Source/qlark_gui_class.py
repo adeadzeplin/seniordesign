@@ -6,7 +6,7 @@ import queue
 from tkinter import Tk, Label, Button, Checkbutton,IntVar, StringVar,messagebox
 from CVS_.CVS_gate_class import GateType
 import QLARK.qlark_threading as qt
-
+from QLARK.cvs_qlark_interface import CircuitStatus
 
 class QlarkGui:
     def __init__(self, master, queue, endCommand):
@@ -50,29 +50,76 @@ class QlarkGui:
         self.looplabel = Label(master,text="Cycle Number: Na")
         self.looplabel.grid(row=3, column=0)
 
-        #circuit output display
-        self.outputlabel = Label(master,text="Circuit Printout:")
-        self.outputlabel.grid(row=4, column=5)
+        #circuit output label ------------
+        self.circuitlabel = Label(master,text="Circuit Printout:")
+        self.circuitlabel.grid(row=4, column=5)
         # circuit output display
-        self.outputlabel = Label(master, text="Circuit Data goes here")
-        self.outputlabel.grid(row=5, column=5)
+        self.circuitoutputlabel = Label(master, text="Current Circuit Data goes here")
+        self.circuitoutputlabel.grid(row=5, column=5)
 
+        self.circuitmetricslabel = Label(master, text="")
+        self.circuitmetricslabel.grid(row=6, column=5)
 
+        #--------------------------------
+        # SPACER COLUMN
+        self.label1 = Label(master, text="", width=10)
+        self.label1.grid(row=0, column=6)
+
+        # correct circuit ------------
+        self.recentcorrectcircuitlabel= Label(master, text="Correct Circuit Printout:")
+        self.recentcorrectcircuitlabel.grid(row=4, column=7)
+
+        # correct circuit printout
+        self.recentcorrectcircuitdatalabel = Label(master, text="")
+        self.recentcorrectcircuitdatalabel.grid(row=5, column=7)
+
+        # correct circuit metrics
+        self.correctmetricsdatalabel = Label(master, text="",width=10)
+        self.correctmetricsdatalabel.grid(row=4, column=8)
+        # ---------------------------
+    def metricmessage(self,dict):
+        # "Power(uA) | Delay(ns) | Transistors "
+        metricmessage =  f'Truthtable'
+        metricmessage +='\n__________________________________\n'
+        metricmessage +=f'{dict["CircuitLogic"]}\n\n'
+
+        metricmessage += 'Metrics\n'
+        metricmessage +=  '________________________________\n'
+        metricmessage += f'Percent Correct:    {dict["PercentCorrect"]}\n'
+        metricmessage += f'Power Consumed(uA): {dict["PowerConsumed"]}\n'
+        metricmessage += f'Time Delay(ns):     {dict["TimeDelay"]}\n'
+        metricmessage += f'TransistorCount:    {dict["TransistorCount"]}\n'
+        return metricmessage
 
     def processIncoming(self):
         """Handle all messages currently in the queue, if any."""
         while self.queue.qsize(  ):
             try:
                 msg = self.queue.get(0)
-                # Check contents of message and do whatever is needed. As a
-                # simple test, print it (in real life, you would
-                # suitably update the GUI's display in a richer fashion).
-                # print(type(msg))
                 if isinstance(msg,int):
                     textdata = f'Cycle Number: {msg}'
                     self.looplabel.configure(text=textdata)
                 elif isinstance(msg,str):
-                    self.outputlabel.configure(text=msg)
+                    self.circuitoutputlabel.configure(text=msg)
+                    self.circuitmetricslabel.configure(text='No Metrics for this circuit')
+                elif isinstance(msg, dict):
+                    # ("Correct Circuit", textgoodcircuitstring,metrics)
+                    # metric_dict = {
+                    #     "CircuitStatus": "Correct Circuit",
+                    #     "CircuitPrintout": textgoodcircuitstring,
+                    #     "PercentCorrect": metrics[0],
+                    #     "PowerConsumed": metrics[1],
+                    #     "TimeDelay": metrics[2],
+                    #     "TransistorCount": metrics[3]
+                    # }
+                    if msg["CircuitStatus"] == "Correct Circuit":
+                        self.recentcorrectcircuitdatalabel.configure(text=msg["CircuitPrintout"])
+                        self.correctmetricsdatalabel.configure(text=self.metricmessage(msg))
+                    elif msg["CircuitStatus"] == "Complete Circuit":
+                        self.circuitoutputlabel.configure(text=msg["CircuitPrintout"])
+                        self.circuitmetricslabel.configure(text=self.metricmessage(msg))
+                    else:
+                        print("UNIDENTIFIED DICT")
 
             except queue.Empty:
                 # just on general principles, although we don't
@@ -100,11 +147,40 @@ class QlarkGui:
 
             print(f"{whilecounter}th pass of the infiniteLoop")
             learnflag, qai = qt.notthreading(self.initdict)
-            # textstring = qai.environment.getprintoutstring()
-            # print("going in")
-            textstring = qai.environment.getfancyprintoutstring()
-            # print(textstring)
-            self.queue.put(textstring)
+
+            if len(qai.environment.most_resent_successful_circuit)>0:
+                textgoodcircuitstring = qai.environment.get_good_fancyprintoutstring()
+                metrics = qai.environment.getparsermetrics(qai.environment.most_resent_successful_circuit)
+                # (percentsame, metrics[0], metrics[1], metrics[2])
+                # "Power(uA) | Delay(ns) | Transistors "
+                metric_dict = {
+                    "CircuitStatus":"Correct Circuit",
+                    "CircuitPrintout":textgoodcircuitstring,
+                    "PercentCorrect":metrics[0],
+                    "PowerConsumed":metrics[1],
+                    "TimeDelay":metrics[2],
+                    "TransistorCount":metrics[3],
+                    "CircuitLogic":metrics[4]
+
+                }
+                self.queue.put(metric_dict)
+
+            elif qai.environment.circuitstatus == CircuitStatus.Completed:
+                textstring = qai.environment.getfancyprintoutstring()
+                metrics = qai.environment.getparsermetrics(qai.environment.list_of_gates)
+                metric_dict = {
+                    "CircuitStatus": "Complete Circuit",
+                    "CircuitPrintout": textstring,
+                    "PercentCorrect": metrics[0],
+                    "PowerConsumed": metrics[1],
+                    "TimeDelay": metrics[2],
+                    "TransistorCount": metrics[3],
+                    "CircuitLogic":metrics[4]
+                }
+                self.queue.put(metric_dict)
+            else:
+                textstring = qai.environment.getfancyprintoutstring()
+                self.queue.put(textstring)
 
 
 

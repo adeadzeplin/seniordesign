@@ -35,7 +35,6 @@ class Qlark:
         self.success_flag = False
         self.showcase_flag = False
         self.success_counter = 0
-        self.most_resent_successful_circuit = None
 
         try:
             f = open(setupdict['savepath'], "rb")
@@ -137,6 +136,7 @@ class Qlark:
                 if self.environment.circuitstatus == CircuitStatus.Correct:
                     self.success_flag = True
                     self.success_counter += 1
+                    self.environment.most_resent_successful_circuit = self.environment.list_of_gates
                     if self.showcase_flag:
 
                         return

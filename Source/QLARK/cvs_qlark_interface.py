@@ -40,6 +40,7 @@ class QlarkCircuitInterface():
 
         # Circuit Variables
         self.list_of_gates = []
+        self.most_resent_successful_circuit = []
         self.circuitstatus = CircuitStatus.Valid
         self.circuitlogic = 0
         # Circuit Metrics
@@ -49,8 +50,10 @@ class QlarkCircuitInterface():
         # Total Number of Actions posible that the AI can Take
         self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + len(self.ALLOWED_GATE_TYPES)
 
+        self.recursion_depthCounter = 0
     def scancirc(self,scanedorder,gate_id):
         # print(scanedorder)
+        self.recursion_depthCounter += 1
         gate = None
         for i in self.list_of_gates:
             # print((i.gate_id , gate_id))
@@ -60,6 +63,9 @@ class QlarkCircuitInterface():
                 break
         if gate == None:
             print('fuck')
+        if self.recursion_depthCounter >= 300:
+            print("recursive termination")
+            return scanedorder
         # check if the gate has any inputs
         if len(gate.inputs) > 0:
             for inputport in gate.inputs:
@@ -71,6 +77,7 @@ class QlarkCircuitInterface():
                                 if matched_id == inputport._ID:
                                     self.scancirc(scanedorder,ngate.gate_id)
                                     break
+
         return scanedorder
 
 
@@ -83,6 +90,7 @@ class QlarkCircuitInterface():
             if gate.type == cvs.GateType.circuitOutput:
                 # megalist.append(self.scancirc(megalist,gate.gate_id))
                 superlist.append(self.scancirc(megalist,gate.gate_id))
+        self.recursion_depthCounter = 0
         print(superlist)
         theprintout = ''
         for logicout in superlist:
@@ -98,7 +106,60 @@ class QlarkCircuitInterface():
 
         return theprintout
 
+    def scan_good_circ(self,scanedorder,gate_id):
+        # print(scanedorder)
+        self.recursion_depthCounter += 1
+        gate = None
+        for i in self.most_resent_successful_circuit:
+            # print((i.gate_id , gate_id))
+            if i.gate_id == gate_id:
+                scanedorder.append((i.gate_id, i.type.name))
+                gate = i
+                break
+        if gate == None:
+            print('fuck')
+        if self.recursion_depthCounter >= 300:
+            print("recursive termination")
+            return scanedorder
+        # check if the gate has any inputs
+        if len(gate.inputs) > 0:
+            for inputport in gate.inputs:
+                #check if input port has connections
+                if len(inputport.mated_to)>0:
+                    for ngate in self.most_resent_successful_circuit:
+                        for outputport in ngate.outputs:
+                            for matched_id in outputport.mated_to:
+                                if matched_id == inputport._ID:
+                                    self.scancirc(scanedorder,ngate.gate_id)
+                                    break
 
+        return scanedorder
+
+
+    def get_good_fancyprintoutstring(self):
+
+        arrow = ' -> '
+        superlist = []
+        for gate in self.most_resent_successful_circuit:
+            megalist = []
+            if gate.type == cvs.GateType.circuitOutput:
+                # megalist.append(self.scancirc(megalist,gate.gate_id))
+                superlist.append(self.scancirc(megalist,gate.gate_id))
+        self.recursion_depthCounter = 0
+        print(superlist)
+        theprintout = ''
+        for logicout in superlist:
+
+            for line in reversed(logicout):
+                if line[1] == cvs.GateType.circuitOutput.name:
+                    theprintout += f"CircOUT:{line[0]}"
+                elif line[1] == cvs.GateType.circuitInput.name:
+                    theprintout += f"CircIN:{line[0]}{arrow}"
+                else:
+                    theprintout += f"{line[1]}:{line[0]}{arrow}"
+            theprintout+="\n"
+
+        return theprintout
 
     def getprintoutstring(self):
         string =''
@@ -119,8 +180,11 @@ class QlarkCircuitInterface():
         if Circuit_Errors == None:
             CVS_parser.runParser(self.list_of_gates, self.DESIRED_LOGIC)
         else:
-
              print(Circuit_Errors)
+    def getparsermetrics(self,list):
+        percentsame, metrics,circuitlogic = CVS_parser.ParserMetrics(list,self.DESIRED_LOGIC)
+        return (percentsame,metrics[0],metrics[1],metrics[2],circuitlogic)
+
 
     def checkciruitcompletion(self):
         for gate in self.list_of_gates:
