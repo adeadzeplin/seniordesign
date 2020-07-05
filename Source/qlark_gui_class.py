@@ -17,7 +17,7 @@ class QlarkGui:
         # console.pack(  )
         # Add more GUI stuff here depending on your specific needs
         self.master = master
-        master.geometry("1200x600+300+100")
+        # master.geometry("1000x600+300+100")
 
         self.initdict = None
 
@@ -71,12 +71,12 @@ class QlarkGui:
         self.recentcorrectcircuitlabel.grid(row=4, column=7)
 
         # correct circuit printout
-        self.recentcorrectcircuitdatalabel = Label(master, text="")
-        self.recentcorrectcircuitdatalabel.grid(row=5, column=7)
+        self.correctcircuitoutputlabel = Label(master, text="Correct Circuit Data goes here")
+        self.correctcircuitoutputlabel.grid(row=5, column=7)
 
         # correct circuit metrics
-        self.correctmetricsdatalabel = Label(master, text="",width=10)
-        self.correctmetricsdatalabel.grid(row=4, column=8)
+        self.correctmetricsdatalabel = Label(master, text="")
+        self.correctmetricsdatalabel.grid(row=6, column=7)
         # ---------------------------
     def metricmessage(self,dict):
         # "Power(uA) | Delay(ns) | Transistors "
@@ -114,7 +114,7 @@ class QlarkGui:
                     #     "TransistorCount": metrics[3]
                     # }
                     if msg["CircuitStatus"] == "Correct Circuit":
-                        self.recentcorrectcircuitdatalabel.configure(text=msg["CircuitPrintout"])
+                        self.correctcircuitoutputlabel.configure(text=msg["CircuitPrintout"])
                         self.correctmetricsdatalabel.configure(text=self.metricmessage(msg))
                     elif msg["CircuitStatus"] == "Complete Circuit":
                         self.circuitoutputlabel.configure(text=msg["CircuitPrintout"])
@@ -149,7 +149,7 @@ class QlarkGui:
             print(f"{whilecounter}th pass of the infiniteLoop")
             learnflag, qai = qt.notthreading(self.initdict)
 
-            if len(qai.environment.most_resent_successful_circuit)>0:
+            if qai.success_flag:
                 textgoodcircuitstring = qai.environment.getfancyprintoutstring(qai.environment.most_resent_successful_circuit)
                 metrics = qai.environment.getparsermetrics(qai.environment.most_resent_successful_circuit)
                 # (percentsame, metrics[0], metrics[1], metrics[2])

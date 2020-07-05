@@ -138,7 +138,7 @@ class Qlark:
                 if self.environment.circuitstatus == CircuitStatus.Correct:
                     self.success_flag = True
                     self.success_counter += 1
-                    self.environment.most_resent_successful_circuit = self.environment.list_of_gates
+                    self.environment.most_resent_successful_circuit = self.environment.list_of_gates.copy()
                     if self.showcase_flag:
 
                         return
