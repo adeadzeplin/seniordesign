@@ -149,7 +149,7 @@ class QlarkGui:
             learnflag, qai = qt.notthreading(self.initdict)
 
             if len(qai.environment.most_resent_successful_circuit)>0:
-                textgoodcircuitstring = qai.environment.get_good_fancyprintoutstring()
+                textgoodcircuitstring = qai.environment.getfancyprintoutstring(qai.environment.most_resent_successful_circuit)
                 metrics = qai.environment.getparsermetrics(qai.environment.most_resent_successful_circuit)
                 # (percentsame, metrics[0], metrics[1], metrics[2])
                 # "Power(uA) | Delay(ns) | Transistors "
@@ -166,7 +166,7 @@ class QlarkGui:
                 self.queue.put(metric_dict)
 
             elif qai.environment.circuitstatus == CircuitStatus.Completed:
-                textstring = qai.environment.getfancyprintoutstring()
+                textstring = qai.environment.getfancyprintoutstring(qai.environment.list_of_gates)
                 metrics = qai.environment.getparsermetrics(qai.environment.list_of_gates)
                 metric_dict = {
                     "CircuitStatus": "Complete Circuit",
@@ -179,7 +179,7 @@ class QlarkGui:
                 }
                 self.queue.put(metric_dict)
             else:
-                textstring = qai.environment.getfancyprintoutstring()
+                textstring = qai.environment.getfancyprintoutstring(qai.environment.list_of_gates)
                 self.queue.put(textstring)
 
 
@@ -199,7 +199,7 @@ class QlarkGui:
                     'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],                 # Truthtable
                     'circuitinputs': 2,                                         #
                     'circuitoutputs': 2,                                        #
-                    'maxgatenum': 2,                                            # Total num of gates AI is allowed toplace
+                    'maxgatenum': 3,                                            # Total num of gates AI is allowed toplace
                     'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
                     'maxsteps': 10,                                             # For Qlark             please dont touch
                     'totalthreads': 1,                                          # For Qlark threading   please dont touch
@@ -293,7 +293,7 @@ def getrootpath():
 
     ROOT_DIR = os.path.abspath(os.curdir)
     dirs = ROOT_DIR.split('\\')
-    if dirs[-0] == 'QLARK':
+    if dirs[-1] == 'QLARK':
         dirs.pop()
     rootpath = ''
     for i in dirs:

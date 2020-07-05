@@ -6,7 +6,7 @@ import numpy as np
 class QlarkThread(threading.Thread):
     threadIDcounter = 1
 
-    def __init__(self, setupdict,queue):
+    def __init__(self, setupdict):
         super().__init__()
         self.id = QlarkThread.threadIDcounter
         QlarkThread.threadIDcounter +=1
@@ -15,7 +15,7 @@ class QlarkThread(threading.Thread):
         self.success_flag = False
         self.success_counter = 0
         self.setupdict = setupdict
-        self.queue = queue
+
 
 
     def run(self):
@@ -46,12 +46,12 @@ def saveqtable(q_table,dicto):
     f.close()
 
 
-def Needlethreading(setupdict,thequeue):
+def Needlethreading(setupdict):
     qtablelist = []
     thread_list = []
     QlarkThread.threadIDcounter = 1
     for i in range(setupdict['totalthreads']):
-        tempthread = QlarkThread(setupdict,thequeue)
+        tempthread = QlarkThread(setupdict)
         tempthread.start()
         thread_list.append(tempthread)
     for thread in thread_list:

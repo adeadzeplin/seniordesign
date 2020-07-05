@@ -15,21 +15,20 @@ if __name__ == '__main__':
     #     if filename.endswith('.pickle'):
     #         print(filename)
 
-
     initdict = {
-        'truthtable': [[1, 0, 0, 1, 0, 1, 1, 0], [1, 1, 1, 0, 1, 0, 0, 0]],  # Truthtable Full Adder
-        'circuitinputs': 3,  #
+        'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],  # Truthtable
+        'circuitinputs': 2,  #
         'circuitoutputs': 2,  #
-        'maxgatenum': 6,  # Total num of gates AI is allowed to place
-        'allowedgatetypes': [GateType.AND.name,  # For Qlark             please dont touch
-                             GateType.XOR.name,  # For Qlark             please dont touch
-                             GateType.OR.name],  # For Qlark             please dont touch
-        'maxsteps': 15,  # For Qlark             please dont touch
-        'totalthreads': 1,  # For Qlark threading   please dont touch
-        'trainingsetspthread': 1,  # For Qlark threading   please dont touch
-        'savepath': f'{getrootpath()}fulladder_qtable.pickle'
+        'maxgatenum': 2,  # Total num of gates AI is allowed toplace
+        'allowedgatetypes': [GateType.AND.name, GateType.XOR.name],  # For Qlark             please dont touch
+        'maxsteps': 10,  # For Qlark             please dont touch
+        'totalthreads': 5,  # For Qlark threading   please dont touch
+        'trainingsetspthread':10,  # For Qlark threading   please dont touch
+        'savepath': f'{getrootpath()}halfadder_qtable.pickle'
     }
-    qlarklearn(initdict)
+    # print(getrootpath())
+    qt.Needlethreading(initdict)
+
     # Num_training_set_p_thread = 5               # Number of training sets of 10,000 per thread
     # Number_of_threads = 2                       # number of threads to instantiate
     # qt.Needlethreading(Number_of_threads, desired_truthtable, Num_training_set_p_thread)

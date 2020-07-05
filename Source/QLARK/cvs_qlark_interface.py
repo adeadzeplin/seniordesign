@@ -51,11 +51,11 @@ class QlarkCircuitInterface():
         self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + len(self.ALLOWED_GATE_TYPES)
 
         self.recursion_depthCounter = 0
-    def scancirc(self,scanedorder,gate_id):
+    def scancirc(self,scanedorder,gate_id,list_gates):
         # print(scanedorder)
         self.recursion_depthCounter += 1
         gate = None
-        for i in self.list_of_gates:
+        for i in list_gates:
             # print((i.gate_id , gate_id))
             if i.gate_id == gate_id:
                 scanedorder.append((i.gate_id, i.type.name))
@@ -63,88 +63,33 @@ class QlarkCircuitInterface():
                 break
         if gate == None:
             print('fuck')
-        if self.recursion_depthCounter >= 300:
+        if self.recursion_depthCounter >= 100:
             print("recursive termination")
-            return scanedorder
+            return 'there was a circuit loop that caused a recursive error'
         # check if the gate has any inputs
         if len(gate.inputs) > 0:
             for inputport in gate.inputs:
                 #check if input port has connections
                 if len(inputport.mated_to)>0:
-                    for ngate in self.list_of_gates:
+                    for ngate in list_gates:
                         for outputport in ngate.outputs:
                             for matched_id in outputport.mated_to:
                                 if matched_id == inputport._ID:
-                                    self.scancirc(scanedorder,ngate.gate_id)
+                                    self.scancirc(scanedorder,ngate.gate_id,list_gates)
                                     break
 
         return scanedorder
 
 
-    def getfancyprintoutstring(self):
+    def getfancyprintoutstring(self,listogates):
 
         arrow = ' -> '
         superlist = []
-        for gate in self.list_of_gates:
+        for gate in listogates:
             megalist = []
             if gate.type == cvs.GateType.circuitOutput:
                 # megalist.append(self.scancirc(megalist,gate.gate_id))
-                superlist.append(self.scancirc(megalist,gate.gate_id))
-        self.recursion_depthCounter = 0
-        print(superlist)
-        theprintout = ''
-        for logicout in superlist:
-
-            for line in reversed(logicout):
-                if line[1] == cvs.GateType.circuitOutput.name:
-                    theprintout += f"CircOUT:{line[0]}"
-                elif line[1] == cvs.GateType.circuitInput.name:
-                    theprintout += f"CircIN:{line[0]}{arrow}"
-                else:
-                    theprintout += f"{line[1]}:{line[0]}{arrow}"
-            theprintout+="\n"
-
-        return theprintout
-
-    def scan_good_circ(self,scanedorder,gate_id):
-        # print(scanedorder)
-        self.recursion_depthCounter += 1
-        gate = None
-        for i in self.most_resent_successful_circuit:
-            # print((i.gate_id , gate_id))
-            if i.gate_id == gate_id:
-                scanedorder.append((i.gate_id, i.type.name))
-                gate = i
-                break
-        if gate == None:
-            print('fuck')
-        if self.recursion_depthCounter >= 300:
-            print("recursive termination")
-            return scanedorder
-        # check if the gate has any inputs
-        if len(gate.inputs) > 0:
-            for inputport in gate.inputs:
-                #check if input port has connections
-                if len(inputport.mated_to)>0:
-                    for ngate in self.most_resent_successful_circuit:
-                        for outputport in ngate.outputs:
-                            for matched_id in outputport.mated_to:
-                                if matched_id == inputport._ID:
-                                    self.scancirc(scanedorder,ngate.gate_id)
-                                    break
-
-        return scanedorder
-
-
-    def get_good_fancyprintoutstring(self):
-
-        arrow = ' -> '
-        superlist = []
-        for gate in self.most_resent_successful_circuit:
-            megalist = []
-            if gate.type == cvs.GateType.circuitOutput:
-                # megalist.append(self.scancirc(megalist,gate.gate_id))
-                superlist.append(self.scancirc(megalist,gate.gate_id))
+                superlist.append(self.scancirc(megalist,gate.gate_id,listogates))
         self.recursion_depthCounter = 0
         print(superlist)
         theprintout = ''
@@ -185,11 +130,28 @@ class QlarkCircuitInterface():
         percentsame, metrics,circuitlogic = CVS_parser.ParserMetrics(list,self.DESIRED_LOGIC)
         return (percentsame,metrics[0],metrics[1],metrics[2],circuitlogic)
 
+    def checkforpoopchute(self):
+
+        for gatea in self.list_of_gates:
+            for gateb in self.list_of_gates:
+                if gatea == gateb:
+                    continue
+
+                if gatea.type == cvs.GateType.circuitInput:
+                    if gateb.type == cvs.GateType.circuitOutput:
+                        for porta in gatea.outputs:
+                            for matea in porta.mated_to:
+                                for portb in gateb.inputs:
+                                    if matea == portb._ID:
+                                        # print("INVALID CIRCUIT CONFIG IDENTIFIED")
+                                        self.breakcircuit()
+                                        return
+
+
 
     def checkciruitcompletion(self):
         for gate in self.list_of_gates:
             for port in gate.inputs:
-                # if gate.type == cvs.GateType.circuitInput:
 
                 if len(port.mated_to) > 1:
                     self.breakcircuit()
@@ -214,6 +176,7 @@ class QlarkCircuitInterface():
         exit("INVALID SPECIAL REWARDVALUE")
 
     def getcircuitstatus(self):
+        self.checkforpoopchute()
 
         circuit_completion_flag = self.checkciruitcompletion()
 

@@ -53,8 +53,10 @@ def total_transistor(renamed_list):
     for i in renamed_list:
         if i == 0 or i == 1:
             transistor_num += 0
-        elif i ==2 or i==3 or i==7:
+        elif i ==2 or i==3 :
             transistor_num += 6
+        elif i==7:
+            transistor_num += 8
         elif i== 4:
             transistor_num += 2
         elif i == 5 or i==6:
