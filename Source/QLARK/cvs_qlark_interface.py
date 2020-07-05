@@ -51,9 +51,11 @@ class QlarkCircuitInterface():
         self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + len(self.ALLOWED_GATE_TYPES)
 
         self.recursion_depthCounter = 0
+        self.recursion_error_flag = False
     def scancirc(self,scanedorder,gate_id,list_gates):
         # print(scanedorder)
         self.recursion_depthCounter += 1
+
         gate = None
         for i in list_gates:
             # print((i.gate_id , gate_id))
@@ -65,6 +67,7 @@ class QlarkCircuitInterface():
             print('fuck')
         if self.recursion_depthCounter >= 100:
             print("recursive termination")
+            self.recursion_error_flag = True
             return 'there was a circuit loop that caused a recursive error'
         # check if the gate has any inputs
         if len(gate.inputs) > 0:
@@ -85,12 +88,17 @@ class QlarkCircuitInterface():
 
         arrow = ' -> '
         superlist = []
+        self.recursion_error_flag = False
         for gate in listogates:
             megalist = []
             if gate.type == cvs.GateType.circuitOutput:
                 # megalist.append(self.scancirc(megalist,gate.gate_id))
                 superlist.append(self.scancirc(megalist,gate.gate_id,listogates))
+                if self.recursion_error_flag == True:
+                    return 'there was a circuit loop that caused a recursive error'
+
         self.recursion_depthCounter = 0
+
         print(superlist)
         theprintout = ''
         for logicout in superlist:
