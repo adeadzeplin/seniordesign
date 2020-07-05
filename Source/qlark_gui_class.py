@@ -16,7 +16,7 @@ class QlarkGui:
         # console.pack(  )
         # Add more GUI stuff here depending on your specific needs
         self.master = master
-        master.geometry("900x600+300+100")
+        master.geometry("1200x600+300+100")
 
         self.initdict = None
 

@@ -22,8 +22,8 @@ if __name__ == '__main__':
         'maxgatenum': 2,  # Total num of gates AI is allowed toplace
         'allowedgatetypes': [GateType.AND.name, GateType.XOR.name],  # For Qlark             please dont touch
         'maxsteps': 10,  # For Qlark             please dont touch
-        'totalthreads': 5,  # For Qlark threading   please dont touch
-        'trainingsetspthread':10,  # For Qlark threading   please dont touch
+        'totalthreads': 2,  # For Qlark threading   please dont touch
+        'trainingsetspthread':1,  # For Qlark threading   please dont touch
         'savepath': f'{getrootpath()}halfadder_qtable.pickle'
     }
     # print(getrootpath())
