@@ -7,6 +7,7 @@ from tkinter import Tk, Label, Button, Checkbutton,IntVar, StringVar,messagebox
 from CVS_.CVS_gate_class import GateType
 import QLARK.qlark_threading as qt
 from QLARK.cvs_qlark_interface import CircuitStatus
+from CVS_ import CVS_constants
 
 class QlarkGui:
     def __init__(self, master, queue, endCommand):
@@ -195,6 +196,9 @@ class QlarkGui:
         self.set_halfadder.config(relief="sunken")
         self.set_fulladder.config(relief="raised")
 
+        CVS_constants.INPUTSTOTAL = 2
+        CVS_constants.OUTPUTSTOTAL = 2
+
         self.initdict = {
                     'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],                 # Truthtable
                     'circuitinputs': 2,                                         #
@@ -213,6 +217,9 @@ class QlarkGui:
 
         self.set_fulladder.config(relief="sunken")
         self.set_halfadder.config(relief="raised")
+
+        CVS_constants.INPUTSTOTAL = 3
+        CVS_constants.OUTPUTSTOTAL = 2
 
         self.initdict = {
             'truthtable': [[1, 0, 0, 1, 0, 1, 1, 0],[1, 1, 1, 0, 1, 0, 0, 0]],  # Truthtable Full Adder
