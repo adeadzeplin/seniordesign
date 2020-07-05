@@ -94,15 +94,17 @@ class QlarkCircuitInterface():
         print(superlist)
         theprintout = ''
         for logicout in superlist:
-
-            for line in reversed(logicout):
-                if line[1] == cvs.GateType.circuitOutput.name:
-                    theprintout += f"CircOUT:{line[0]}"
-                elif line[1] == cvs.GateType.circuitInput.name:
-                    theprintout += f"CircIN:{line[0]}{arrow}"
-                else:
-                    theprintout += f"{line[1]}:{line[0]}{arrow}"
-            theprintout+="\n"
+            if isinstance(logicout,str):
+                theprintout += logicout
+            else:
+                for line in reversed(logicout):
+                    if line[1] == cvs.GateType.circuitOutput.name:
+                        theprintout += f"CircOUT:{line[0]}"
+                    elif line[1] == cvs.GateType.circuitInput.name:
+                        theprintout += f"CircIN:{line[0]}{arrow}"
+                    else:
+                        theprintout += f"{line[1]}:{line[0]}{arrow}"
+                theprintout+="\n"
 
         return theprintout
 
