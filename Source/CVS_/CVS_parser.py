@@ -1,8 +1,7 @@
 # from CVS_.CVS_circuit_creation import gateNumtoName
 from CVS_.CVS_constants import INPUTSTOTAL
-from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare, circuit_Metrics
+from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare, circuit_Metrics, circuit_errors, getfancyprintoutstring,scancirc
 import ttg
-
 
 def runParser(listOfGates, ogCircuitOutput):
     for gate in listOfGates:
@@ -13,9 +12,20 @@ def runParser(listOfGates, ogCircuitOutput):
     circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
     print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
     metrics = circuit_Metrics(listOfGates)
-    print("\n","Power(uA) | Delay(ns) | Transistors ", metrics)
+    print('\n')
+    print("Power(uA) | Delay(ns) | Transistors ", metrics)
+    print(getfancyprintoutstring(0,listOfGates))
+
     return circuitPercentSame
 
+def ParserMetrics(listOfGates, ogCircuitOutput):
+    CrawlerOut = circuitParsing(listOfGates)
+    returnValue = circuitConnecting(CrawlerOut)
+    circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
+    # print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+    metrics = circuit_Metrics(listOfGates)
+    # print("\n","Power(uA) | Delay(ns) | Transistors ", metrics)
+    return circuitPercentSame,metrics,returnValue
 
 
 def runQParser(listOfGates, ogCircuitOutput):
@@ -129,7 +139,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            if connected_gate_output[0] == []:
+            if len(connected_gate_output[0]) == 0 or len(connected_gate_output[1]) == 0 :
                 return "ERROR_CONNECTED_GATE_OUTPUT_MISSING"
                 # return "put error here"
             else:
