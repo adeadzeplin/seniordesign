@@ -1,4 +1,5 @@
 import enum
+from CVS_ import CVS_gate_class
 
 def circuit_Metrics(listOfGates):
     renamed_list = []
@@ -24,8 +25,10 @@ def total_Power(renamed_list):
             esti_power += 40    #uA
         elif i == 8:
             esti_power += 0     #LUCA space gate
+        elif i == 9:
+            esti_power += 40
         else:
-            esti_power += 20    #uA
+            esti_power += 40    #uA
     return esti_power
 
 
@@ -46,6 +49,8 @@ def total_Delay(renamed_list):
             esti_delay += 12
         elif i == 8:            #LUCA space gate
             esti_delay += 0
+        elif i == 9:
+            esti_delay += 24
     return  esti_delay
 
 def total_transistor(renamed_list):
@@ -53,14 +58,18 @@ def total_transistor(renamed_list):
     for i in renamed_list:
         if i == 0 or i == 1:
             transistor_num += 0
-        elif i ==2 or i==3 or i==7:
+        elif i ==2 or i==3 :
             transistor_num += 6
+        elif i==7:
+            transistor_num += 8
         elif i== 4:
             transistor_num += 2
         elif i == 5 or i==6:
             transistor_num += 4
         elif i == 8:                #LUCA space gate
             transistor_num += 0
+        elif i == 9:
+            transistor_num += 8
     return transistor_num
 
 def circuit_connection_check(listofallgates):
@@ -94,7 +103,7 @@ def circuit_connection_check(listofallgates):
                     pass  # print(gate.gate_id,gate.outputs[j].mated_to)
             elif gate.type != 1:
                 if len(gate.outputs[j].mated_to) == 0:
-                    return circuit_errors.ERROR_GATE
+                    return circuit_errors.ERROR_CONNECTED_GATE_OUTPUT_MISSING
                 elif len(gate.inputs[j].mated_to) > 2:
                     return circuit_errors.ERROR_MORE_THAN_2_MATED
                 else:
@@ -127,6 +136,7 @@ class circuit_errors(enum.Enum):
     ERROR_GATE_MISSING_INPUTS = 70  #gate has no mated gates
     ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
     ERROR_MORE_THAN_2_MATED = 90
+    ERROR_NONE_MATED = 900
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
@@ -222,6 +232,12 @@ def table_output(a, b, gatetype):
             output = b
         else:
             output =a
+    elif gatetype == 9:
+        for i in range(len(a)):
+            if a[i] == b[i]:
+                output.append(1)
+            else:
+                output.append(0)
 
     return output
 
@@ -252,3 +268,67 @@ def gateNumtoName(listofGatesNum):
     # NAND = 5
     # NOR = 6
     # XOR = 7
+
+
+def scancirc(recursion_depthCounter, scanedorder, gate_id, list_gates):
+    # print(scanedorder)
+    recursion_depthCounter += 1
+
+    gate = None
+    for i in list_gates:
+        # print((i.gate_id , gate_id))
+        if i.gate_id == gate_id:
+            scanedorder.append((i.gate_id, i.type.name))
+            gate = i
+            break
+    if gate == None:
+        print('fuck')
+    if recursion_depthCounter >= 100:
+        print("recursive termination")
+        recursion_error_flag = True
+        return 'there was a circuit loop that caused a recursive error'
+    # check if the gate has any inputs
+    if len(gate.inputs) > 0:
+        for inputport in gate.inputs:
+            # check if input port has connections
+            if len(inputport.mated_to) > 0:
+                for ngate in list_gates:
+                    for outputport in ngate.outputs:
+                        for matched_id in outputport.mated_to:
+                            if matched_id == inputport._ID:
+                                scancirc(recursion_depthCounter,scanedorder, ngate.gate_id, list_gates)
+                                break
+
+    return scanedorder
+
+
+def getfancyprintoutstring(recursion_depthCounter, listogates):
+    arrow = ' -> '
+    superlist = []
+    recursion_error_flag = False
+    for gate in listogates:
+        megalist = []
+        if gate.type == CVS_gate_class.GateType.circuitOutput:
+            # megalist.append(self.scancirc(megalist,gate.gate_id))
+            superlist.append(scancirc(recursion_depthCounter,megalist, gate.gate_id, listogates))
+            if recursion_error_flag == True:
+                return 'there was a circuit loop that caused a recursive error'
+
+    recursion_depthCounter = 0
+
+    #print(superlist)
+    theprintout = ''
+    for logicout in superlist:
+        if isinstance(logicout, str):
+            theprintout += logicout
+        else:
+            for line in reversed(logicout):
+                if line[1] == CVS_gate_class.GateType.circuitOutput.name:
+                    theprintout += f"CircOUT:{line[0]}"
+                elif line[1] == CVS_gate_class.GateType.circuitInput.name:
+                    theprintout += f"CircIN:{line[0]}{arrow}"
+                else:
+                    theprintout += f"{line[1]}:{line[0]}{arrow}"
+            theprintout += "\n"
+
+    return theprintout

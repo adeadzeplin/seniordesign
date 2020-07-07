@@ -9,6 +9,7 @@ class GateTransCost(enum.Enum):
     NAND = 4
     NOR = 4
     XOR = 8
+    XNOR = 8
 
 
 class GateDelay(enum.Enum):
@@ -19,3 +20,4 @@ class GateDelay(enum.Enum):
     NAND = 0
     NOR = 0
     XOR = 0
+    XNOR = 0

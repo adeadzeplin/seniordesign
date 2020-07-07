@@ -27,27 +27,106 @@ def square(val):
     return val * val
 
 class QlarkCircuitInterface():
-    def __init__(self,DESIRED_LOGIC,C_IN_CT = 2,C_OUT_CT = 1, MAX_GATE_NUM= 1,ALLOWED_GATE_TYPES= 'list'):
+    def __init__(self,DESIRED_LOGIC,C_IN_CT = 2,C_OUT_CT = 1, MAX_GATE_NUM= 1,ALLOWED_GATE_TYPES= 'list',OPTIMIZE_METRIC= None):
         # Circuit constants
         self.CIRCUIT_INPUTS_COUNT = C_IN_CT
         self.CIRCUIT_OUTPUTS_COUNT = C_OUT_CT
         self.MAX_GATE_NUM = MAX_GATE_NUM  # Max num of gates the ai can place
-        self.MAX_GATE_TYPES = 6
+        self.MAX_GATE_TYPES = 7
         self.ALLOWED_GATE_TYPES = ALLOWED_GATE_TYPES
         self.DESIRED_LOGIC = DESIRED_LOGIC
         self.TRANSISTOR_BUDGET = 20
-        self.OPTIMIZEMETRIC = 'T'
+        self.OPTIMIZE_METRIC = OPTIMIZE_METRIC
 
         # Circuit Variables
         self.list_of_gates = []
+        self.most_resent_successful_circuit = []
         self.circuitstatus = CircuitStatus.Valid
         self.circuitlogic = 0
+
         # Circuit Metrics
-        self.transistor_count = 0
+        self.percentsame = None
+        self.metrics = None
+        self.circuitlogic = None
 
 
         # Total Number of Actions posible that the AI can Take
         self.ACTION_SPACE = square(self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT) + len(self.ALLOWED_GATE_TYPES)
+
+        self.recursion_depthCounter = 0
+        self.recursion_error_flag = False
+
+    def scancirc(self,scanedorder,gate_id,list_gates):
+        # print(scanedorder)
+        self.recursion_depthCounter += 1
+
+        gate = None
+        for i in list_gates:
+            # print((i.gate_id , gate_id))
+            if i.gate_id == gate_id:
+                scanedorder.append((i.gate_id, i.type.name))
+                gate = i
+                break
+        if gate == None:
+            print('fuck')
+        if self.recursion_depthCounter >= 100:
+            print("recursive termination")
+            self.recursion_error_flag = True
+            return 'there was a circuit loop that caused a recursive error'
+        # check if the gate has any inputs
+        if len(gate.inputs) > 0:
+            for inputport in gate.inputs:
+                #check if input port has connections
+                if len(inputport.mated_to)>0:
+                    for ngate in list_gates:
+                        for outputport in ngate.outputs:
+                            for matched_id in outputport.mated_to:
+                                if matched_id == inputport._ID:
+                                    self.scancirc(scanedorder,ngate.gate_id,list_gates)
+                                    break
+
+        return scanedorder
+
+
+    def getfancyprintoutstring(self,listogates):
+
+        arrow = ' -> '
+        superlist = []
+        self.recursion_error_flag = False
+        for gate in listogates:
+            megalist = []
+            if gate.type == cvs.GateType.circuitOutput:
+                # megalist.append(self.scancirc(megalist,gate.gate_id))
+                superlist.append(self.scancirc(megalist,gate.gate_id,listogates))
+                if self.recursion_error_flag == True:
+                    return 'there was a circuit loop that caused a recursive error'
+
+        self.recursion_depthCounter = 0
+
+        print(superlist)
+        theprintout = ''
+        for logicout in superlist:
+            if isinstance(logicout,str):
+                theprintout += logicout
+            else:
+                for line in reversed(logicout):
+                    if line[1] == cvs.GateType.circuitOutput.name:
+                        theprintout += f"CircOUT:{line[0]}"
+                    elif line[1] == cvs.GateType.circuitInput.name:
+                        theprintout += f"CircIN:{line[0]}{arrow}"
+                    else:
+                        theprintout += f"{line[1]}:{line[0]}{arrow}"
+                theprintout+="\n"
+
+        return theprintout
+
+    def getprintoutstring(self):
+        string =''
+
+        for gate in self.list_of_gates:
+
+            string += f"\ngate_id: {gate.gate_id},    type: {gate.type.name},  numofinputs: {len(gate.inputs)},    numofoutputs: {len(gate.outputs)}"
+        return string
 
     def printout(self):
         for gate in self.list_of_gates:
@@ -60,13 +139,33 @@ class QlarkCircuitInterface():
         if Circuit_Errors == None:
             CVS_parser.runParser(self.list_of_gates, self.DESIRED_LOGIC)
         else:
-
              print(Circuit_Errors)
+    def getparsermetrics(self,list):
+        self.percentsame, self.metrics,self.circuitlogic = CVS_parser.ParserMetrics(list,self.DESIRED_LOGIC)
+        return (self.percentsame,self.metrics[0],self.metrics[1],self.metrics[2],self.circuitlogic)
+
+    def checkforpoopchute(self):
+
+        for gatea in self.list_of_gates:
+            for gateb in self.list_of_gates:
+                if gatea == gateb:
+                    continue
+
+                if gatea.type == cvs.GateType.circuitInput:
+                    if gateb.type == cvs.GateType.circuitOutput:
+                        for porta in gatea.outputs:
+                            for matea in porta.mated_to:
+                                for portb in gateb.inputs:
+                                    if matea == portb._ID:
+                                        # print("INVALID CIRCUIT CONFIG IDENTIFIED")
+                                        self.breakcircuit()
+                                        return
+
+
 
     def checkciruitcompletion(self):
         for gate in self.list_of_gates:
             for port in gate.inputs:
-                # if gate.type == cvs.GateType.circuitInput:
 
                 if len(port.mated_to) > 1:
                     self.breakcircuit()
@@ -78,6 +177,22 @@ class QlarkCircuitInterface():
                     return False
         return True
 
+    def getcorrectreward(self):
+        self.getparsermetrics(self.list_of_gates)
+
+        if self.OPTIMIZE_METRIC == 'Transistor':
+            return AIRewards.CircuitCorrect - self.metrics[2]*AIRewards.CircuitBroken
+        elif self.OPTIMIZE_METRIC == 'Power':
+            return AIRewards.CircuitCorrect - self.metrics[0]*AIRewards.CircuitBroken
+        elif self.OPTIMIZE_METRIC == 'Delay':
+            return AIRewards.CircuitCorrect - self.metrics[1]*AIRewards.CircuitBroken
+        else:
+            print("bruh moment")
+            return AIRewards.CircuitCorrect
+
+
+
+
     def getspecialreward(self):
         if self.circuitstatus == CircuitStatus.Broken:
             return AIRewards.CircuitBroken
@@ -87,10 +202,11 @@ class QlarkCircuitInterface():
             return aireward_calc
 
         elif self.circuitstatus == CircuitStatus.Correct:
-            return AIRewards.CircuitCorrect
+            return self.getcorrectreward()
         exit("INVALID SPECIAL REWARDVALUE")
 
     def getcircuitstatus(self):
+        self.checkforpoopchute()
 
         circuit_completion_flag = self.checkciruitcompletion()
 
@@ -104,6 +220,7 @@ class QlarkCircuitInterface():
             Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
             if Circuit_Errors == None:
                 self.circuitlogic = CVS_parser.runQParser(self.list_of_gates, self.DESIRED_LOGIC)
+
             else:
                 return self.circuitstatus
 
@@ -116,8 +233,7 @@ class QlarkCircuitInterface():
         return self.circuitstatus
 
 
-    def update_transistorcount(self,gatecost):
-        self.transistor_count += gatecost.value
+
     def breakcircuit(self):
         self.circuitstatus = CircuitStatus.Broken
 
@@ -127,22 +243,24 @@ class QlarkCircuitInterface():
 
             if val == 0 and cvs.GateType.AND.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
-                self.update_transistorcount(CVS_metrics.GateTransCost.AND)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.AND)
             elif val == 1 and cvs.GateType.NOT.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
             elif val == 3 and cvs.GateType.NOR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
             elif val == 4 and cvs.GateType.NAND.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
             elif val == 5 and cvs.GateType.OR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.OR)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.OR)
             elif val == 6 and cvs.GateType.XOR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.XOR)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.XOR)
+            elif val == 7 and cvs.GateType.XNOR.name in self.ALLOWED_GATE_TYPES:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.XNOR))
             else:
                 self.breakcircuit()
                 return AIRewards.CircuitBroken
