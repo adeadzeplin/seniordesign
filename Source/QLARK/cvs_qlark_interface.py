@@ -27,24 +27,27 @@ def square(val):
     return val * val
 
 class QlarkCircuitInterface():
-    def __init__(self,DESIRED_LOGIC,C_IN_CT = 2,C_OUT_CT = 1, MAX_GATE_NUM= 1,ALLOWED_GATE_TYPES= 'list'):
+    def __init__(self,DESIRED_LOGIC,C_IN_CT = 2,C_OUT_CT = 1, MAX_GATE_NUM= 1,ALLOWED_GATE_TYPES= 'list',OPTIMIZE_METRIC= None):
         # Circuit constants
         self.CIRCUIT_INPUTS_COUNT = C_IN_CT
         self.CIRCUIT_OUTPUTS_COUNT = C_OUT_CT
         self.MAX_GATE_NUM = MAX_GATE_NUM  # Max num of gates the ai can place
-        self.MAX_GATE_TYPES = 6
+        self.MAX_GATE_TYPES = 7
         self.ALLOWED_GATE_TYPES = ALLOWED_GATE_TYPES
         self.DESIRED_LOGIC = DESIRED_LOGIC
         self.TRANSISTOR_BUDGET = 20
-        self.OPTIMIZEMETRIC = 'T'
+        self.OPTIMIZE_METRIC = OPTIMIZE_METRIC
 
         # Circuit Variables
         self.list_of_gates = []
         self.most_resent_successful_circuit = []
         self.circuitstatus = CircuitStatus.Valid
         self.circuitlogic = 0
+
         # Circuit Metrics
-        self.transistor_count = 0
+        self.percentsame = None
+        self.metrics = None
+        self.circuitlogic = None
 
 
         # Total Number of Actions posible that the AI can Take
@@ -52,6 +55,7 @@ class QlarkCircuitInterface():
 
         self.recursion_depthCounter = 0
         self.recursion_error_flag = False
+
     def scancirc(self,scanedorder,gate_id,list_gates):
         # print(scanedorder)
         self.recursion_depthCounter += 1
@@ -137,8 +141,8 @@ class QlarkCircuitInterface():
         else:
              print(Circuit_Errors)
     def getparsermetrics(self,list):
-        percentsame, metrics,circuitlogic = CVS_parser.ParserMetrics(list,self.DESIRED_LOGIC)
-        return (percentsame,metrics[0],metrics[1],metrics[2],circuitlogic)
+        self.percentsame, self.metrics,self.circuitlogic = CVS_parser.ParserMetrics(list,self.DESIRED_LOGIC)
+        return (self.percentsame,self.metrics[0],self.metrics[1],self.metrics[2],self.circuitlogic)
 
     def checkforpoopchute(self):
 
@@ -173,6 +177,22 @@ class QlarkCircuitInterface():
                     return False
         return True
 
+    def getcorrectreward(self):
+        self.getparsermetrics(self.list_of_gates)
+
+        if self.OPTIMIZE_METRIC == 'Transistor':
+            return AIRewards.CircuitCorrect - self.metrics[2]*AIRewards.CircuitBroken
+        elif self.OPTIMIZE_METRIC == 'Power':
+            return AIRewards.CircuitCorrect - self.metrics[0]*AIRewards.CircuitBroken
+        elif self.OPTIMIZE_METRIC == 'Delay':
+            return AIRewards.CircuitCorrect - self.metrics[1]*AIRewards.CircuitBroken
+        else:
+            print("bruh moment")
+            return AIRewards.CircuitCorrect
+
+
+
+
     def getspecialreward(self):
         if self.circuitstatus == CircuitStatus.Broken:
             return AIRewards.CircuitBroken
@@ -182,7 +202,7 @@ class QlarkCircuitInterface():
             return aireward_calc
 
         elif self.circuitstatus == CircuitStatus.Correct:
-            return AIRewards.CircuitCorrect
+            return self.getcorrectreward()
         exit("INVALID SPECIAL REWARDVALUE")
 
     def getcircuitstatus(self):
@@ -213,8 +233,7 @@ class QlarkCircuitInterface():
         return self.circuitstatus
 
 
-    def update_transistorcount(self,gatecost):
-        self.transistor_count += gatecost.value
+
     def breakcircuit(self):
         self.circuitstatus = CircuitStatus.Broken
 
@@ -224,22 +243,24 @@ class QlarkCircuitInterface():
 
             if val == 0 and cvs.GateType.AND.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
-                self.update_transistorcount(CVS_metrics.GateTransCost.AND)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.AND)
             elif val == 1 and cvs.GateType.NOT.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.NOT))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.NOT)
             elif val == 3 and cvs.GateType.NOR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.NOR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.NOR)
             elif val == 4 and cvs.GateType.NAND.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.NAND))
-                self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.NAND)
             elif val == 5 and cvs.GateType.OR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.OR)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.OR)
             elif val == 6 and cvs.GateType.XOR.name in self.ALLOWED_GATE_TYPES:
                 self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
-                self.update_transistorcount(CVS_metrics.GateTransCost.XOR)
+                # self.update_transistorcount(CVS_metrics.GateTransCost.XOR)
+            elif val == 7 and cvs.GateType.XNOR.name in self.ALLOWED_GATE_TYPES:
+                self.list_of_gates.append(cvs.Gate(cvs.GateType.XNOR))
             else:
                 self.breakcircuit()
                 return AIRewards.CircuitBroken

@@ -20,22 +20,42 @@ class QlarkGui:
         # master.geometry("1000x600+300+100")
 
         self.initdict = None
-
+        self.optmetric = None
         master.title("QLARK STETUP MENU")
 
-
+        tablecolum = 0
         self.labelselect = Label(master, text="Select Truth Table")
-        self.labelselect.grid(row=0, column=0)
+        self.labelselect.grid(row=0, column=tablecolum)
         # SELECT HALFADDER
         self.set_halfadder = Button(master, text="\nhalf adder\n", width=15, command=self.set_HalfAdderInitQlark)
-        self.set_halfadder.grid(row=1, column=0)
+        self.set_halfadder.grid(row=1, column=tablecolum)
         # SELECT FULLADDER
         self.set_fulladder = Button(master, text="\nfull adder\n", width=15, command=self.set_FullAdderInitQlark)
-        self.set_fulladder.grid(row=2, column=0)
+        self.set_fulladder.grid(row=2, column=tablecolum)
 
-        # SPACER COLUMN
-        self.label0 = Label(master, text="", width=10)
-        self.label0.grid(row=0, column=1)
+        # OPTIMIZE METRIC COLUMN ------------
+        metriccolum = 1
+        self.label0 = Label(master, text="Select Optimize Metric")
+        self.label0.grid(row=0, column=metriccolum)
+
+        # SELECT Transistor
+        self.set_transistor = Button(master, text="\nTransistor\n", width=10, command=self.set_transistormetric)
+        self.set_transistor.grid(row=1, column=metriccolum)
+        # SELECT Power
+        self.set_power = Button(master, text="\nPower\n", width=10, command=self.set_powermetric)
+        self.set_power.grid(row=2, column=metriccolum)
+        # SELECT Delay
+        self.set_delay = Button(master, text="\nDelay\n", width=10, command=self.set_delaymetric)
+        self.set_delay.grid(row=3, column=metriccolum)
+
+        # SELECT None
+        self.set_none = Button(master, text="\nNone\n", width=10, command=self.set_nonemetric)
+        self.set_none.grid(row=4, column=metriccolum)
+        self.set_none.config(relief="sunken")
+        # Status Update
+        self.selectstatuslabel = Label(master, text="no metric selected")
+        self.selectstatuslabel.grid(row=3, column=2)
+        # -----------------------------------
 
         # Run label
         self.runlabel = Label(master, text="Run AI Until it learns")
@@ -49,7 +69,7 @@ class QlarkGui:
 
         #loop counter display
         self.looplabel = Label(master,text="Cycle Number: Na")
-        self.looplabel.grid(row=3, column=0)
+        self.looplabel.grid(row=5, column=0)
 
         #circuit output label ------------
         self.circuitlabel = Label(master,text="Circuit Printout:")
@@ -78,6 +98,8 @@ class QlarkGui:
         self.correctmetricsdatalabel = Label(master, text="")
         self.correctmetricsdatalabel.grid(row=6, column=7)
         # ---------------------------
+
+
     def metricmessage(self,dict):
         # "Power(uA) | Delay(ns) | Transistors "
         metricmessage =  f'Truthtable'
@@ -189,7 +211,50 @@ class QlarkGui:
                 print(f"The AI Learned on the {whilecounter}th pass of the infiniteLoop")
                 break
 
+    def set_nonemetric(self):
+        if self.initdict == None:
+            self.statuslabel.configure(text="You MUST Select a truth table First")
+        else:
+            self.set_transistor.config(relief="raised")
+            self.set_power.config(relief="raised")
+            self.set_delay.config(relief="raised")
+            self.set_none.config(relief="sunken")
+            self.initdict['optimizemetric'] = None
+            self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
+    def set_transistormetric(self):
+        if self.initdict == None:
+            self.statuslabel.configure(text="You MUST Select a truth table First")
+        else:
+            self.set_transistor.config(relief="sunken")
+            self.set_power.config(relief="raised")
+            self.set_delay.config(relief="raised")
+            self.set_none.config(relief="raised")
+            self.initdict['optimizemetric'] = 'Transistor'
+            self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
+
+    def set_powermetric(self):
+        if self.initdict == None:
+            self.statuslabel.configure(text="You MUST Select a truth table First")
+        else:
+            self.set_transistor.config(relief="raised")
+            self.set_power.config(relief="sunken")
+            self.set_delay.config(relief="raised")
+            self.set_none.config(relief="raised")
+
+            self.initdict['optimizemetric'] = 'Power'
+            self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
+
+    def set_delaymetric(self):
+        if self.initdict == None:
+            self.statuslabel.configure(text="You MUST Select a truth table First")
+        else:
+            self.set_delay.config(relief="sunken")
+            self.set_transistor.config(relief="raised")
+            self.set_power.config(relief="raised")
+            self.set_none.config(relief="raised")
+            self.initdict['optimizemetric'] = 'Delay'
+            self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
     def set_HalfAdderInitQlark(self):
 
@@ -208,9 +273,11 @@ class QlarkGui:
                     'maxsteps': 10,                                             # For Qlark             please dont touch
                     'totalthreads': 1,                                          # For Qlark threading   please dont touch
                     'trainingsetspthread': 1,                                    # For Qlark threading   please dont touch
-                    'savepath': f'{getrootpath()}halfadder_qtable.pickle'
+                    'savepath': f'{getrootpath()}halfadder_qtable.pickle',
+                    'optimizemetric':self.optmetric
                 }
         self.statuslabel.configure(text=f"Half Adder Selected:\n{self.initdict['truthtable']}")
+
 
 
     def set_FullAdderInitQlark(self):
@@ -232,9 +299,11 @@ class QlarkGui:
             'maxsteps': 15,                             # For Qlark             please dont touch
             'totalthreads': 1,                          # For Qlark threading   please dont touch
             'trainingsetspthread': 1,                    # For Qlark threading   please dont touch
-            'savepath': f'{getrootpath()}fulladder_qtable.pickle'
+            'savepath': f'{getrootpath()}fulladder_qtable.pickle',
+            'optimizemetric': self.optmetric
         }
         self.statuslabel.configure(text=f"Full Adder Selected:\n{self.initdict['truthtable']}")
+        self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
 
 class ThreadedQlarkClient:

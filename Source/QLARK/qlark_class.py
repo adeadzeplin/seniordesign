@@ -51,7 +51,9 @@ class Qlark:
                                                  C_IN_CT=setupdict['circuitinputs'],
                                                  C_OUT_CT=setupdict['circuitoutputs'],
                                                  MAX_GATE_NUM=setupdict['maxgatenum'],
-                                                 ALLOWED_GATE_TYPES=setupdict['allowedgatetypes'])
+                                                 ALLOWED_GATE_TYPES=setupdict['allowedgatetypes'],
+                                                 OPTIMIZE_METRIC=setupdict['optimizemetric']
+                                                 )
 
 
     def runBest(self):
