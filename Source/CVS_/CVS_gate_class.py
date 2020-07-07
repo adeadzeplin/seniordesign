@@ -19,6 +19,7 @@ class GateType(enum.IntEnum):     #no enum here since i need the numbers, not Ga
     NOR = 6
     XOR = 7
     NOGATE = 8
+    XNOR = 9
     DUMMY = 99
 
 
