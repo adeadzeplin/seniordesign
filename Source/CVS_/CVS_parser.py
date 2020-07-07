@@ -47,6 +47,8 @@ def convertNumtoWord(type):
         return "nor"
     elif type == 7:
         return "xor"
+    elif type == 9:
+        return "xnor"
 
 
 def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and other gates types

@@ -25,8 +25,10 @@ def total_Power(renamed_list):
             esti_power += 40    #uA
         elif i == 8:
             esti_power += 0     #LUCA space gate
+        elif i == 9:
+            esti_power += 40
         else:
-            esti_power += 20    #uA
+            esti_power += 40    #uA
     return esti_power
 
 
@@ -47,6 +49,8 @@ def total_Delay(renamed_list):
             esti_delay += 12
         elif i == 8:            #LUCA space gate
             esti_delay += 0
+        elif i == 9:
+            esti_delay += 24
     return  esti_delay
 
 def total_transistor(renamed_list):
@@ -64,6 +68,8 @@ def total_transistor(renamed_list):
             transistor_num += 4
         elif i == 8:                #LUCA space gate
             transistor_num += 0
+        elif i == 9:
+            transistor_num += 8
     return transistor_num
 
 def circuit_connection_check(listofallgates):
@@ -226,6 +232,12 @@ def table_output(a, b, gatetype):
             output = b
         else:
             output =a
+    elif gatetype == 9:
+        for i in range(len(a)):
+            if a[i] == b[i]:
+                output.append(1)
+            else:
+                output.append(0)
 
     return output
 
