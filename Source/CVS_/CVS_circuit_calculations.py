@@ -192,6 +192,9 @@ def table_column_get(tableInput_TableOut, circuitInput):
 def table_output(a, b, gatetype):
     # print(a,b,gatetype)
     output = []
+    if a == [] or b==[]:
+        output = []
+        return output
 
     if gatetype == 2:
         for i in range(len(a)):
