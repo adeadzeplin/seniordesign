@@ -114,6 +114,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
     for i in tableInput_IDs_formated:
         tableInput_TableOut.append(tempTable[[i]])
     circuitInput = table_column_get(tableInput_TableOut, circuitInput)
+    print("hello", circuitInput)
 
     # pass generate table inpputs, into input gate outputs
     for i in CrawlerOut[1]:
@@ -131,8 +132,8 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         # extract outputs from connected gates
         input_len = len(i.inputs)
         for num in range(input_len):
-            if not i.inputs[num].mated_to or i.inputs[num] == []:
-                return circuit_errors.ERROR_GATE_MISSING_INPUTS
+            # if not i.inputs[num].mated_to or i.inputs[num] == []:
+            #     return circuit_errors.ERROR_GATE_MISSING_INPUTS
 
             connector_id = i.inputs[num].mated_to[0]
             if connector_id < INPUTSTOTAL:  # if gate is connected to only input gates

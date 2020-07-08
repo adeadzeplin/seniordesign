@@ -121,7 +121,7 @@ def circuit_connection_check(listofallgates):
                     #print(gate.inputs[k].mated_to)
                     # print("ERROR_GATE_MISSING_INPUTS")
                     return circuit_errors.ERROR_GATE_MISSING_INPUTS
-                elif gate.inputs[k].mated_to == 1:
+                elif len(gate.inputs[k].mated_to) == 1:
                     return circuit_errors.ERROR_ONE_LOGIC_GATE_INPUT
                 elif len(gate.inputs[k].mated_to) > 2:
                     # print("ERROR_MORE_THAN_2_MATED")
