@@ -187,7 +187,7 @@ class QlarkCircuitInterface():
         elif self.OPTIMIZE_METRIC == 'Delay':
             return AIRewards.CircuitCorrect - self.metrics[1]*AIRewards.CircuitBroken
         else:
-            print("bruh moment")
+            # print("bruh moment")
             return AIRewards.CircuitCorrect
 
 
