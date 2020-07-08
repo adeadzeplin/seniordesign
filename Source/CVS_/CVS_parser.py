@@ -4,8 +4,8 @@ from CVS_.CVS_circuit_calculations import table_column_get, table_output, circui
 import ttg
 
 def runParser(listOfGates, ogCircuitOutput):
-    for gate in listOfGates:
-        gate.g_print()
+    #for gate in listOfGates:
+     #   gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     print("Circuit Output:", returnValue)
