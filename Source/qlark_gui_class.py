@@ -99,6 +99,10 @@ class QlarkGui:
         self.correctmetricsdatalabel.grid(row=6, column=7)
         # ---------------------------
 
+        # SELECT 2bit Comparator
+        self.set_2bitComparator = Button(master, text="\n2 bit comparator\n", width=15, command=self.set_2bitComparatorInitQlark)
+        self.set_2bitComparator.grid(row=3, column=tablecolum)
+
 
     def metricmessage(self,dict):
         # "Power(uA) | Delay(ns) | Transistors "
@@ -219,6 +223,7 @@ class QlarkGui:
             self.set_power.config(relief="raised")
             self.set_delay.config(relief="raised")
             self.set_none.config(relief="sunken")
+            self.optmetric = None
             self.initdict['optimizemetric'] = None
             self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
@@ -230,6 +235,7 @@ class QlarkGui:
             self.set_power.config(relief="raised")
             self.set_delay.config(relief="raised")
             self.set_none.config(relief="raised")
+            self.optmetric = 'Transistor'
             self.initdict['optimizemetric'] = 'Transistor'
             self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
@@ -241,6 +247,7 @@ class QlarkGui:
             self.set_power.config(relief="sunken")
             self.set_delay.config(relief="raised")
             self.set_none.config(relief="raised")
+            self.optmetric = 'Power'
 
             self.initdict['optimizemetric'] = 'Power'
             self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
@@ -254,10 +261,11 @@ class QlarkGui:
             self.set_power.config(relief="raised")
             self.set_none.config(relief="raised")
             self.initdict['optimizemetric'] = 'Delay'
+            self.optmetric = 'Delay'
             self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
     def set_HalfAdderInitQlark(self):
-
+        self.set_2bitComparator.config(relief="raised")
         self.set_halfadder.config(relief="sunken")
         self.set_fulladder.config(relief="raised")
 
@@ -281,7 +289,7 @@ class QlarkGui:
 
 
     def set_FullAdderInitQlark(self):
-
+        self.set_2bitComparator.config(relief="raised")
         self.set_fulladder.config(relief="sunken")
         self.set_halfadder.config(relief="raised")
 
@@ -305,6 +313,35 @@ class QlarkGui:
         self.statuslabel.configure(text=f"Full Adder Selected:\n{self.initdict['truthtable']}")
         self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
+    def set_2bitComparatorInitQlark(self):
+        self.set_2bitComparator.config(relief="sunken")
+        self.set_fulladder.config(relief="raised")
+        self.set_halfadder.config(relief="raised")
+
+        CVS_constants.INPUTSTOTAL = 4
+        CVS_constants.OUTPUTSTOTAL = 3
+
+        self.initdict = {
+            'truthtable': [[0, 1, 1, 1, 0], [1, 0, 0, 0, 0], [0, 0, 0, 0, 1]],  # 2-bit comparator
+            'circuitinputs': 4,  #
+            'circuitoutputs': 3,  #
+            'maxgatenum': 11,  # Total num of gates AI is allowed to place
+            'allowedgatetypes': [GateType.AND.name,  # For Qlark             please dont touch
+                                 GateType.XOR.name,  # For Qlark             please dont touch
+                                 GateType.OR.name,
+                                 GateType.NOR.name,
+                                 GateType.NAND.name,
+                                 GateType.XNOR.name,
+                                 GateType.NOT.name
+                                 ],  # For Qlark             please dont touch
+            'maxsteps': 30,  # For Qlark             please dont touch
+            'totalthreads': 1,  # For Qlark threading   please dont touch
+            'trainingsetspthread': 1,  # For Qlark threading   please dont touch
+            'savepath': f'{getrootpath()}2bitComparator_qtable.pickle',
+            'optimizemetric': self.optmetric
+        }
+        self.statuslabel.configure(text=f"2 bit comparator Selected:\n{self.initdict['truthtable']}")
+        self.selectstatuslabel.configure(text=f"Selected Metric:\n {self.initdict['optimizemetric']}")
 
 class ThreadedQlarkClient:
     """

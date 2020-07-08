@@ -70,7 +70,7 @@ class QlarkCircuitInterface():
         if gate == None:
             print('fuck')
         if self.recursion_depthCounter >= 100:
-            print("recursive termination")
+            # print("recursive termination")
             self.recursion_error_flag = True
             return 'there was a circuit loop that caused a recursive error'
         # check if the gate has any inputs
@@ -187,7 +187,7 @@ class QlarkCircuitInterface():
         elif self.OPTIMIZE_METRIC == 'Delay':
             return AIRewards.CircuitCorrect - self.metrics[1]*AIRewards.CircuitBroken
         else:
-            print("bruh moment")
+            # print("bruh moment")
             return AIRewards.CircuitCorrect
 
 
