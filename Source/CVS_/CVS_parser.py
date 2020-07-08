@@ -4,8 +4,8 @@ from CVS_.CVS_circuit_calculations import table_column_get, table_output, circui
 import ttg
 
 def runParser(listOfGates, ogCircuitOutput):
-    for gate in listOfGates:
-        gate.g_print()
+    #for gate in listOfGates:
+     #   gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     print("Circuit Output:", returnValue)
@@ -14,7 +14,7 @@ def runParser(listOfGates, ogCircuitOutput):
     metrics = circuit_Metrics(listOfGates)
     print('\n')
     print("Power(uA) | Delay(ns) | Transistors ", metrics)
-    print(getfancyprintoutstring(0,listOfGates))
+    #print(getfancyprintoutstring(0,listOfGates))
 
     return circuitPercentSame
 
@@ -28,7 +28,7 @@ def ParserMetrics(listOfGates, ogCircuitOutput):
     return circuitPercentSame,metrics,returnValue
 
 
-def runQParser(listOfGates, ogCircuitOutput):
+def runParserMuted(listOfGates, ogCircuitOutput):
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     return circuit_output_compare(returnValue, ogCircuitOutput)

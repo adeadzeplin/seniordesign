@@ -13,6 +13,7 @@ class Circuit:
         self.num_outputs = o
         self.num_rows = r
         self.num_columns = c
+        self.gate_counter = 0
         self.num_gates = self.num_rows * self.num_columns
         self.num_dummy = 1
         if self.num_rows == self.num_outputs:

@@ -27,9 +27,9 @@ def define_cgp(cgp0, cgp1, row):
 
 def create_gate(cgp):
     if cgp[1] == 1:
-        val = np.random.randint(2, 8)
+        val = np.random.randint(2, 10)
     else:
-        val = np.random.randint(2, 9)
+        val = np.random.randint(2, 10)
     gate = Gate(val)
     gate.cgp_id = cgp
     return gate
@@ -261,6 +261,7 @@ def connect_1d_input_gates(input_1, output_1, circuit, ports, g, output_list, du
 
 def create_genes(circuit):
     gene = []
+    counter = 0
     for gate in circuit:
         temp = []
         if gate.type == 0:
@@ -272,7 +273,11 @@ def create_genes(circuit):
             temp.append(gate.gate_id)
             temp.append(gate.type)
             gene.append(temp)
-    return gene
+            if gate.type == 8 or gate.type == 99 or gate.type == 1:
+                pass
+            else:
+                counter += 1
+    return gene, counter
 
 
 def accept_reject(population_size, population):
