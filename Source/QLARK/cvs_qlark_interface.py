@@ -70,7 +70,7 @@ class QlarkCircuitInterface():
         if gate == None:
             print('fuck')
         if self.recursion_depthCounter >= 100:
-            print("recursive termination")
+            # print("recursive termination")
             self.recursion_error_flag = True
             return 'there was a circuit loop that caused a recursive error'
         # check if the gate has any inputs

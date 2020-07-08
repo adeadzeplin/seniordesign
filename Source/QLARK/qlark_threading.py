@@ -41,9 +41,12 @@ class QlarkThread(threading.Thread):
 
 def saveqtable(q_table,dicto):
     print("\nSAVING Q-table")
-    f = open(dicto['savepath'], "wb")
-    pickle.dump(q_table, f)
-    f.close()
+    try:
+        f = open(dicto['savepath'], "wb")
+        pickle.dump(q_table, f)
+        f.close()
+    except:
+        print('qtable FAILED SAVE')
 
 
 def Needlethreading(setupdict):
