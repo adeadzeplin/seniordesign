@@ -12,10 +12,10 @@ class EvolutionaryAlgorithm:
         self.max_num_generations = gens
 
     def initialization(self):
-        inputs = 3
+        inputs = 2
         outputs = 2
-        rows = 4
-        columns = 4
+        rows = 2
+        columns = 1
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)

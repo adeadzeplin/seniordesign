@@ -16,8 +16,8 @@ def main():
         generations = 1000
         LUCA = EvolutionaryAlgorithm(population, generations)
         LUCA.initialization()
-        #ogCircuitOutput = [[0, 1, 1, 0], [0, 0, 0, 1]]
-        ogCircuitOutput = [[0, 1, 1, 0, 1, 0, 0, 1], [0, 0, 0, 1, 0, 1, 1, 1]]
+        ogCircuitOutput = [[0, 1, 1, 0], [0, 0, 0, 1]]
+        #ogCircuitOutput = [[0, 1, 1, 0, 1, 0, 0, 1], [0, 0, 0, 1, 0, 1, 1, 1]]
         for p in LUCA.population:
             # INITIALIZATION CONTINUATION
             Gate.gate_id_counter = 0
