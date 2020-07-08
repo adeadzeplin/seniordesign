@@ -34,15 +34,15 @@ def runParserMuted(listOfGates, ogCircuitOutput):
     return circuit_output_compare(returnValue, ogCircuitOutput)
 
 def runLUCAParser(listOfGates,ogCircuitOutput ):
-    for gate in listOfGates:
-        gate.g_print()
+    # for gate in listOfGates:
+    #     gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
-    print("Circuit Output:", returnValue)
+    #print("Circuit Output:", returnValue)
     circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
-    print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+    #print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
     metrics = circuit_Metrics(listOfGates)
-    print("Power(uA) | Delay(ns) | Transistors ", metrics)
+    #print("Power(uA) | Delay(ns) | Transistors ", metrics)
     #print(getfancyprintoutstring(0,listOfGates))
     print('\n')
 
@@ -71,7 +71,7 @@ def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and oth
     temp_gate_id = []
 
     for i in listOFGates:  # start from output
-        if i.type == 1:  # outputs gates
+        if i.type == 1 or i.type == 99:  # outputs gates
             try:
                 temp_output_id.append(i)
             except:
@@ -114,11 +114,11 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
     for i in tableInput_IDs_formated:
         tableInput_TableOut.append(tempTable[[i]])
     circuitInput = table_column_get(tableInput_TableOut, circuitInput)
-    print("hello", circuitInput)
 
     # pass generate table inpputs, into input gate outputs
     for i in CrawlerOut[1]:
         i.tableOutput = circuitInput[i.gate_id]
+        print("inputs",i.tableOutput)
 
     # print("\n")
 
@@ -137,20 +137,33 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
 
             connector_id = i.inputs[num].mated_to[0]
             if connector_id < INPUTSTOTAL:  # if gate is connected to only input gates
-                # print(CrawlerOut[1][connector_id].tableOutput)
+                #print("a;sldjf",CrawlerOut[1][connector_id].tableOutput)
                 connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
+                #print(connected_gate_output)
             else:
                 for gate in CrawlerOut[2]:
+                    flag_connection=False
                     #print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
                     if gate.type == 99:
+                        print("imma 99")
                         pass
                     else:
-                        # print(gate.gate_id)
-                        if gate.outputs[0]._ID == connector_id:
-                            # print(gate.gate_id,gate.tableOutput)
-                            connected_gate_output.append((gate.tableOutput))
+                        for gate_out in gate.outputs:
+                            if gate_out._ID == connector_id:
+                                #print(gate.gate_id,gate.tableOutput)
+                                connected_gate_output.append((gate.tableOutput))
+                                flag_connection = True
+                                break
+                    if flag_connection == True:
+                        break
+
         if i.type == 4 or i.type == 8:
-            i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+            #print("test", connected_gate_output, i.type, i.gate_id)
+            try:
+                i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+            except:
+                print("broken not")
+
         elif i.type == 99:
             pass
         else:
@@ -163,7 +176,11 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
             #     i.tableOutput = table_output([], [], i.type)
             #
             # else:
-            i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+            #print("test", connected_gate_output, i.type)
+            try:
+                i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+            except:
+                print("imma bonehead")
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
