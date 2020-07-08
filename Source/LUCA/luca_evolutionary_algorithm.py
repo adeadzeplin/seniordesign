@@ -15,7 +15,7 @@ class EvolutionaryAlgorithm:
         inputs = 2
         outputs = 2
         rows = 2
-        columns = 1
+        columns = 2
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)

@@ -14,7 +14,7 @@ def runParser(listOfGates, ogCircuitOutput):
     metrics = circuit_Metrics(listOfGates)
     print('\n')
     print("Power(uA) | Delay(ns) | Transistors ", metrics)
-    print(getfancyprintoutstring(0,listOfGates))
+    #print(getfancyprintoutstring(0,listOfGates))
 
     return circuitPercentSame
 
