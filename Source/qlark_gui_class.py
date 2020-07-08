@@ -130,15 +130,7 @@ class QlarkGui:
                     self.circuitoutputlabel.configure(text=msg)
                     self.circuitmetricslabel.configure(text='No Metrics for this circuit')
                 elif isinstance(msg, dict):
-                    # ("Correct Circuit", textgoodcircuitstring,metrics)
-                    # metric_dict = {
-                    #     "CircuitStatus": "Correct Circuit",
-                    #     "CircuitPrintout": textgoodcircuitstring,
-                    #     "PercentCorrect": metrics[0],
-                    #     "PowerConsumed": metrics[1],
-                    #     "TimeDelay": metrics[2],
-                    #     "TransistorCount": metrics[3]
-                    # }
+
                     if msg["CircuitStatus"] == "Correct Circuit":
                         self.correctcircuitoutputlabel.configure(text=msg["CircuitPrintout"])
                         self.correctmetricsdatalabel.configure(text=self.metricmessage(msg))

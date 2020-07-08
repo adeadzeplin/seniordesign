@@ -28,7 +28,7 @@ def ParserMetrics(listOfGates, ogCircuitOutput):
     return circuitPercentSame,metrics,returnValue
 
 
-def runQParser(listOfGates, ogCircuitOutput):
+def runParserMuted(listOfGates, ogCircuitOutput):
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     return circuit_output_compare(returnValue, ogCircuitOutput)
