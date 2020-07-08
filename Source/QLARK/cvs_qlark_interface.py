@@ -206,7 +206,7 @@ class QlarkCircuitInterface():
         exit("INVALID SPECIAL REWARDVALUE")
 
     def getcircuitstatus(self):
-        self.checkforpoopchute()
+        self.checkforpoopchute()     # Checks circuits for any straight passthrout for circuit in -> circuit out
 
         circuit_completion_flag = self.checkciruitcompletion()
 
@@ -219,7 +219,7 @@ class QlarkCircuitInterface():
         if circuit_completion_flag:
             Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(self.list_of_gates)
             if Circuit_Errors == None:
-                self.circuitlogic = CVS_parser.runQParser(self.list_of_gates, self.DESIRED_LOGIC)
+                self.circuitlogic = CVS_parser.runParserMuted(self.list_of_gates, self.DESIRED_LOGIC)
 
             else:
                 return self.circuitstatus

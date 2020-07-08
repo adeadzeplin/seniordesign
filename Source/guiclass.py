@@ -33,9 +33,6 @@ class MyFirstGUI:
         root = Tk()
         client = ThreadedQlarkClient(root)
         root.mainloop()
-        # rootq = Tk(className='Python Examples - Window Size')
-        # qlark_gui = QlarkGui(rootq)
-        # print("huh")
 
 
         #if error return maybe display in window
