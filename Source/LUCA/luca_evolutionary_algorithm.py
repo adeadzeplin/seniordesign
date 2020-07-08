@@ -5,6 +5,7 @@ from CVS_.CVS_parser import *
 from CVS_.CVS_circuit_calculations import *
 import CVS_.CVS_constants as con
 
+
 class EvolutionaryAlgorithm:
 
     def __init__(self, pop, gens):
@@ -95,7 +96,7 @@ class EvolutionaryAlgorithm:
             return flag
         else:
             for i in self.population:
-                if i.fitness == 1.0 and i.gate_counter == 2:
+                if i.fitness == 1.0:
                     print("GENERATION:", generation)
                     print(i.genes)
                     print(i.fitness, 'NUM GATES IN CIRCUIT', i.gate_counter)
