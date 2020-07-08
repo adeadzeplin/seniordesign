@@ -33,6 +33,20 @@ def runQParser(listOfGates, ogCircuitOutput):
     returnValue = circuitConnecting(CrawlerOut)
     return circuit_output_compare(returnValue, ogCircuitOutput)
 
+def runLUCAParser(listOfGates,ogCircuitOutput ):
+    for gate in listOfGates:
+        gate.g_print()
+    CrawlerOut = circuitParsing(listOfGates)
+    returnValue = circuitConnecting(CrawlerOut)
+    print("Circuit Output:", returnValue)
+    circuitPercentSame = circuit_output_compare(returnValue, ogCircuitOutput)
+    print("Percent Circuit Output is Equal to OG:", circuitPercentSame)
+    metrics = circuit_Metrics(listOfGates)
+    print("Power(uA) | Delay(ns) | Transistors ", metrics)
+    #print(getfancyprintoutstring(0,listOfGates))
+    print('\n')
+
+    return circuitPercentSame
 
 def convertNumtoWord(type):
     if type == 2:
@@ -139,8 +153,14 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            if len(connected_gate_output) == 1:
-                i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+            if len(connected_gate_output) == 1 :
+                try:
+                    i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+                except:
+                    i.tableOutput = table_output([], connected_gate_output[1], i.type)
+            elif len(connected_gate_output) == 0 :
+                i.tableOutput = table_output([], [], i.type)
+
             else:
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
 

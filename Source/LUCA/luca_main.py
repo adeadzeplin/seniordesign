@@ -4,7 +4,7 @@ from CVS_.CVS_gate_class import Gate, Connector
 from LUCA.luca_circuit import *
 from LUCA.luca_functions import connect_gates
 from CVS_.CVS_circuit_calculations import circuit_connection_check
-from CVS_.CVS_parser import runParser
+from CVS_.CVS_parser import runLUCAParser
 
 
 def main():
@@ -38,7 +38,7 @@ def main():
         for i in LUCA.population:
             Circuit_Errors = circuit_connection_check(i.stan_circuit)
             if Circuit_Errors == None:
-                i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
+                i.fitness = runLUCAParser(i.stan_circuit, ogCircuitOutput)
                 print('GENERATION', generation, i.fitness)
                 historical_fitness.append(i.fitness)
             else:

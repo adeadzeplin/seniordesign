@@ -107,7 +107,8 @@ def circuit_connection_check(listofallgates):
                 elif len(gate.inputs[j].mated_to) > 2:
                     return circuit_errors.ERROR_MORE_THAN_2_MATED
                 else:
-                    pass  # print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
+                    pass
+                    #print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
 
         for k in range(len(gate.inputs)):
             if gate.type == 1:      #if output gate have no inputs or more than 1 input
@@ -117,8 +118,11 @@ def circuit_connection_check(listofallgates):
                     pass  # print(gate.gate_id,gate.inputs[k].mated_to)
             elif gate.type != 0:        #error check #1
                 if gate.inputs[k].mated_to == []:
+                    #print(gate.inputs[k].mated_to)
                     # print("ERROR_GATE_MISSING_INPUTS")
                     return circuit_errors.ERROR_GATE_MISSING_INPUTS
+                elif gate.inputs[k].mated_to == 1:
+                    return circuit_errors.ERROR_ONE_LOGIC_GATE_INPUT
                 elif len(gate.inputs[k].mated_to) > 2:
                     # print("ERROR_MORE_THAN_2_MATED")
                     return circuit_errors.ERROR_MORE_THAN_2_MATED
@@ -137,6 +141,7 @@ class circuit_errors(enum.Enum):
     ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
     ERROR_MORE_THAN_2_MATED = 90
     ERROR_NONE_MATED = 900
+    ERROR_ONE_LOGIC_GATE_INPUT = 110
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
@@ -243,27 +248,27 @@ def table_output(a, b, gatetype):
                 output.append(0)
 
     return output
-
-def gateNumtoName(listofGatesNum):
-    temp =[]
-    for i in range(len(listofGatesNum)):
-        if listofGatesNum[i] == 0:
-            temp.append("IN")
-        elif listofGatesNum[i] == 1:
-            temp.append("OUT")
-        elif listofGatesNum[i] == 2:
-            temp.append("AND")
-        elif listofGatesNum[i] == 3:
-            temp.append("OR")
-        elif listofGatesNum[i] == 4:
-            temp.append("NOT")
-        elif listofGatesNum[i] == 5:
-            temp.append("NAND")
-        elif listofGatesNum[i] == 6:
-            temp.append("NOR")
-        elif listofGatesNum[i] == 7:
-            temp.append("XOR")
-    return temp
+#
+# def gateNumtoName(listofGatesNum):
+#     temp =[]
+#     for i in range(len(listofGatesNum)):
+#         if listofGatesNum[i] == 0:
+#             temp.append("IN")
+#         elif listofGatesNum[i] == 1:
+#             temp.append("OUT")
+#         elif listofGatesNum[i] == 2:
+#             temp.append("AND")
+#         elif listofGatesNum[i] == 3:
+#             temp.append("OR")
+#         elif listofGatesNum[i] == 4:
+#             temp.append("NOT")
+#         elif listofGatesNum[i] == 5:
+#             temp.append("NAND")
+#         elif listofGatesNum[i] == 6:
+#             temp.append("NOR")
+#         elif listofGatesNum[i] == 7:
+#             temp.append("XOR")
+#     return temp
 
     # AND = 2
     # OR = 3
