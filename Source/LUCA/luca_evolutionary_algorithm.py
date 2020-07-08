@@ -33,22 +33,28 @@ class EvolutionaryAlgorithm:
 
     def mutation(self):
         mutation_rate = 0.10
+        two_input_gates = [2, 3, 5, 6, 7, 9]
+        one_input_gates = [4, 8]
         for i in self.new_population:
             mutate_flag = False
             mutate = np.random.uniform(0, 1)
             mutate_gate_index = np.random.randint(0, len(i.genes) - i.num_outputs)
             if mutate < mutation_rate:
                 mutate_gate_length = len(i.genes[mutate_gate_index])
-                for j in range(0, len(i.genes) - i.num_outputs):
-                    if len(i.genes[j]) == mutate_gate_length and j != mutate_gate_index:
-                        gt_1 = i.genes[mutate_gate_index][-1]
-                        gt_2 = i.genes[j][-1]
-                        i.genes[mutate_gate_index][-1] = gt_2
-                        i.genes[j][-1] = gt_1
-                        mutate_flag = True
-                        break
-                    else:
-                        pass
+                if mutate_gate_length == 4:
+                    while mutate_flag:
+                        gate_loc = np.random.randint(0, len(two_input_gates))
+                        gate_val = two_input_gates[gate_loc]
+                        if gate_val != i.genes[mutate_gate_index][-1]:
+                            i.genes[mutate_gate_index][-1] = gate_val
+                            mutate_flag = False
+                elif mutate_gate_length == 3:
+                    while mutate_flag:
+                        gate_loc = np.random.randint(0, len(one_input_gates))
+                        gate_val = one_input_gates[gate_loc]
+                        if gate_val != i.genes[mutate_gate_index][-1]:
+                            i.genes[mutate_gate_index][-1] = gate_val
+                            mutate_flag = False
 
     def termination(self):
         for i in self.population:
