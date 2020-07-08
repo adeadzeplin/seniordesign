@@ -48,21 +48,21 @@ def runLUCAParser(listOfGates,ogCircuitOutput ):
 
     return circuitPercentSame
 
-def convertNumtoWord(type):
-    if type == 2:
-        return "and"
-    elif type == 3:
-        return "or"
-    elif type == 4:
-        return "not"
-    elif type == 5:
-        return "nand"
-    elif type == 6:
-        return "nor"
-    elif type == 7:
-        return "xor"
-    elif type == 9:
-        return "xnor"
+# def convertNumtoWord(type):
+#     if type == 2:
+#         return "and"
+#     elif type == 3:
+#         return "or"
+#     elif type == 4:
+#         return "not"
+#     elif type == 5:
+#         return "nand"
+#     elif type == 6:
+#         return "nor"
+#     elif type == 7:
+#         return "xor"
+#     elif type == 9:
+#         return "xnor"
 
 
 def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and other gates types
@@ -153,16 +153,16 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            if len(connected_gate_output) == 1 :
-                try:
-                    i.tableOutput = table_output(connected_gate_output[0], [], i.type)
-                except:
-                    i.tableOutput = table_output([], connected_gate_output[1], i.type)
-            elif len(connected_gate_output) == 0 :
-                i.tableOutput = table_output([], [], i.type)
-
-            else:
-                i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
+            # if len(connected_gate_output) == 1 :
+            #     try:
+            #         i.tableOutput = table_output(connected_gate_output[0], [], i.type)
+            #     except:
+            #         i.tableOutput = table_output([], connected_gate_output[1], i.type)
+            # elif len(connected_gate_output) == 0 :
+            #     i.tableOutput = table_output([], [], i.type)
+            #
+            # else:
+            i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
