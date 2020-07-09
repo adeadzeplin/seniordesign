@@ -118,7 +118,6 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
     # pass generate table inpputs, into input gate outputs
     for i in CrawlerOut[1]:
         i.tableOutput = circuitInput[i.gate_id]
-        print("inputs",i.tableOutput)
 
     # print("\n")
 

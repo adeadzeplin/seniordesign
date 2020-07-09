@@ -16,8 +16,8 @@ def main():
         generations = 100
         LUCA = EvolutionaryAlgorithm(population, generations)
         LUCA.initialization()
-        ogCircuitOutput = [[1, 0, 0, 1, 0, 1, 1, 0], [1, 1, 1, 0, 1, 0, 0, 0]]
-        # ogCircuitOutput = [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]]
+        #ogCircuitOutput = [[1, 0, 0, 1, 0, 1, 1, 0], [1, 1, 1, 0, 1, 0, 0, 0]]
+        ogCircuitOutput = [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]]
         LUCA.selection(ogCircuitOutput)
         running = LUCA.termination(generation)
         generation += 1
