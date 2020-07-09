@@ -1,10 +1,5 @@
-import numpy as np
 from LUCA.luca_evolutionary_algorithm import EvolutionaryAlgorithm
-from CVS_.CVS_gate_class import Gate, Connector
 from LUCA.luca_circuit import *
-from LUCA.luca_functions import connect_gates
-from CVS_.CVS_circuit_calculations import circuit_connection_check
-from CVS_.CVS_parser import runLUCAParser
 
 
 def main():
@@ -16,10 +11,12 @@ def main():
         generations = 100
         LUCA = EvolutionaryAlgorithm(population, generations)
         LUCA.initialization()
-        #ogCircuitOutput = [[1, 0, 0, 1, 0, 1, 1, 0], [1, 1, 1, 0, 1, 0, 0, 0]]
+        #ogCircuitOutput = [[0, 1, 1, 0], [0, 0, 0, 1]]
+        #ogCircuitOutput = [[0,1,1,1,0],[1,0,0,0,0],[0,0,0,0,1]]
         ogCircuitOutput = [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]]
         LUCA.selection(ogCircuitOutput)
-        running = LUCA.termination(generation)
+        running, max_fit, avg_fit = LUCA.termination(generation)
+        print('Max Fitness:', max_fit, 'Average Fitness:', avg_fit)
         generation += 1
         LUCA.crossover()
         LUCA.mutation()

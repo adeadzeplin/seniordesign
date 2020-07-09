@@ -2,11 +2,13 @@ from CVS_ import CVS_parser, CVS_circuit_creation, CVS_gate_class, CVS_circuit_c
 
 
 def CVS():
+    inputs = 2
+    outputs = 2
     listOfGates = []
     # Half adder
     # make A B inputs
-    CVS_circuit_creation.create_circuit_inputs(listOfGates)
-    CVS_circuit_creation.create_circuit_outputs(listOfGates)
+    CVS_circuit_creation.create_circuit_inputs(listOfGates, inputs)
+    CVS_circuit_creation.create_circuit_outputs(listOfGates, outputs)
 
     # make XOR gate with A B inputs
     # listOfGates.append(CVS_gate_class.Gate(CVS_gate_class.GateType.XOR))

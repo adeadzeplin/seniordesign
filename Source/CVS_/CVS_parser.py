@@ -1,5 +1,4 @@
 # from CVS_.CVS_circuit_creation import gateNumtoName
-from CVS_.CVS_constants import INPUTSTOTAL
 from CVS_.CVS_circuit_calculations import table_column_get, table_output, circuit_output_compare, circuit_Metrics, circuit_errors, getfancyprintoutstring,scancirc
 import ttg
 
@@ -34,8 +33,8 @@ def runParserMuted(listOfGates, ogCircuitOutput):
     return circuit_output_compare(returnValue, ogCircuitOutput)
 
 def runLUCAParser(listOfGates,ogCircuitOutput ):
-    # for gate in listOfGates:
-    #     gate.g_print()
+    #for gate in listOfGates:
+     #   gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     #print("Circuit Output:", returnValue)
@@ -44,7 +43,7 @@ def runLUCAParser(listOfGates,ogCircuitOutput ):
     metrics = circuit_Metrics(listOfGates)
     #print("Power(uA) | Delay(ns) | Transistors ", metrics)
     #print(getfancyprintoutstring(0,listOfGates))
-    print('\n')
+    #print('\n')
 
     return circuitPercentSame
 
@@ -135,16 +134,13 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
             #     return circuit_errors.ERROR_GATE_MISSING_INPUTS
 
             connector_id = i.inputs[num].mated_to[0]
-            if connector_id < INPUTSTOTAL:  # if gate is connected to only input gates
-                #print("a;sldjf",CrawlerOut[1][connector_id].tableOutput)
+            if connector_id < len(CrawlerOut[1]):  # if gate is connected to only input gates
                 connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
-                #print(connected_gate_output)
             else:
                 for gate in CrawlerOut[2]:
                     flag_connection=False
                     #print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
                     if gate.type == 99:
-                        print("imma 99")
                         pass
                     else:
                         for gate_out in gate.outputs:
@@ -157,7 +153,6 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
                         break
 
         if i.type == 4 or i.type == 8:
-            #print("test", connected_gate_output, i.type, i.gate_id)
             try:
                 i.tableOutput = table_output(connected_gate_output[0], [], i.type)
             except:
@@ -175,7 +170,6 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
             #     i.tableOutput = table_output([], [], i.type)
             #
             # else:
-            #print("test", connected_gate_output, i.type)
             try:
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
             except:

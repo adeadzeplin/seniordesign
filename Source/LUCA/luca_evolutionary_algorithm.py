@@ -3,7 +3,6 @@ from LUCA.luca_circuit import Circuit
 from LUCA.luca_functions import *
 from CVS_.CVS_parser import *
 from CVS_.CVS_circuit_calculations import *
-import CVS_.CVS_constants as con
 
 
 class EvolutionaryAlgorithm:
@@ -17,11 +16,9 @@ class EvolutionaryAlgorithm:
 
     def initialization(self):
         inputs = 4
-        outputs = 4
-        con.OUTPUTSTOTAL = outputs
-        con.INPUTSTOTAL = inputs
-        rows = 5
-        columns = 5
+        outputs = 3
+        rows = 6
+        columns = 6
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)
@@ -44,14 +41,14 @@ class EvolutionaryAlgorithm:
         for i in self.population:
             Circuit_Errors = circuit_connection_check(i.stan_circuit)
             if Circuit_Errors == None:
-                i.fitness = runParser(i.stan_circuit, ogCircuitOutput)
+                i.fitness = runLUCAParser(i.stan_circuit, ogCircuitOutput)
                 temp.append(i.fitness)
             else:
-                print("Error: ", Circuit_Errors)
+                #print("Error: ", Circuit_Errors)
                 i.fitness = 0
                 temp.append(i.fitness)
-                for j in i.stan_circuit:
-                    j.g_print()
+                #for j in i.stan_circuit:
+                #    j.g_print()
         self.historical_fitness.append(temp)
 
     def crossover(self):
@@ -63,7 +60,6 @@ class EvolutionaryAlgorithm:
             self.new_population.append(child)
 
     def mutation(self):
-        print("MUTATION")
         mutation_rate = 0.20
         two_input_gates = [2, 3, 5, 6, 7, 9]
         one_input_gates = [4, 8]
@@ -89,6 +85,8 @@ class EvolutionaryAlgorithm:
                             mutate_flag = False
 
     def termination(self, generation):
+        max_fit = 0
+        avg_fit = 0
         flag = True
         if generation == self.max_num_generations:
             print("MAX GEN LIMIT REACHED")
@@ -96,6 +94,7 @@ class EvolutionaryAlgorithm:
             return flag
         else:
             for i in self.population:
+                avg_fit += i.fitness
                 if i.fitness == 1.0:
                     print("GENERATION:", generation)
                     print(i.genes)
@@ -103,8 +102,11 @@ class EvolutionaryAlgorithm:
                     for j in i.stan_circuit:
                         j.g_print()
                         flag = False
+                else:
+                    if i.fitness > max_fit:
+                        max_fit = i.fitness
             if flag is False:
-                return flag
+                return flag, max_fit, avg_fit/self.population_size
             else:
                 flag = True
-                return flag
+                return flag, max_fit, avg_fit/self.population_size

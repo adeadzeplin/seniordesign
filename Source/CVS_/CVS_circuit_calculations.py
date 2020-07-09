@@ -1,13 +1,12 @@
 import enum
 from CVS_ import CVS_gate_class
 
-
 def circuit_Metrics(listOfGates):
     renamed_list = []
     metrics = []
     for gate in listOfGates:
         renamed_list.append(gate.type)
-    # print(renamed_list)
+    #print(renamed_list)
 
     metrics.append(total_Delay(renamed_list))
     metrics.append(total_Power(renamed_list))
@@ -15,22 +14,21 @@ def circuit_Metrics(listOfGates):
 
     return metrics
 
-
 def total_Power(renamed_list):
     esti_power = 0
     for i in renamed_list:
-        if i == 0 or i == 1:  # inputs/outputs
+        if i == 0 or i == 1:  #inputs/outputs
             esti_power += 0
         elif i == 6:
-            esti_power += 20  # uA
+            esti_power += 20  #uA
         elif i == 7:
-            esti_power += 40  # uA
+            esti_power += 40  #uA
         elif i == 8:
-            esti_power += 0  # LUCA space gate
+            esti_power += 0  #LUCA space gate
         elif i == 9:
             esti_power += 40
         else:
-            esti_power += 40  # uA
+            esti_power += 40  #uA
     return esti_power
 
 
@@ -55,7 +53,6 @@ def total_Delay(renamed_list):
             esti_delay += 24
     return esti_delay
 
-
 def total_transistor(renamed_list):
     transistor_num = 0
     for i in renamed_list:
@@ -74,7 +71,6 @@ def total_transistor(renamed_list):
         elif i == 9:
             transistor_num += 8
     return transistor_num
-
 
 def circuit_connection_check(listofallgates):
     input_gate_counter = 0
@@ -154,19 +150,16 @@ def circuit_output_compare(circuitOutput, ogOutput):
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):
-            # sprint(ogOutput[i][j])
-            if len(circuitOutput[i]) != len(
-                    ogOutput[i]):  # if the output arrays are not the same size i.e [], just ignore
+            #sprint(ogOutput[i][j])
+            if len(circuitOutput[i]) != len(ogOutput[i]):  #if the output arrays are not the same size i.e [], just ignore
                 counterWrong += 1
             else:
-                if ogOutput[i][j] == circuitOutput[i][
-                    j]:  # check if the values are the same between wanted output vs AI output
+                if ogOutput[i][j] == circuitOutput[i][j]:  #check if the values are the same between wanted output vs AI output
                     counterRight += 1
                 else:
                     counterWrong += 1
 
     return counterRight / (counterRight + counterWrong)
-
 
 # [0,0] take first values from each output column and compare first values in og circuit out
 # [0,1]
@@ -255,8 +248,6 @@ def table_output(a, b, gatetype):
                 output.append(0)
 
     return output
-
-
 #
 # def gateNumtoName(listofGatesNum):
 #     temp =[]
