@@ -22,7 +22,7 @@ class Qlark:
         self.EPS_DECAY = .9998  # Rate of random probability decay
         self.LEARNING_RATE = 0.1  # How much a q-value will change
         self.DISCOUNT = 0.95
-        self.QRANDOMINIT = -1  # The range of random starting values
+        self.QRANDOMINIT = 10  # The range of random starting values
         self.EPSILONSTART = .7
         self.NUM_STEPS = setupdict['maxsteps'] # self.environment.ACTION_SPACE*3-6  # number of tries to complete a circuit
         # print(self.NUM_STEPS)
@@ -101,7 +101,7 @@ class Qlark:
                 if index_q in self.q_table:
                     pass
                 else:
-                    self.q_table[index_q] = [np.random.uniform(self.QRANDOMINIT, 0) for i in range(self.environment.ACTION_SPACE)]
+                    self.q_table[index_q] = [np.random.uniform(self.QRANDOMINIT//2,self.QRANDOMINIT) for i in range(self.environment.ACTION_SPACE)]
 
                 # ACTION based on EPSILON GREEDY/REWARD
                 if np.random.random() > self.epsilon:

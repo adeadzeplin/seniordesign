@@ -16,10 +16,10 @@ class CircuitStatus(enum.Enum):
     Correct = 3
 
 class AIRewards(enum.IntEnum):
-    PlaceGate = 5
-    ConnectGate = 5
-    CircuitBroken = -100
-    CircuitCompleted = 2
+    PlaceGate = 50
+    ConnectGate = 50
+    CircuitBroken = 0
+    CircuitCompleted = 1000
     CircuitCorrect  = 10000000
 
 
@@ -181,11 +181,11 @@ class QlarkCircuitInterface():
         self.getparsermetrics(self.list_of_gates)
 
         if self.OPTIMIZE_METRIC == 'Transistor':
-            return AIRewards.CircuitCorrect - self.metrics[2]*AIRewards.CircuitBroken
+            return AIRewards.CircuitCorrect - self.metrics[2]*AIRewards.CircuitCompleted
         elif self.OPTIMIZE_METRIC == 'Power':
-            return AIRewards.CircuitCorrect - self.metrics[0]*AIRewards.CircuitBroken
+            return AIRewards.CircuitCorrect - self.metrics[0]*AIRewards.CircuitCompleted
         elif self.OPTIMIZE_METRIC == 'Delay':
-            return AIRewards.CircuitCorrect - self.metrics[1]*AIRewards.CircuitBroken
+            return AIRewards.CircuitCorrect - self.metrics[1]*AIRewards.CircuitCompleted
         else:
             # print("bruh moment")
             return AIRewards.CircuitCorrect
@@ -197,7 +197,7 @@ class QlarkCircuitInterface():
         if self.circuitstatus == CircuitStatus.Broken:
             return AIRewards.CircuitBroken
         elif self.circuitstatus == CircuitStatus.Completed:
-            aireward_calc = (self.circuitlogic * 100 - 50)*2
+            aireward_calc = self.circuitlogic * AIRewards.CircuitCompleted
 
             return aireward_calc
 

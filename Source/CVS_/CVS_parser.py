@@ -33,8 +33,8 @@ def runParserMuted(listOfGates, ogCircuitOutput):
     return circuit_output_compare(returnValue, ogCircuitOutput)
 
 def runLUCAParser(listOfGates,ogCircuitOutput ):
-    #for gate in listOfGates:
-     #   gate.g_print()
+    # for gate in listOfGates:
+    #     gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     #print("Circuit Output:", returnValue)
