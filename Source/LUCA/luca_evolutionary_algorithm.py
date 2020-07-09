@@ -16,12 +16,12 @@ class EvolutionaryAlgorithm:
         self.historical_fitness = []
 
     def initialization(self):
-        inputs = 2
+        inputs = 3
         outputs = 2
         con.OUTPUTSTOTAL = outputs
         con.INPUTSTOTAL = inputs
-        rows = 2
-        columns = 2
+        rows = 4
+        columns = 4
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)

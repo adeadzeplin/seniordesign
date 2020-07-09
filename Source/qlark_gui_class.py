@@ -314,7 +314,7 @@ class QlarkGui:
         CVS_constants.OUTPUTSTOTAL = 3
 
         self.initdict = {
-            'truthtable': [[0, 1, 1, 1, 0], [1, 0, 0, 0, 0], [0, 0, 0, 0, 1]],  # 2-bit comparator
+            'truthtable': [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]],  # 2-bit comparator
             'circuitinputs': 4,  #
             'circuitoutputs': 3,  #
             'maxgatenum': 11,  # Total num of gates AI is allowed to place

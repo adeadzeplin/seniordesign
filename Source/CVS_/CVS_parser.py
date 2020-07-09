@@ -71,7 +71,7 @@ def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and oth
     temp_gate_id = []
 
     for i in listOFGates:  # start from output
-        if i.type == 1 or i.type == 99:  # outputs gates
+        if i.type == 1:  # outputs gates
             try:
                 temp_output_id.append(i)
             except:
