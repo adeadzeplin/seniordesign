@@ -3,8 +3,8 @@ from CVS_.CVS_circuit_calculations import table_column_get, table_output, circui
 import ttg
 
 def runParser(listOfGates, ogCircuitOutput):
-    #for gate in listOfGates:
-     #   gate.g_print()
+    for gate in listOfGates:
+       gate.g_print()
     CrawlerOut = circuitParsing(listOfGates)
     returnValue = circuitConnecting(CrawlerOut)
     print("Circuit Output:", returnValue)
@@ -121,25 +121,25 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
     # print("\n")
 
     for i in CrawlerOut[2]:  # gates----------------------------------------------------------------
-        # if i.gate_id:
+        # if i.gate_id ==4:
         #     print(i.gate_id, i.type, i.inputs[0]._ID, i.outputs[0]._ID)
         # else:
         #     print(i.gate_id, i.type, i.inputs[0]._ID, i.inputs[1]._ID, i.outputs[0]._ID)
+
+        # print(i.gate_id,"host test",i.inputs[0]._ID,i.inputs[1]._ID,i.outputs[0]._ID)
+
 
         connected_gate_output = []
         # extract outputs from connected gates
         input_len = len(i.inputs)
         for num in range(input_len):
-            # if not i.inputs[num].mated_to or i.inputs[num] == []:
-            #     return circuit_errors.ERROR_GATE_MISSING_INPUTS
-
             connector_id = i.inputs[num].mated_to[0]
             if connector_id < len(CrawlerOut[1]):  # if gate is connected to only input gates
                 connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
             else:
                 for gate in CrawlerOut[2]:
                     flag_connection=False
-                    #print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
+                    # print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
                     if gate.type == 99:
                         pass
                     else:
@@ -161,19 +161,11 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         elif i.type == 99:
             pass
         else:
-            # if len(connected_gate_output) == 1 :
-            #     try:
-            #         i.tableOutput = table_output(connected_gate_output[0], [], i.type)
-            #     except:
-            #         i.tableOutput = table_output([], connected_gate_output[1], i.type)
-            # elif len(connected_gate_output) == 0 :
-            #     i.tableOutput = table_output([], [], i.type)
-            #
-            # else:
             try:
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
             except:
                 print("imma bonehead")
+                return circuit_errors.ERROR_CIRCUIT_LOOP
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
