@@ -16,8 +16,8 @@ class EvolutionaryAlgorithm:
     def initialization(self, allowed_gate_types):
         inputs = 2
         outputs = 2
-        rows = 3
-        columns = 1
+        rows = 2
+        columns = 2
         for i in range(self.population_size):
             attempt = Circuit(inputs, outputs, rows, columns)
             self.population.append(attempt)
@@ -28,11 +28,8 @@ class EvolutionaryAlgorithm:
             p.create_circuit_inputs()
             p.create_circuit_gates(allowed_gate_types)
             p.create_circuit_outputs()
-            if (p.num_rows - p.num_outputs) >= 1:
-                p.create_dummy_gate()
-                connect_gates_d(p.gate_list, p.stan_circuit, p.num_ports, p.output_list, p.dummy_list)
-            else:
-                connect_gates(p.gate_list, p.stan_circuit, p.num_ports, p.output_list)
+            p.create_dummy_gate()
+            connect_gates_d(p.gate_list, p.stan_circuit, p.num_ports, p.output_list, p.dummy_list)
             p.genes, p.gate_counter = create_genes(p.stan_circuit)
 
     def selection(self, ogCircuitOutput):
@@ -42,14 +39,14 @@ class EvolutionaryAlgorithm:
             if Circuit_Errors == None:
                 i.fitness = runLUCAParser(i.stan_circuit, ogCircuitOutput)
                 #for j in i.stan_circuit:
-                    #j.g_print()
+                 #   j.g_print()
                 if i.fitness > max_fit:
                     max_fit = i.fitness
             else:
                 print("Error: ", Circuit_Errors)
                 i.fitness = 0
                 #for j in i.stan_circuit:
-                    #j.g_print()
+                 #   j.g_print()
         return max_fit
 
     def crossover(self):
@@ -103,7 +100,7 @@ class EvolutionaryAlgorithm:
             return flag
         else:
             for i in self.population:
-                if i.fitness == 1.0 and i.gate_counter == 2:
+                if i.fitness == 1.0:
                     print("GENERATION:", generation)
                     print(i.genes)
                     print(i.fitness, 'NUM GATES IN CIRCUIT', i.gate_counter)
