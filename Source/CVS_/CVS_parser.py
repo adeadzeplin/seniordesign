@@ -165,7 +165,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
                 i.tableOutput = table_output(connected_gate_output[0], connected_gate_output[1], i.type)
             except:
                 print("imma bonehead")
-                return circuit_errors.ERROR_CIRCUIT_LOOP
+                #return circuit_errors.ERROR_CIRCUIT_LOOP
 
     for i in CrawlerOut[0]:  # outputs----------------------------------------------------------------
         for j in range(len(i.inputs)):
