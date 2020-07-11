@@ -95,27 +95,49 @@ def circuit_connection_check(listofallgates):
 
     # checks is each gate has any inputs and outputs        #can simplify
     for gate in listofallgates:
+        # if gate.type == 8:
+        #     pass
+        # else:
+            # --------------- OUTPUTS --------------
         for j in range(len(gate.outputs)):
             if gate.type == 0:  # if  input gate does not have outputs
                 if len(gate.outputs[j].mated_to) == 0:
                     return circuit_errors.ERROR_CIRCUIT_INPUT
                 else:
                     pass  # print(gate.gate_id,gate.outputs[j].mated_to)
+            elif gate.type == 4 or gate.type == 8:
+                if len(gate.outputs[j].mated_to) == 0:
+                    return circuit_errors.ERROR_CONNECTED_GATE_OUTPUT_MISSING
+                # elif len(gate.inputs[j].mated_to) > 1:
+                #     return circuit_errors.ERROR_MORE_THAN_2_MATED
+                else:
+                    pass
             elif gate.type != 1:
                 if len(gate.outputs[j].mated_to) == 0:
                     return circuit_errors.ERROR_CONNECTED_GATE_OUTPUT_MISSING
-                elif len(gate.inputs[j].mated_to) > 2:
-                    return circuit_errors.ERROR_MORE_THAN_2_MATED
+                # elif len(gate.inputs[j].mated_to) > 2:
+                #     return circuit_errors.ERROR_MORE_THAN_2_MATED
                 else:
                     pass
                     # print(gate.gate_id,gate.inputs[j].mated_to,gate.outputs[j].mated_to)
 
         for k in range(len(gate.inputs)):
+            # --------------- INPUTS --------------
             if gate.type == 1:  # if output gate have no inputs or more than 1 input
                 if len(gate.inputs[k].mated_to) == 0 or len(gate.inputs[k].mated_to) > 1:
                     return circuit_errors.ERROR_CIRCUIT_OUTPUT
                 else:
                     pass  # print(gate.gate_id,gate.inputs[k].mated_to)
+            elif gate.type == 4 or gate.type == 8:
+                if gate.inputs[k].mated_to == []:
+                    # print(gate.inputs[k].mated_to)
+                    # print("ERROR_GATE_MISSING_INPUTS")
+                    return circuit_errors.ERROR_GATE_MISSING_INPUTS
+                # elif len(gate.inputs[k].mated_to) == 1:
+                #     return circuit_errors.ERROR_ONE_LOGIC_GATE_INPUT
+                elif len(gate.inputs[k].mated_to) > 1:
+                    # print("ERROR_MORE_THAN_2_MATED")
+                    return circuit_errors.ERROR_MORE_THAN_2_MATED
             elif gate.type != 0:  # error check #1
                 if gate.inputs[k].mated_to == []:
                     # print(gate.inputs[k].mated_to)
@@ -127,6 +149,29 @@ def circuit_connection_check(listofallgates):
                     # print("ERROR_MORE_THAN_2_MATED")
                     return circuit_errors.ERROR_MORE_THAN_2_MATED
 
+            #Circuit Recursion Check
+            #Check if the current gate is connected to an output of a gate further down in the list
+            #This is will casue the current gate to not receive an output array when it tries to calc logic
+            if gate.type == CVS_gate_class.ConnectorType.INPUT or gate.type == CVS_gate_class.ConnectorType.OUTPUT:
+                pass
+            else:
+                for gate2 in listofallgates:
+                    if gate2.type == CVS_gate_class.ConnectorType.INPUT or gate2.type == CVS_gate_class.ConnectorType.OUTPUT or gate2.type == 99:
+                        pass
+                    else:
+                        #print("position", listofallgates.index(gate))
+                        #print(gate.gate_id, gate2.gate_id)
+                        #for j in range(len(gate.inputs)):
+                        #print("inputs",gate.inputs[j].mated_to,gate2.inputs[j].mated_to,"outputs",gate.outputs[0].mated_to,gate2.outputs[0].mated_to)
+                        #print("id", gate.inputs[0]._ID,gate.inputs[1]._ID, gate2.outputs[0].mated_to)
+                        #print("gate2",gate2.outputs[0].mated_to[0], gate2.outputs[0].mated_to)
+                        #print("where",gate.inputs[0]._ID, gate2.outputs[0].mated_to, "tab", gate.inputs[1]._ID, gate2.outputs[0].mated_to)
+                        for input in gate.inputs:
+                            for output in gate2.outputs[0].mated_to:
+                                if input._ID == output:
+                                    if listofallgates.index(gate) < listofallgates.index(gate2):
+                                        print("CVS recursion")
+                                        return circuit_errors.ERROR_CIRCUIT_LOOP
 
 class circuit_errors(enum.Enum):
     # Circuit Error codes
@@ -141,12 +186,15 @@ class circuit_errors(enum.Enum):
     ERROR_CONNECTED_GATE_OUTPUT_MISSING = 80
     ERROR_MORE_THAN_2_MATED = 90
     ERROR_NONE_MATED = 900
-    ERROR_ONE_LOGIC_GATE_INPUT = 110
+    ERROR_CIRCUIT_LOOP = 35
+
 
 
 def circuit_output_compare(circuitOutput, ogOutput):
     counterRight = 0
     counterWrong = 0
+
+    #print(circuitOutput,ogOutput)
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):

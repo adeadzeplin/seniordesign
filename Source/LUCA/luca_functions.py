@@ -1,7 +1,7 @@
 import numpy as np
 from CVS_.CVS_gate_class import Gate, Connector
 from CVS_.CVS_circuit_creation import Output_to_Input
-
+import random
 
 def define_input_cgp(cgp0, cgp1):
     output = [cgp0, cgp1]
@@ -25,14 +25,16 @@ def define_cgp(cgp0, cgp1, row):
     return output
 
 
-def create_gate(cgp):
-    if cgp[1] == 1:
+def create_gate(cgp, allowed_gate_types):
+    gate_flag = True
+    while gate_flag:
         val = np.random.randint(2, 10)
-    else:
-        val = np.random.randint(2, 10)
-    gate = Gate(val)
-    gate.cgp_id = cgp
-    return gate
+        for gt in allowed_gate_types:
+            if val == gt:
+                gate = Gate(val)
+                gate.cgp_id = cgp
+                gate_flag = False
+                return gate
 
 
 def connect_gates(gates, circuit, ports, output_list):
@@ -56,7 +58,7 @@ def connect_2_input_gates(input_1, input_2, output_1, circuit, ports, g, output_
     while incomplete:
         if not output_1.mated_to and full_flag is False:
             while outcheck:
-                outval = np.random.randint(g.gate_id, ports)
+                outval = np.random.randint(g.gate_id + 1, ports)
                 inpcheck, num_in = check_connecting_input(circuit, outval)
                 checkval = check_output_cgp(outval, g, circuit)
                 fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
@@ -98,7 +100,7 @@ def connect_1_input_gates(input_1, output_1, circuit, ports, g, output_list):
     while incomplete:
         if not output_1.mated_to and full_flag is False:
             while outcheck:
-                outval = np.random.randint(g.gate_id, ports)
+                outval = np.random.randint(g.gate_id + 1, ports)
                 inpcheck, num_in = check_connecting_input(circuit, outval)
                 checkval = check_output_cgp(outval, g, circuit)
                 fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
@@ -193,7 +195,7 @@ def connect_2d_input_gates(input_1, input_2, output_1, circuit, ports, g, output
     while incomplete:
         if not output_1.mated_to and full_flag is False:
             while outcheck:
-                outval = np.random.randint(g.gate_id, ports)
+                outval = np.random.randint(g.gate_id + 1, ports)
                 inpcheck, num_in = check_connecting_input(circuit, outval)
                 checkval = check_output_cgp(outval, g, circuit)
                 fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
@@ -236,7 +238,7 @@ def connect_1d_input_gates(input_1, output_1, circuit, ports, g, output_list, du
     while incomplete:
         if not output_1.mated_to and full_flag is False:
             while outcheck:
-                outval = np.random.randint(g.gate_id, ports)
+                outval = np.random.randint(g.gate_id + 1, ports)
                 inpcheck, num_in = check_connecting_input(circuit, outval)
                 checkval = check_output_cgp(outval, g, circuit)
                 fullcheck = check_inputs_full(circuit, g.gate_id, ports, output_list)
@@ -283,8 +285,9 @@ def create_genes(circuit):
 def accept_reject(population_size, population):
     while True:
         index = np.random.randint(0, population_size)
+        #partner = random.choice(population)
         partner = population[index]
-        val = np.random.uniform(0, 1)
+        val = np.random.uniform(0.1, 1)
         if val < partner.fitness:
             return partner
 
@@ -296,6 +299,7 @@ def create_child(child, parent1, parent2):
             child.genes.append(parent2.genes[i])
         else:
             child.genes.append(parent1.genes[i])
+
 
 def convert_form(population):
     for i in population:
