@@ -93,6 +93,39 @@ def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and oth
     crawlerOutput = [temp_output_id, temp_input_id, temp_gate_id]
     return crawlerOutput
 
+def recrusion_dude(gates_skipped,CrawlerOut,connected_gate_output):
+    # print(len(gates_skipped))
+    for recheck_Gate in gates_skipped:
+        print(len(gates_skipped),recheck_Gate.type, recheck_Gate.gate_id,connected_gate_output)
+
+        for num in range(len(recheck_Gate.inputs)):
+            connector_id = recheck_Gate.inputs[num].mated_to[0]
+            for gate in CrawlerOut:
+                flag_connection = False
+                # print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
+                if gate.type == 99:
+                    pass
+                else:
+                    for gate_out in gate.outputs:
+                        if gate_out._ID == connector_id:
+                            # print(gate.gate_id,gate.tableOutput)
+                            if gate.tableOutput == []:
+                                #gates_skipped.append(recheck_Gate)
+                                flag_connection = True
+                                break
+                                # pass
+                            else:
+                                connected_gate_output.append((gate.tableOutput))
+                                flag_connection = True
+                                break
+                if flag_connection == True:
+                    break
+        if len(gates_skipped) >2:
+            recrusion_dude(gates_skipped,CrawlerOut,connected_gate_output)
+        elif len(gates_skipped) == 1:
+            return connected_gate_output
+        elif len(gates_skipped) == 0:
+            return connected_gate_output
 
 def circuitConnecting(CrawlerOut):  # goes through circuit starting from input gates, and determines the outputs of each gate
     # print("\n")
@@ -121,6 +154,7 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
     # print("\n")
 
     for i in CrawlerOut[2]:  # gates----------------------------------------------------------------
+        gates_skipped = []
         # if i.gate_id ==4:
         #     print(i.gate_id, i.type, i.inputs[0]._ID, i.outputs[0]._ID)
         # else:
@@ -146,11 +180,41 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
                         for gate_out in gate.outputs:
                             if gate_out._ID == connector_id:
                                 #print(gate.gate_id,gate.tableOutput)
-                                connected_gate_output.append((gate.tableOutput))
-                                flag_connection = True
-                                break
+                                if gate.tableOutput == []:
+                                    gates_skipped.append(i)
+                                    flag_connection = True
+                                    break
+                                else:
+                                    connected_gate_output.append((gate.tableOutput))
+                                    flag_connection = True
+                                    break
                     if flag_connection == True:
                         break
+
+        # for recheck_Gate in gates_skipped:
+        #     for num in range(input_len):
+        #         connector_id = recheck_Gate.inputs[num].mated_to[0]
+        #         for gate in CrawlerOut[2]:
+        #             flag_connection = False
+        #             # print("testing",gate.inputs[0]._ID,gate.inputs[1]._ID, gate.outputs[0]._ID)
+        #             if gate.type == 99:
+        #                 pass
+        #             else:
+        #                 for gate_out in gate.outputs:
+        #                     if gate_out._ID == connector_id:
+        #                         # print(gate.gate_id,gate.tableOutput)
+        #                         if gate.tableOutput == []:
+        #                             gates_skipped.append(recheck_Gate)
+        #                             flag_connection = True
+        #                             break
+        #                         else:
+        #                             connected_gate_output.append((gate.tableOutput))
+        #                             flag_connection = True
+        #                             break
+        #             if flag_connection == True:
+        #                 break
+
+        connected_gate_output.append(recrusion_dude(gates_skipped,CrawlerOut[2],connected_gate_output))
 
         if i.type == 4 or i.type == 8:
             try:
