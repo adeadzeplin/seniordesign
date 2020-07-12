@@ -1,15 +1,18 @@
 from LUCA.luca_evolutionary_algorithm import EvolutionaryAlgorithm
-from LUCA.luca_circuit import *
 
 
 def main():
     generation = 1
     running = True
-    population = 40
+    population = 100
     generations = 10000
     allowed_gate_types = [2, 3, 4, 5, 6, 7, 8, 9]
+    inputs = 2
+    outputs = 2
+    rows = 2
+    columns = 2
     LUCA = EvolutionaryAlgorithm(population, generations)
-    LUCA.initialization(allowed_gate_types)
+    LUCA.initialization(allowed_gate_types, inputs, outputs, rows, columns)
     while running:
         print('GENERATION', generation)
         if not LUCA.new_population:
@@ -27,6 +30,7 @@ def main():
         generation += 1
         LUCA.crossover()
         LUCA.mutation(allowed_gate_types)
+        LUCA.test_mutation(allowed_gate_types)
         LUCA.check_children()
         LUCA.update_population()
         for j in range(len(LUCA.new_population)):
