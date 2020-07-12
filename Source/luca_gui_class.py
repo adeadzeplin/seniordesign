@@ -5,7 +5,7 @@ import random
 import queue
 from tkinter import Tk, Label, Button, Checkbutton, IntVar, StringVar, messagebox, OptionMenu, Entry
 from CVS_.CVS_gate_class import GateType
-from CVS_ import CVS_constants
+# from CVS_ import CVS_constants
 
 
 class LucaGui:

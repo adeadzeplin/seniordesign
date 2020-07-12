@@ -293,7 +293,7 @@ class QlarkGui:
             'allowedgatetypes': [GateType.AND.name,     # For Qlark             please dont touch
                                  GateType.XOR.name,     # For Qlark             please dont touch
                                  GateType.OR.name],     # For Qlark             please dont touch
-            'maxsteps': 15,                             # For Qlark             please dont touch
+            'maxsteps': 17,                             # For Qlark             please dont touch
             'totalthreads': 1,                          # For Qlark threading   please dont touch
             'trainingsetspthread': 1,                    # For Qlark threading   please dont touch
             'savepath': f'{getrootpath()}fulladder_qtable.pickle',

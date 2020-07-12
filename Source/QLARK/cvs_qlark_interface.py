@@ -16,10 +16,10 @@ class CircuitStatus(enum.Enum):
     Correct = 3
 
 class AIRewards(enum.IntEnum):
-    PlaceGate = 50
-    ConnectGate = 50
+    PlaceGate = 10
+    ConnectGate = 10
     CircuitBroken = 0
-    CircuitCompleted = 1000
+    CircuitCompleted = 3000
     CircuitCorrect  = 10000000
 
 
