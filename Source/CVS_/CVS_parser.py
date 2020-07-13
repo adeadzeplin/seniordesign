@@ -75,23 +75,6 @@ def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and oth
     temp_input_id = []
     temp_gate_id = []
 
-    # for i in listOFGates:  # start from output
-    #     if i.type == 1:  # outputs gates
-    #         try:
-    #             temp_output_id.append(i)
-    #         except:
-    #             print('fail')
-    #     elif i.type == 0:  # if input is reached, by this point a list of gates should be found
-    #         try:
-    #             temp_input_id.append(i)
-    #         except:
-    #             print('fail')
-    #     else:  # rest of gates added here
-    #         try:
-    #             temp_gate_id.append(i)
-    #         except:
-    #             print('fail')
-
     for i in listOFGates:  # start from output
         if i.type == 1:  # outputs gates
             temp_output_id.append(i)

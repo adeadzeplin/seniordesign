@@ -16,8 +16,6 @@ class Circuit:
         self.gate_counter = 0
         self.num_gates = self.num_rows * self.num_columns
         self.num_dummy = 1
-        if self.num_rows == self.num_outputs:
-            self.num_dummy = 0
         self.num_ports = self.num_inputs + self.num_outputs + self.num_gates + self.num_dummy
         self.gate_list = []
         self.input_list = []
@@ -36,9 +34,9 @@ class Circuit:
             if j == self.num_inputs - 1:
                 self.cgp = [0, 1]
 
-    def create_circuit_gates(self):
+    def create_circuit_gates(self, allowed_gate_types):
         for k in range(0, self.num_gates):
-            gate = create_gate(self.cgp)
+            gate = create_gate(self.cgp, allowed_gate_types)
             self.stan_circuit.append(gate)
             self.gate_list.append(gate)
             self.cgp = define_cgp(self.cgp[0], self.cgp[1], self.num_rows)
@@ -52,7 +50,7 @@ class Circuit:
             self.output_list.append(out)
 
     def create_dummy_gate(self):
-        dummy = Gate(99, (self.num_rows - self.num_outputs), 0)
+        dummy = Gate(99, 0, 0)
         self.stan_circuit.append(dummy)
         self.dummy_list.append(dummy)
         dummy.cgp_id = self.cgp
