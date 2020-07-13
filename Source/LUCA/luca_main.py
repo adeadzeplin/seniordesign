@@ -13,7 +13,7 @@ from LUCA.luca_evolutionary_algorithm import EvolutionaryAlgorithm
 def main():
     generation = 1
     running = True
-    population = 200
+    population = 100
     generations = 10000
     allowed_gate_types = [2, 3, 4, 5, 6, 7, 8, 9]
     inputs = 3
@@ -36,7 +36,7 @@ def main():
         one_bit_comparator = [[0,1,0,0], [1,0,0,1], [0,0,1,0]]      #2in 3out
         two_bit_comparator = [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]]    #4in 3out
         two_bit_multiplier = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0], [0,0,0,0,0,0,1,1,0,1,0,1,0,1,1,0], [0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1]] #4in 4out
-        ogCircuitOutput = full_adder
+        ogCircuitOutput = full_subtractor
         max_fit = LUCA.selection(ogCircuitOutput)
         print(max_fit)
         running = LUCA.termination(generation)

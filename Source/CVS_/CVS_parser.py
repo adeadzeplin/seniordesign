@@ -139,13 +139,15 @@ def circuitConnecting(CrawlerOut,
                     if gate_searching == gate_c:
                         pass
                     # print(gate_c.gate_id,gate_searching.gate_id)
-
-
+                    elif gate_searching.type == GateType.DUMMY or gate_c.type==GateType.DUMMY:
+                        for dummynum in range(len(gate_searching.inputs)):
+                            if len(gate_searching.inputs[dummynum].mated_to) == 0:
+                                pass
                     elif gate_searching.type == GateType.circuitInput or gate_searching.type == GateType.circuitOutput:
                         pass
                     else:
-                        # print(gate_c.gate_id,"testing", gate_c.outputs[0]._ID)
-                        # print(gate_searching.gate_id,"testing",gate_searching.inputs[0].mated_to)
+                        # print(gate_c.gate_id,"testing", gate_c.outputs[0]._ID,gate_c.type)
+                        # print(gate_searching.gate_id,"testing",gate_searching.inputs[0].mated_to, gate_searching.type)
 
                         for num2 in range(len(gate_searching.inputs)):
                             if gate_c.outputs[0]._ID == gate_searching.inputs[num2].mated_to[0]:
@@ -192,8 +194,12 @@ def circuitConnecting(CrawlerOut,
                             if gate_searching == gate_c:
                                 pass
                             # print(gate_c.gate_id, gate_searching.gate_id)
-                            if gate_searching.type == GateType.circuitInput:
+                            elif gate_searching.type == GateType.circuitInput:
                                 pass
+                            elif gate_searching.type == GateType.DUMMY or gate_c.type == GateType.DUMMY:
+                                for dummynum in range(len(gate_searching.inputs)):
+                                    if len(gate_searching.inputs[dummynum].mated_to) == 0:
+                                        pass
                             else:
                                 # print(gate_c.gate_id,"testing", gate_c.outputs[0]._ID)
                                 # print(gate_searching.gate_id,"testing",gate_searching.inputs[0].mated_to)
@@ -231,6 +237,10 @@ def circuitConnecting(CrawlerOut,
                             # print(gate_c.gate_id, gate_searching.gate_id)
                             elif gate_searching.type == GateType.circuitInput:
                                 pass
+                            elif gate_searching.type == GateType.DUMMY or gate_c.type == GateType.DUMMY:
+                                for dummynum in range(len(gate_searching.inputs)):
+                                    if len(gate_searching.inputs[dummynum].mated_to) == 0:
+                                        pass
                             else:
                                 # print(gate_c.gate_id,"testing", gate_c.outputs[0]._ID)
                                 # print(gate_searching.gate_id,"testing",gate_searching.inputs[0].mated_to)
@@ -251,8 +261,9 @@ def circuitConnecting(CrawlerOut,
             return circuitOutput
 
 
-    # for i in circuitOutput:
-    #     i.reverse()
+    for i in circuitOutput:
+        i.reverse()
+    circuitOutput.reverse()
 
     # circuitOutput_fixed = []
     # print("hhere",circuitOutput)
