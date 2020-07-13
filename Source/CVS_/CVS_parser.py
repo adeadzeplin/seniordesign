@@ -75,22 +75,31 @@ def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and oth
     temp_input_id = []
     temp_gate_id = []
 
+    # for i in listOFGates:  # start from output
+    #     if i.type == 1:  # outputs gates
+    #         try:
+    #             temp_output_id.append(i)
+    #         except:
+    #             print('fail')
+    #     elif i.type == 0:  # if input is reached, by this point a list of gates should be found
+    #         try:
+    #             temp_input_id.append(i)
+    #         except:
+    #             print('fail')
+    #     else:  # rest of gates added here
+    #         try:
+    #             temp_gate_id.append(i)
+    #         except:
+    #             print('fail')
+
     for i in listOFGates:  # start from output
         if i.type == 1:  # outputs gates
-            try:
-                temp_output_id.append(i)
-            except:
-                print('fail')
+            temp_output_id.append(i)
         elif i.type == 0:  # if input is reached, by this point a list of gates should be found
-            try:
-                temp_input_id.append(i)
-            except:
-                print('fail')
+            temp_input_id.append(i)
         else:  # rest of gates added here
-            try:
-                temp_gate_id.append(i)
-            except:
-                print('fail')
+            temp_gate_id.append(i)
+
 
     # print(temp_output_id)
     # print(temp_input_id)
@@ -103,7 +112,8 @@ def circuitParsing(listOFGates):  # this gets a list of outputs, inputs, and oth
 def circuitConnecting(CrawlerOut,
                       listOfGates):  # goes through circuit starting from input gates, and determines the outputs of each gate
     # print("\n")
-
+    if listOfGates == []:
+        return print("empty list")
     recursion_counter = 0
 
     mated_to_list = []
@@ -119,10 +129,14 @@ def circuitConnecting(CrawlerOut,
 
     # generate inital input states
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
-    tempTable = ttg.Truths(tableInput_IDs_formated).as_pandas()
-    for i in tableInput_IDs_formated:
-        tableInput_TableOut.append(tempTable[[i]])
-    circuitInput = table_column_get(tableInput_TableOut, circuitInput)
+    try:
+        tempTable = ttg.Truths(tableInput_IDs_formated).as_pandas()
+        for i in tableInput_IDs_formated:
+            tableInput_TableOut.append(tempTable[[i]])
+        circuitInput = table_column_get(tableInput_TableOut, circuitInput)
+    except:
+        print(tableInput_IDs_formated)
+
 
     # pass generate table inputs, into input gate outputs
     for i in CrawlerOut[1]:
@@ -155,10 +169,11 @@ def circuitConnecting(CrawlerOut,
                             for num2 in range(len(gate_searching.inputs)):
                                 if gate_c.outputs[0]._ID == gate_searching.inputs[num2].mated_to[0]:
                                     gate_searching.logicInputs.append(gate_c.tableOutput)
+                                    CopiedListofGates.pop(CopiedListofGates.index(gate_c))
                                     # print(gate_searching.gate_id,"gate input", gate_searching.logicInputs)
                             break
                 # print("currnet gate", gate_c.gate_id, gate_c.logicInputs, gate_c.tableOutput)
-                CopiedListofGates.pop(CopiedListofGates.index(gate_c))
+                # CopiedListofGates.pop(CopiedListofGates.index(gate_c))
 
 
             elif gate_c.type == GateType.circuitOutput:
@@ -197,9 +212,10 @@ def circuitConnecting(CrawlerOut,
                                         if gate_c.outputs[0]._ID == gate_searching.inputs[num2].mated_to[0]:
                                             gate_searching.logicInputs.append(gate_c.tableOutput)
                                             # print(gate_searching.gate_id, "gate input", gate_searching.logicInputs)
+                                            CopiedListofGates.pop(CopiedListofGates.index(gate_c))
                                     break
                         # print("currnet gate", gate_c.gate_id, gate_c.logicInputs, gate_c.tableOutput)
-                        CopiedListofGates.pop(CopiedListofGates.index(gate_c))
+                        #CopiedListofGates.pop(CopiedListofGates.index(gate_c))
 
                 # check if gate has gate has logic inputs
                 if len(gate_c.logicInputs) == 0 or len(gate_c.logicInputs) == 1:
@@ -224,10 +240,11 @@ def circuitConnecting(CrawlerOut,
                                     for num2 in range(len(gate_searching.inputs)):
                                         if gate_c.outputs[0]._ID == gate_searching.inputs[num2].mated_to[0]:
                                             gate_searching.logicInputs.append(gate_c.tableOutput)
+                                            CopiedListofGates.pop(CopiedListofGates.index(gate_c))
                                             # print(gate_searching.gate_id, "gate input", gate_searching.logicInputs)
                                     break
                         # print("currnet gate", gate_c.gate_id, gate_c.logicInputs, gate_c.tableOutput)
-                        CopiedListofGates.pop(CopiedListofGates.index(gate_c))
+                        # CopiedListofGates.pop(CopiedListofGates.index(gate_c))
 
             # print("currnet gate",gate_c.gate_id, gate_c.logicInputs,gate_c.tableOutput)
             # CopiedListofGates.pop(CopiedListofGates.index(gate_c))

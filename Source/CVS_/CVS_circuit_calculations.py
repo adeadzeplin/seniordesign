@@ -77,6 +77,10 @@ def circuit_connection_check(listofallgates):
     logic_gate_counter = 0
     output_gate_counter = 0
 
+    #is there a circuit>???
+    if listofallgates == []:
+        return circuit_errors.ERROR_NO_CIRCUIT
+
     # checks if gates exist
     for gate in listofallgates:
         if gate.type == 0:
@@ -190,6 +194,7 @@ class circuit_errors(enum.Enum):
     ERROR_MORE_THAN_2_MATED = 90
     ERROR_NONE_MATED = 900
     ERROR_CIRCUIT_LOOP = 35
+    ERROR_NO_CIRCUIT = 45
 
 
 
