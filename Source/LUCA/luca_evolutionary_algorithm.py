@@ -46,7 +46,7 @@ class EvolutionaryAlgorithm:
                 print("Error: ", Circuit_Errors)
                 i.fitness = 0
                 #for j in i.stan_circuit:
-                 #   j.g_print()
+                    #j.g_print()
         return max_fit
 
     def crossover(self):
@@ -56,10 +56,10 @@ class EvolutionaryAlgorithm:
             child = Circuit(parent1.num_inputs, parent1.num_outputs, parent1.num_rows, parent1.num_columns)
             create_child(child, parent1, parent2)
             self.new_population.append(child)
-        convert_form(self.new_population)
+        convert_form(self.new_population, parent1)
 
     def mutation(self, allowed_gate_types):
-        mutation_rate = 0.10
+        mutation_rate = 0.05
         two_input_gates = [2, 3, 5, 6, 7, 9]
         one_input_gates = [4, 8]
         mutate_flag = True
@@ -103,7 +103,7 @@ class EvolutionaryAlgorithm:
                 if i.fitness == 1.0:
                     print("GENERATION:", generation)
                     print(i.genes)
-                    print(i.fitness, 'NUM GATES IN CIRCUIT', i.gate_counter)
+                    print('NUM GATES IN CIRCUIT', i.gate_counter)
                     for j in i.stan_circuit:
                         j.g_print()
                         flag = False
@@ -144,41 +144,50 @@ class EvolutionaryAlgorithm:
                             if gate_val == gt:
                                 if gate_val != i.genes[mutate_gate_index][-1]:
                                     if mutate_gate_length == 4 and gate_val != 4 and gate_val != 8:
-                                        print(i.genes)
+                                        #print(i.genes)
                                         i.genes[mutate_gate_index][-1] = gate_val
                                         mutate_flag = False
                                         gate_flag = False
-                                        print('mutated')
-                                        print(i.genes)
+                                        #print('mutated')
+                                        #print(i.genes)
                                     elif mutate_gate_length == 4 and (gate_val == 4 or gate_val == 8):
-                                        print(i.genes)
+                                        #print(i.genes)
                                         i.genes[mutate_gate_index][-1] = gate_val
-                                        del i.genes[mutate_gate_index][0]
+                                        delinp = np.random.randint(0,2)
+                                        del i.genes[mutate_gate_index][delinp]
                                         mutate_flag = False
                                         gate_flag = False
-                                        print('mutated2')
-                                        print(i.genes)
+                                        #print('mutated2')
+                                        #print(i.genes)
                                     elif mutate_gate_length == 3 and (gate_val == 4 or gate_val == 8):
-                                        print(i.genes)
+                                        #print(i.genes)
                                         i.genes[mutate_gate_index][-1] = gate_val
                                         mutate_flag = False
                                         gate_flag = False
-                                        print('mutated3')
-                                        print(i.genes)
+                                        #print('mutated3')
+                                        #print(i.genes)
                                     elif mutate_gate_length == 3 and gate_val != 4 and gate_val != 8:
-                                        print(i.genes)
+                                        #print(i.genes)
                                         input1 = i.genes[mutate_gate_index][0]
                                         input_flag = True
+                                        id = i.genes[mutate_gate_index][-2]
+                                        for j in i.stan_circuit:
+                                            if j.gate_id == id:
+                                                g_cgp = j.cgp_id
                                         while input_flag:
-                                            input2 = np.random.randint(0, 2)
-                                            if input2 == input1:
-                                                input_flag = True
-                                            else:
-                                                input_flag = False
-                                                i.genes[mutate_gate_index][-1] = gate_val
-                                                i.genes[mutate_gate_index].insert(0, input2)
-                                                mutate_flag = False
-                                                gate_flag = False
-                                                print('mutated4')
-                                                print(i.genes)
-                                                break
+                                            input2 = np.random.randint(0, id)
+                                            for j in i.stan_circuit:
+                                                if j.gate_id == input2:
+                                                    g2_cgp = j.cgp_id
+                                                    if g_cgp[1] > g2_cgp[1] and input2 != input1:
+                                                        input_flag = False
+                                                        #print(id, input2, g_cgp, g2_cgp)
+                                                        i.genes[mutate_gate_index][-1] = gate_val
+                                                        i.genes[mutate_gate_index].insert(0, input2)
+                                                        mutate_flag = False
+                                                        gate_flag = False
+                                                        #print('mutated4')
+                                                        #print(i.genes)
+                                                        break
+                                                    else:
+                                                        input_flag = True

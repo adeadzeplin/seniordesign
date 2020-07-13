@@ -204,7 +204,7 @@ def connect_2d_input_gates(input_1, input_2, output_1, circuit, ports, g, output
                 if fullcheck == 0 or fullcheck is None:
                     outcheck = 0
                     full_flag = True
-                    dummy_list[0].makePorts(1,0)
+                    dummy_list[0].makePorts(1, 0)
                     Output_to_Input(circuit, g.gate_id, dummy_id)
                 elif checkval == 1 or inpcheck == num_in:
                     outcheck = 1
@@ -304,7 +304,7 @@ def create_child(child, parent1, parent2):
             child.genes.append(parent1.genes[i])
 
 
-def convert_form(population):
+def convert_form(population, parent):
     for i in population:
         Gate.gate_id_counter = 0
         Connector.id = 0
@@ -333,3 +333,5 @@ def convert_form(population):
 
             else:
                 Output_to_Input(i.stan_circuit, i.genes[k][0], i.genes[k][1])
+        for j, k in zip(i.stan_circuit, parent.stan_circuit):
+            j.cgp_id = k.cgp_id

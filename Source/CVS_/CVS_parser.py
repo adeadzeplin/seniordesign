@@ -133,7 +133,10 @@ def circuitConnecting(CrawlerOut):  # goes through circuit starting from input g
         # extract outputs from connected gates
         input_len = len(i.inputs)
         for num in range(input_len):
-            connector_id = i.inputs[num].mated_to[0]
+            if len(i.inputs[num].mated_to) == 0 and i.type == 99:
+                pass
+            else:
+                connector_id = i.inputs[num].mated_to[0]
             if connector_id < len(CrawlerOut[1]):  # if gate is connected to only input gates
                 connected_gate_output.append(CrawlerOut[1][connector_id].tableOutput)
             else:
