@@ -78,6 +78,7 @@ class Gate:
         self.outputs = []
         self.makePorts(inputNum, outputNum)
         self.tableOutput = []
+        self.logicInputs = []
         self.cgp_id = []
 
     def makePorts(self, inPorts, outPorts):  # creates / connects inputs and outputs only

@@ -176,7 +176,7 @@ def CVS():
     CVS_circuit_creation.Output_to_Input(listOfGates, 4, 6)
     CVS_circuit_creation.Output_to_Input(listOfGates, 6, 5)
 
-    ogCircuitOutput = [[1,0,0,1]]
+    ogCircuitOutput = [[0,0,0,1]]
 
 
     #intial circuit connection check

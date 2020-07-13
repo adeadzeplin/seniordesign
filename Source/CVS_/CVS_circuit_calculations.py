@@ -201,7 +201,6 @@ def circuit_output_compare(circuitOutput, ogOutput):
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):
-            #sprint(ogOutput[i][j])
             if len(circuitOutput[i]) != len(ogOutput[i]):  #if the output arrays are not the same size i.e [], just ignore
                 counterWrong += 1
             else:
