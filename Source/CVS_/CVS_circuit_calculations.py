@@ -202,7 +202,10 @@ def circuit_output_compare(circuitOutput, ogOutput):
     counterRight = 0
     counterWrong = 0
 
-    #print(circuitOutput,ogOutput)
+    # print(circuitOutput,ogOutput)
+    if  circuitOutput == []:
+        return 0
+
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):

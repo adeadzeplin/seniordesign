@@ -130,7 +130,7 @@ def circuitConnecting(CrawlerOut,
     # generate inital input states
     tableInput_IDs_formated = ((list(map(str, list(set(tableInput_IDs))))))  # list with strings in it
     try:
-        tempTable = ttg.Truths(tableInput_IDs_formated).as_pandas()
+        tempTable = (ttg.Truths(tableInput_IDs_formated, ascending=True).as_pandas())
         for i in tableInput_IDs_formated:
             tableInput_TableOut.append(tempTable[[i]])
         circuitInput = table_column_get(tableInput_TableOut, circuitInput)
@@ -235,7 +235,7 @@ def circuitConnecting(CrawlerOut,
                     pass
                 else:
                     # logic gates
-                    if gate_c.type == 99:
+                    if gate_c.type == GateType.DUMMY:
                         pass
                     else:
                         gate_c.tableOutput = table_output(gate_c.logicInputs[0], gate_c.logicInputs[1], gate_c.type)
@@ -264,12 +264,12 @@ def circuitConnecting(CrawlerOut,
                             CopiedListofGates.remove(gate_c)
                             break
         if Fail_flag == True:
-            print("Nothing Happened")
-            return "imma bonehead"
+            # print("Recursion")
+            return circuitOutput
 
 
-    for i in circuitOutput:
-        i.reverse()
+    # for i in circuitOutput:
+    #     i.reverse()
 
     # circuitOutput_fixed = []
     # print("hhere",circuitOutput)
