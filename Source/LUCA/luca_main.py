@@ -13,7 +13,7 @@ from LUCA.luca_evolutionary_algorithm import EvolutionaryAlgorithm
 def main():
     generation = 1
     running = True
-    population = 100
+    population = 200
     generations = 10000
     allowed_gate_types = [2, 3, 4, 5, 6, 7, 8, 9]
     inputs = 3
@@ -29,10 +29,13 @@ def main():
         else:
             LUCA.new_population.clear()
         LUCA.check_children()
-        half_adder = [[0, 1, 1, 0], [0, 0, 0, 1]]
-        full_adder = [[0,1,1,0,1,0,0,1], [0,0,0,1,0,1,1,1]]
-        ogCircuitOutput = [[0,1,1,1,0],[1,0,0,0,0],[0,0,0,0,1]]
-        two_bit_comparator = [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]]
+        half_adder = [[0, 1, 1, 0], [0, 0, 0, 1]] # 2in 2out
+        half_subtractor = [[0,1,1,0], [0,1,0,0]]    #2in 2out
+        full_adder = [[0,1,1,0,1,0,0,1], [0,0,0,1,0,1,1,1]]     #3in 2out
+        full_subtractor = [[0,1,1,0,1,0,0,1], [0,1,1,1,0,0,0,1]]    #3in 2out
+        one_bit_comparator = [[0,1,0,0], [1,0,0,1], [0,0,1,0]]      #2in 3out
+        two_bit_comparator = [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]]    #4in 3out
+        two_bit_multiplier = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0], [0,0,0,0,0,0,1,1,0,1,0,1,0,1,1,0], [0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1]] #4in 4out
         ogCircuitOutput = full_adder
         max_fit = LUCA.selection(ogCircuitOutput)
         print(max_fit)

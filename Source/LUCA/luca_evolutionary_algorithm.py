@@ -43,7 +43,7 @@ class EvolutionaryAlgorithm:
                 if i.fitness > max_fit:
                     max_fit = i.fitness
             else:
-                print("Error: ", Circuit_Errors)
+                #print("Error: ", Circuit_Errors)
                 i.fitness = 0
                 #for j in i.stan_circuit:
                     #j.g_print()
