@@ -210,6 +210,8 @@ def CVS():
 
     ogCircuitOutput = [[0, 0, 0, 1,0, 0, 0, 1], [0, 0, 0, 1,0, 0, 0, 1]]
 
+    circ_printer = CVS_circuit_calculations.PrintClass()
+    print(circ_printer.getfancyprintoutstring(listOfGates))
 
     #intial circuit connection check
     Circuit_Errors = CVS_circuit_calculations.circuit_connection_check(listOfGates)

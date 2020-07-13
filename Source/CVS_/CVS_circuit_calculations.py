@@ -333,65 +333,69 @@ def table_output(a, b, gatetype):
 # XOR = 7
 
 
-def scancirc(recursion_depthCounter, scanedorder, gate_id, list_gates):
-    # print(scanedorder)
-    recursion_depthCounter += 1
+class PrintClass():
+    def __init__(self):
+        self.recursion_depthCounter = 0
+        pass
 
-    gate = None
-    for i in list_gates:
-        # print((i.gate_id , gate_id))
-        if i.gate_id == gate_id:
-            scanedorder.append((i.gate_id, i.type.name))
-            gate = i
-            break
-    if gate == None:
-        print('fuck')
-    if recursion_depthCounter >= 100:
-        print("recursive termination")
-        recursion_error_flag = True
-        return 'there was a circuit loop that caused a recursive error'
-    # check if the gate has any inputs
-    if len(gate.inputs) > 0:
-        for inputport in gate.inputs:
-            # check if input port has connections
-            if len(inputport.mated_to) > 0:
-                for ngate in list_gates:
-                    for outputport in ngate.outputs:
-                        for matched_id in outputport.mated_to:
-                            if matched_id == inputport._ID:
-                                scancirc(recursion_depthCounter, scanedorder, ngate.gate_id, list_gates)
-                                break
+    def scancirc(self, scanedorder, gate_id, list_gates):
+        # print(scanedorder)
+        self.recursion_depthCounter += 1
 
-    return scanedorder
+        gate = None
+        for i in list_gates:
+            # print((i.gate_id , gate_id))
+            if i.gate_id == gate_id:
+                scanedorder.append((i.gate_id, i.type.name))
+                gate = i
+                break
+        if gate == None:
+            print('fuck')
+        if self.recursion_depthCounter >= 100:
+            print("recursive termination")
+            recursion_error_flag = True
+            return 'there was a circuit loop that caused a recursive error'
+        # check if the gate has any inputs
+        if len(gate.inputs) > 0:
+            for inputport in gate.inputs:
+                # check if input port has connections
+                if len(inputport.mated_to) > 0:
+                    for ngate in list_gates:
+                        for outputport in ngate.outputs:
+                            for matched_id in outputport.mated_to:
+                                if matched_id == inputport._ID:
+                                    self.scancirc(scanedorder, ngate.gate_id, list_gates)
+                                    break
+
+        return scanedorder
 
 
-def getfancyprintoutstring(recursion_depthCounter, listogates):
-    arrow = ' -> '
-    superlist = []
-    recursion_error_flag = False
-    for gate in listogates:
-        megalist = []
-        if gate.type == CVS_gate_class.GateType.circuitOutput:
-            # megalist.append(self.scancirc(megalist,gate.gate_id))
-            superlist.append(scancirc(recursion_depthCounter, megalist, gate.gate_id, listogates))
-            if recursion_error_flag == True:
-                return 'there was a circuit loop that caused a recursive error'
+    def getfancyprintoutstring(self, listogates):
+        arrow = ' -> '
+        superlist = []
+        recursion_error_flag = False
+        for gate in listogates:
+            megalist = []
+            if gate.type == CVS_gate_class.GateType.circuitOutput:
+                # megalist.append(self.scancirc(megalist,gate.gate_id))
+                self.recursion_depthCounter = 0
+                superlist.append(self.scancirc(megalist, gate.gate_id, listogates))
+                if recursion_error_flag == True:
+                    return 'there was a circuit loop that caused a recursive error'
 
-    recursion_depthCounter = 0
+        # print(superlist)
+        theprintout = ''
+        for logicout in superlist:
+            if isinstance(logicout, str):
+                theprintout += logicout
+            else:
+                for line in reversed(logicout):
+                    if line[1] == CVS_gate_class.GateType.circuitOutput.name:
+                        theprintout += f"CircOUT:{line[0]}"
+                    elif line[1] == CVS_gate_class.GateType.circuitInput.name:
+                        theprintout += f"CircIN:{line[0]}{arrow}"
+                    else:
+                        theprintout += f"{line[1]}:{line[0]}{arrow}"
+                theprintout += "\n"
 
-    # print(superlist)
-    theprintout = ''
-    for logicout in superlist:
-        if isinstance(logicout, str):
-            theprintout += logicout
-        else:
-            for line in reversed(logicout):
-                if line[1] == CVS_gate_class.GateType.circuitOutput.name:
-                    theprintout += f"CircOUT:{line[0]}"
-                elif line[1] == CVS_gate_class.GateType.circuitInput.name:
-                    theprintout += f"CircIN:{line[0]}{arrow}"
-                else:
-                    theprintout += f"{line[1]}:{line[0]}{arrow}"
-            theprintout += "\n"
-
-    return theprintout
+        return theprintout
