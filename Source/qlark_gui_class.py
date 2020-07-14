@@ -267,7 +267,7 @@ class QlarkGui:
                     'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],                 # Truthtable
                     'circuitinputs': 2,                                         #
                     'circuitoutputs': 2,                                        #
-                    'maxgatenum': 3,                                            # Total num of gates AI is allowed toplace
+                    'maxgatenum': 4,                                            # Total num of gates AI is allowed toplace
                     'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
                     'maxsteps': 10,                                             # For Qlark             please dont touch
                     'totalthreads': 1,                                          # For Qlark threading   please dont touch
@@ -289,11 +289,11 @@ class QlarkGui:
             'truthtable': [[1, 0, 0, 1, 0, 1, 1, 0],[1, 1, 1, 0, 1, 0, 0, 0]],  # Truthtable Full Adder
             'circuitinputs': 3,                         #
             'circuitoutputs': 2,                        #
-            'maxgatenum': 6,                            # Total num of gates AI is allowed to place
+            'maxgatenum': 7,                            # Total num of gates AI is allowed to place
             'allowedgatetypes': [GateType.AND.name,     # For Qlark             please dont touch
                                  GateType.XOR.name,     # For Qlark             please dont touch
                                  GateType.OR.name],     # For Qlark             please dont touch
-            'maxsteps': 17,                             # For Qlark             please dont touch
+            'maxsteps': 30,                             # For Qlark             please dont touch
             'totalthreads': 1,                          # For Qlark threading   please dont touch
             'trainingsetspthread': 1,                    # For Qlark threading   please dont touch
             'savepath': f'{getrootpath()}fulladder_qtable.pickle',

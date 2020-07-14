@@ -258,19 +258,15 @@ def circuitConnecting(CrawlerOut,
                             break
         if Fail_flag == True:
             # print("Recursion")
-            return circuitOutput
+            # return circuitOutput
+            break
 
 
-    for i in circuitOutput:
-        i.reverse()
+    # for i in circuitOutput:
+    #     i.reverse()
     circuitOutput.reverse()
 
-    # circuitOutput_fixed = []
-    # print("hhere",circuitOutput)
-    # for i in circuitOutput:
-    #     circuitOutput_fixed = i
-    #
-    # print(circuitOutput_fixed)
+
 
     return circuitOutput
 # ---------------------------------End of circuitConnecting ----------------------------------------------------------

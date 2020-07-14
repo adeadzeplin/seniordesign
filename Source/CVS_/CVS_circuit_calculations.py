@@ -170,7 +170,7 @@ def circuit_output_compare(circuitOutput, ogOutput):
     counterWrong = 0
 
     # print(circuitOutput,ogOutput)
-    if  circuitOutput == []:
+    if  len(circuitOutput) != len(ogOutput):
         return 0
 
 
