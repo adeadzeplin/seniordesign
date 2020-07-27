@@ -170,9 +170,9 @@ def circuit_output_compare(circuitOutput, ogOutput):
     counterWrong = 0
 
     # print(circuitOutput,ogOutput)
-
-    if len(circuitOutput) != len(ogOutput):
+    if  len(circuitOutput) != len(ogOutput):
         return 0
+
 
     for i in range(len(ogOutput)):
         for j in range(len(ogOutput[i])):

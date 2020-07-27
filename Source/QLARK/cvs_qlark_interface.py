@@ -16,8 +16,8 @@ class CircuitStatus(enum.Enum):
     Correct = 3
 
 class AIRewards(enum.IntEnum):
-    PlaceGate = 10
-    ConnectGate = 10
+    PlaceGate = 500
+    ConnectGate = 500
     CircuitBroken = 0
     CircuitCompleted = 3000
     CircuitCorrect  = 10000000
@@ -290,6 +290,9 @@ class QlarkCircuitInterface():
             mod = (action % (self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT))
             div = (action // (self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT))
             if div < len(self.list_of_gates) and mod < len(self.list_of_gates):
+
+                
+
                 self.list_of_gates[div].gateConnect(self.list_of_gates[mod])
                 return AIRewards.ConnectGate
             else:
