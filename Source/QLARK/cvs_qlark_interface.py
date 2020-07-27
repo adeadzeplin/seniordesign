@@ -16,11 +16,11 @@ class CircuitStatus(enum.Enum):
     Correct = 3
 
 class AIRewards(enum.IntEnum):
-    PlaceGate = 500
-    ConnectGate = 500
+    PlaceGate = 1000
+    ConnectGate = 1000
     CircuitBroken = 0
-    CircuitCompleted = 3000
-    CircuitCorrect  = 10000000
+    CircuitCompleted = 10000
+    CircuitCorrect  = 200000000
 
 
 def square(val):
@@ -291,7 +291,7 @@ class QlarkCircuitInterface():
             div = (action // (self.MAX_GATE_NUM + self.CIRCUIT_INPUTS_COUNT + self.CIRCUIT_OUTPUTS_COUNT))
             if div < len(self.list_of_gates) and mod < len(self.list_of_gates):
 
-                
+
 
                 self.list_of_gates[div].gateConnect(self.list_of_gates[mod])
                 return AIRewards.ConnectGate
@@ -303,6 +303,14 @@ class QlarkCircuitInterface():
         self.circuitstatus = CircuitStatus.Valid
         self.create_circuit_inputs()
         self.create_circuit_outputs()
+        # self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
+        # self.list_of_gates.append(cvs.Gate(cvs.GateType.XOR))
+        # self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
+        # self.list_of_gates.append(cvs.Gate(cvs.GateType.AND))
+        # self.list_of_gates.append(cvs.Gate(cvs.GateType.OR))
+
+
+
 
     def create_circuit_inputs(self):
         for i in range(self.CIRCUIT_INPUTS_COUNT):
@@ -321,35 +329,63 @@ class QlarkCircuitInterface():
     def get_state(self):
 
         temp = []
-        # temp.append(self.MAX_GATE_NUM)
-        # temp.append(self.NUM_OF_GATE_TYPES)
-        # temp.append(self.DESIRED_LOGIC)
-        # temp.append(self.TRANSISTOR_BUDGET)
+        #
+        # for i in self.DESIRED_LOGIC:
+        #     for j in i:
+        #         temp.append(j)
+        # temp.append(self.ACTION_SPACE)
 
-        for i in self.DESIRED_LOGIC:
-            for j in i:
-                temp.append(j)
-        temp.append(self.ACTION_SPACE)
-        # temp.append(self.OPTIMIZEMETRIC)
-        # temp.append(self.transistor_count)
-        # temp.append(len(self.list_of_gates))
 
         for i in self.list_of_gates:
-            temp.append(i.gate_id)
-            temp.append(i.type.value)
+            temp.append('|')
+
 
             for x in i.inputs:
-                temp.append(x._ID)
-                temp.append(x.type.value)
-                for n in x.mated_to:
-                    temp.append(n)
+                # temp.append(x._ID)
+                # temp.append(x.type.value)
 
-            for y in i.outputs:
-                temp.append(y._ID)
-                temp.append(y.type.value)
-                for m in y.mated_to:
-                    temp.append(m)
-            # mini_index.append(tuple(temp))
+
+                for n in x.mated_to:
+                    n_mate_break_flag = False
+                    for j in self.list_of_gates:
+                        if i == j:
+                            continue
+                        for w in j.outputs:
+                            if n == w._ID:
+                                n_mate_break_flag = True
+                                temp.append(j.type.name)
+                                temp.append(j.gate_id)
+                                temp.append(w._ID)
+                                # temp.append('->')
+                                temp.append(x._ID)
+                                break
+
+                        if n_mate_break_flag == True:
+                            break
+
+            temp.append(i.type.name)
+            temp.append(i.gate_id)
+
+            for x in i.outputs:
+                # temp.append(y._ID)
+                # temp.append(y.type.value)
+                for n in x.mated_to:
+                    n_mate_break_flag = False
+                    for j in self.list_of_gates:
+                        if i == j:
+                            continue
+                        for w in j.inputs:
+                            if n == w._ID:
+                                n_mate_break_flag = True
+                                temp.append(x._ID)
+                                temp.append(w._ID)
+                                temp.append(j.type.name)
+                                temp.append(j.gate_id)
+                                break
+
+                        if n_mate_break_flag == True:
+                            break
+            temp.append('|')
         state_id = ''.join([str(x) for x in temp])
-        state_id = int(state_id)
+        # state_id = int(state_id)
         return state_id

@@ -16,20 +16,26 @@ if __name__ == '__main__':
     #         print(filename)
 
     initdict = {
-        'truthtable': [[0, 0, 0, 1]],  # Truthtable
+        'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],  # Truthtable
         'circuitinputs': 2,  #
-        'circuitoutputs': 1,  #
-        'maxgatenum': 2,  # Total num of gates AI is allowed toplace
-        'allowedgatetypes': [GateType.AND.name],  # For Qlark             please dont touch
-        'maxsteps': 5,  # For Qlark             please dont touch
+        'circuitoutputs': 2,  #
+        'maxgatenum': 3,  # Total num of gates AI is allowed toplace
+        'allowedgatetypes': [GateType.AND.name,  # For Qlark             please dont touch
+                             GateType.XOR.name  # For Qlark             please dont touch
+                             # GateType.OR.name,
+                             # GateType.NOR.name,
+                             # GateType.NAND.name,
+                             # GateType.XNOR.name,
+                             # GateType.NOT.name
+                             ],
+        'maxsteps': 30,  # For Qlark             please dont touch
         'totalthreads': 1,  # For Qlark threading   please dont touch
-        'trainingsetspthread':5,  # For Qlark threading   please dont touch
+        'trainingsetspthread': 10,  # For Qlark threading   please dont touch
         'savepath': f'{getrootpath()}halfadder_qtable.pickle',
         'optimizemetric': None
-
     }
     # print(getrootpath())
-    qt.notthreading(initdict)
+    qt.Needlethreading(initdict)
     # qt.Needlethreading(initdict)
 
     # Num_training_set_p_thread = 5               # Number of training sets of 10,000 per thread

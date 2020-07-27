@@ -79,7 +79,7 @@ def Needlethreading(setupdict):
 
 
     saveqtable(best_qtable,setupdict)
-    # RunBestAI(setupdict)
+    RunBestAI(setupdict)
     thread_list[thread_winner_index].Q_AI.environment.parseLogic()
     return thread_list[thread_winner_index].success_flag, thread_list[thread_winner_index].Q_AI
 

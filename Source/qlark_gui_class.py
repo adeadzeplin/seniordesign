@@ -58,7 +58,7 @@ class QlarkGui:
         # -----------------------------------
 
         # Run label
-        self.runlabel = Label(master, text="Run AI Until it learns")
+        self.runlabel = Label(master, text="Run AI Training")
         self.runlabel.grid(row=0, column=2)
         # Run Qlark button
         self.runqlark_button = Button(master, text="\nRun Qlark\n", width=15, command=self.checkfortruth)
@@ -267,9 +267,16 @@ class QlarkGui:
                     'truthtable': [[0, 1, 1, 0], [0, 0, 0, 1]],                 # Truthtable
                     'circuitinputs': 2,                                         #
                     'circuitoutputs': 2,                                        #
-                    'maxgatenum': 4,                                            # Total num of gates AI is allowed toplace
-                    'allowedgatetypes': [GateType.AND.name,GateType.XOR.name],  # For Qlark             please dont touch
-                    'maxsteps': 10,                                             # For Qlark             please dont touch
+                    'maxgatenum': 10,                                            # Total num of gates AI is allowed toplace
+                    'allowedgatetypes': [GateType.AND.name,  # For Qlark             please dont touch
+                                 GateType.XOR.name,  # For Qlark             please dont touch
+                                 GateType.OR.name,
+                                 GateType.NOR.name,
+                                 GateType.NAND.name,
+                                 GateType.XNOR.name,
+                                 GateType.NOT.name
+                                 ],
+                    'maxsteps': 25,                                             # For Qlark             please dont touch
                     'totalthreads': 1,                                          # For Qlark threading   please dont touch
                     'trainingsetspthread': 1,                                    # For Qlark threading   please dont touch
                     'savepath': f'{getrootpath()}halfadder_qtable.pickle',
@@ -289,11 +296,15 @@ class QlarkGui:
             'truthtable': [[1, 0, 0, 1, 0, 1, 1, 0],[1, 1, 1, 0, 1, 0, 0, 0]],  # Truthtable Full Adder
             'circuitinputs': 3,                         #
             'circuitoutputs': 2,                        #
-            'maxgatenum': 7,                            # Total num of gates AI is allowed to place
+            'maxgatenum': 6,                            # Total num of gates AI is allowed to place
             'allowedgatetypes': [GateType.AND.name,     # For Qlark             please dont touch
                                  GateType.XOR.name,     # For Qlark             please dont touch
-                                 GateType.OR.name],     # For Qlark             please dont touch
-            'maxsteps': 30,                             # For Qlark             please dont touch
+                                 GateType.OR.name
+                                 # GateType.NAND.name,
+                                 # GateType.NOR.name,
+                                 # GateType.XNOR.name
+                                 ],     # For Qlark             please dont touch
+            'maxsteps': 20,                             # For Qlark             please dont touch
             'totalthreads': 1,                          # For Qlark threading   please dont touch
             'trainingsetspthread': 1,                    # For Qlark threading   please dont touch
             'savepath': f'{getrootpath()}fulladder_qtable.pickle',
@@ -313,7 +324,7 @@ class QlarkGui:
             'truthtable': [[0,1,1,1,0,0,1,1,0,0,0,1,0,0,0,0],[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],[0,0,0,0,1,0,0,0,1,1,0,0,1,1,1,0]],  # 2-bit comparator
             'circuitinputs': 4,  #
             'circuitoutputs': 3,  #
-            'maxgatenum': 11,  # Total num of gates AI is allowed to place
+            'maxgatenum': 12,  # Total num of gates AI is allowed to place
             'allowedgatetypes': [GateType.AND.name,  # For Qlark             please dont touch
                                  GateType.XOR.name,  # For Qlark             please dont touch
                                  GateType.OR.name,
@@ -322,7 +333,7 @@ class QlarkGui:
                                  GateType.XNOR.name,
                                  GateType.NOT.name
                                  ],  # For Qlark             please dont touch
-            'maxsteps': 30,  # For Qlark             please dont touch
+            'maxsteps': 60,  # For Qlark             please dont touch
             'totalthreads': 1,  # For Qlark threading   please dont touch
             'trainingsetspthread': 1,  # For Qlark threading   please dont touch
             'savepath': f'{getrootpath()}2bitComparator_qtable.pickle',
