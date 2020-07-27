@@ -23,25 +23,3 @@ def create_circuit_inputs(mega_list, inputs):
 def create_circuit_outputs(mega_list, outputs):
     for i in range(outputs):
         mega_list.append(Gate(GateType.circuitOutput, 1, 0))  # making output circuit port
-
-
-# def gateNumtoName(listofGatesNum):
-#     temp =[]
-#     for i in range(len(listofGatesNum)):
-#         if listofGatesNum[i] == 0:
-#             temp.append("IN")
-#         elif listofGatesNum[i] == 1:
-#             temp.append("OUT")
-#         elif listofGatesNum[i] == 2:
-#             temp.append("AND")
-#         elif listofGatesNum[i] == 3:
-#             temp.append("OR")
-#         elif listofGatesNum[i] == 4:
-#             temp.append("NOT")
-#         elif listofGatesNum[i] == 5:
-#             temp.append("NAND")
-#         elif listofGatesNum[i] == 6:
-#             temp.append("NOR")
-#         elif listofGatesNum[i] == 7:
-#             temp.append("XOR")
-#     return temp

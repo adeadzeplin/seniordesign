@@ -289,7 +289,7 @@ class QlarkGui:
             'truthtable': [[1, 0, 0, 1, 0, 1, 1, 0],[1, 1, 1, 0, 1, 0, 0, 0]],  # Truthtable Full Adder
             'circuitinputs': 3,                         #
             'circuitoutputs': 2,                        #
-            'maxgatenum': 6,                            # Total num of gates AI is allowed to place
+            'maxgatenum': 7,                            # Total num of gates AI is allowed to place
             'allowedgatetypes': [GateType.AND.name,     # For Qlark             please dont touch
                                  GateType.XOR.name,     # For Qlark             please dont touch
                                  GateType.OR.name],     # For Qlark             please dont touch
